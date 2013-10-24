@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  * 
- * Copyright ½ 2013 Clover Studio Ltd. All rights reserved.
+ * Copyright ï¿½ 2013 Clover Studio Ltd. All rights reserved.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -154,6 +154,7 @@ public class CouchDB {
      * @param password
      * @return
      */
+    @Deprecated
     public static String createUser(String name, String email, String password) {
 
         JSONObject userJson = new JSONObject();
@@ -180,6 +181,41 @@ public class CouchDB {
         return CouchDBHelper.createUser(ConnectionHandler.postJsonObject("createUser",userJson,
                 Const.CREATE_USER, ""));
     }
+    
+    public static class CreateUser implements Command<String>
+    {
+    	String name;
+    	String email;
+    	String password;
+    	
+    	public CreateUser(String name, String email, String password)
+    	{
+    		this.name = name;
+    		this.email = email;
+    		this.password = password;
+    	}
+
+		@Override
+		public String execute() throws JSONException, IOException {
+			JSONObject userJson = new JSONObject();
+
+            userJson.put(Const.NAME, name);
+            userJson.put(Const.PASSWORD, password);
+            userJson.put(Const.TYPE, Const.USER);
+            userJson.put(Const.EMAIL, email);
+            userJson.put(Const.LAST_LOGIN, Utils.getCurrentDateTime());
+            userJson.put(Const.TOKEN_TIMESTAMP, Utils.getCurrentDateTime() / 1000);
+            userJson.put(Const.TOKEN, Utils.generateToken());
+            userJson.put(Const.MAX_CONTACT_COUNT, Const.MAX_CONTACTS);
+            userJson.put(Const.MAX_FAVORITE_COUNT, Const.MAX_FAVORITES);
+            userJson.put(Const.ONLINE_STATUS, Const.ONLINE);
+	        
+	        Log.e("Json", userJson.toString());
+	        
+	        return CouchDBHelper.createUser(ConnectionHandler.postJsonObject("createUser",userJson,
+	                Const.CREATE_USER, ""));
+		}
+    }
 
     /**
      * Returns true if the provided username is already taken.
@@ -189,6 +225,7 @@ public class CouchDB {
      * @return true if the provided string is already taken username, otherwise
      *         false
      */
+    @Deprecated
     public static User getUserByName(String username) {
     	
     	String params = "";
@@ -215,6 +252,37 @@ public class CouchDB {
 
         return user;
     }
+    
+    public static class GetUserByName implements Command<User>
+    {
+    	String username;
+    	
+    	public GetUserByName (String username)
+    	{
+    		this.username = username;
+    	}
+    	
+		@Override
+		public User execute() throws JSONException, IOException {
+			String params = "";
+	    	try {
+				params = URLEncoder.encode(username, "UTF-8");
+			} catch (UnsupportedEncodingException e1) {
+				e1.printStackTrace();
+			}
+
+	        final String URL = Const.CHECKUNIQUE_URL + "username=" + params;
+
+	        JSONArray jsonArray = ConnectionHandler.getJsonArray(URL, null, null);
+
+	        if (jsonArray.length() == 0)
+	            return null;
+
+	        User user = CouchDBHelper.parseSingleUserObjectWithoutRowParam(jsonArray.getJSONObject(0));
+
+	        return user;
+		}
+    }
 
     /**
      * Returns true if the provided email is already taken.
@@ -224,6 +292,7 @@ public class CouchDB {
      * @return true if the provided string is already taken email, otherwise
      *         false
      */
+    @Deprecated
     public static User getUserByEmail(String email) {
     	
     	String params = "";
@@ -249,7 +318,37 @@ public class CouchDB {
         }
 
         return user;
-        
+    }
+    
+    public static class GetUserByEmail implements Command<User>
+    {
+    	String email;
+    	
+    	public GetUserByEmail (String email)
+    	{
+    		this.email = email;
+    	}
+    	
+		@Override
+		public User execute() throws JSONException, IOException {
+			String params = "";
+	    	try {
+				params = URLEncoder.encode(email, "UTF-8");
+			} catch (UnsupportedEncodingException e1) {
+				e1.printStackTrace();
+			}
+
+	        final String URL = Const.CHECKUNIQUE_URL + "email=" + params;
+
+	        JSONArray jsonArray = ConnectionHandler.getJsonArray(URL, null, null);
+
+	        if (jsonArray.length() == 0)
+	            return null;
+
+	        User user = CouchDBHelper.parseSingleUserObjectWithoutRowParam(jsonArray.getJSONObject(0));
+
+	        return user;
+		}
     }
 
     /**
@@ -496,6 +595,7 @@ public class CouchDB {
      * @param email
      * @return
      */
+    @Deprecated
     public static User findUserByEmail(String email, boolean isLoggedIn) {
 
         email = "\"" + email + "\"";
@@ -535,7 +635,46 @@ public class CouchDB {
                 return null;
             }
         }
+    }
+    
+    public static class FindUserByEmail implements Command<User>
+    {
+    	String email;
+    	boolean isLoggedIn;
+    	
+    	public FindUserByEmail(String email, boolean isLoggedIn)
+    	{
+    		this.email = email;
+    		this.isLoggedIn = isLoggedIn;
+    	}
 
+		@Override
+		public User execute() throws JSONException, IOException {
+			email = "\"" + email + "\"";
+	        
+	        try {
+	            email = URLEncoder.encode(email, "UTF-8");
+	        } catch (UnsupportedEncodingException e) {
+	            e.printStackTrace();
+	            return null;
+	        }
+
+	        JSONObject json = null;
+
+	        if (null != UsersManagement.getLoginUser() && isLoggedIn) {
+	            json = ConnectionHandler.getJsonObject(sUrl
+	                    + "_design/app/_view/find_user_by_email?key=" + email, UsersManagement
+	                    .getLoginUser().getId());
+	            
+	            return CouchDBHelper.parseSingleUserObject(json);
+	            
+	        } else {
+	            json = ConnectionHandler.getJsonObject(Const.API_URL
+	                    + "_design/app/_view/find_user_by_email?key=" + email, "");
+	            	                    
+	            return CouchDBHelper.parseSingleUserObject(json);
+	        }
+		}
     }
 
     /**
@@ -546,6 +685,7 @@ public class CouchDB {
      * @throws JSONException 
      * @throws IOException 
      */
+    @Deprecated
     public static String auth(String email, String password) throws IOException, JSONException {
 
         JSONObject jPost = new JSONObject();
@@ -581,6 +721,50 @@ public class CouchDB {
         	return Const.LOGIN_ERROR;
         }
     }
+    
+    public static class Auth implements Command<String>
+    {
+    	String email;
+    	String password;
+    	
+    	public Auth (String email, String password)
+    	{
+    		this.email = email;
+    		this.password = password;
+    	}
+
+		@Override
+		public String execute() throws JSONException, IOException {
+			JSONObject jPost = new JSONObject();
+
+	        jPost.put("email", email);
+	        jPost.put("password", password);
+
+	        JSONObject json = ConnectionHandler.postAuth(jPost);
+
+	        User user = null;
+
+	        Log.e("CouchDB", "auth");
+
+	        user = CouchDBHelper.parseSingleUserObject(json);
+	            
+	        if (user != null) {
+
+	        	SpikaApp.getPreferences().setUserToken(user.getToken());
+	        	SpikaApp.getPreferences().setUserEmail(user.getEmail());
+	        	SpikaApp.getPreferences().setUserId(user.getId());
+	        	SpikaApp.getPreferences().setUserPassword(user.getPassword());
+
+	        	UsersManagement.setLoginUser(user);
+	        	UsersManagement.setToUser(user);
+	        	UsersManagement.setToGroup(null);
+
+	        	return Const.LOGIN_SUCCESS;
+	        } else {
+	        	return Const.LOGIN_ERROR;
+	        }
+		}
+    }
 
     /**
      * Email SignIn, Auth
@@ -590,6 +774,7 @@ public class CouchDB {
      * @throws JSONException 
      * @throws IOException 
      */
+    @Deprecated
     public static User getUserByEmailAndPassword(String email, String password) throws JSONException, IOException {
 
         JSONObject jPost = new JSONObject();
@@ -622,6 +807,49 @@ public class CouchDB {
         }
     }
 
+    public static class GetUserByEmailAndPassword implements Command<User>
+    {
+    	String email;
+    	String password;
+    	
+    	public GetUserByEmailAndPassword (String email, String password)
+    	{
+    		this.email = email;
+    		this.password = password;
+    	}
+    	
+		@Override
+		public User execute() throws JSONException, IOException {
+			JSONObject jPost = new JSONObject();
+
+	        jPost.put("email", email);
+	        jPost.put("password", password);
+
+	        JSONObject json = ConnectionHandler.postAuth(jPost);
+
+	        User user = null;
+
+	        Log.e("CouchDB", "auth");
+
+	        user = CouchDBHelper.parseSingleUserObject(json);
+
+	        if (user != null) {
+
+	        	SpikaApp.getPreferences().setUserToken(user.getToken());
+	        	SpikaApp.getPreferences().setUserEmail(user.getEmail());
+	        	SpikaApp.getPreferences().setUserId(user.getId());
+	        	SpikaApp.getPreferences().setUserPassword(user.getPassword());
+
+	        	UsersManagement.setLoginUser(user);
+	        	UsersManagement.setToUser(user);
+	        	UsersManagement.setToGroup(null);
+
+	        	return user;
+	        } else {
+	        	return null;
+	        }
+		}
+    }
     
     /**
      * Find user by name
@@ -629,6 +857,7 @@ public class CouchDB {
      * @param name
      * @return
      */
+    @Deprecated
     public static List<User> findUsersByName(String name) {
 
         String endKey = "\"" + name + "\u9999\"";
@@ -649,6 +878,37 @@ public class CouchDB {
                 .getId());
 
         return CouchDBHelper.parseMultiUserObjects(json);
+    }
+    
+    public static class FindUsersByName implements Command<List<User>> {
+
+    	String name;
+    	
+		public FindUsersByName(String name) {
+			this.name = name;
+		}
+
+		@Override
+		public List<User> execute() throws JSONException, IOException {
+			String endKey = "\"" + name + "\u9999\"";
+	        name = "\"" + name + "\"";
+
+	        try {
+	            name = URLEncoder.encode(name, "UTF-8");
+	            endKey = URLEncoder.encode(endKey, "UTF-8");
+	        } catch (UnsupportedEncodingException e) {
+	            e.printStackTrace();
+	            return null;
+	        }
+
+	        String url = sUrl + "_design/app/_view/find_user_by_name?startkey=" + name + "&endkey="
+	                + endKey;
+
+	        JSONObject json = ConnectionHandler.getJsonObject(url, UsersManagement.getLoginUser()
+	                .getId());
+
+	        return CouchDBHelper.parseMultiUserObjects(json);
+		}
     }
 
     /**
@@ -703,6 +963,7 @@ public class CouchDB {
      * @param id
      * @return
      */
+    @Deprecated
     public static User findUserById(String id) {
 
         id = "\"" + id + "\"";
@@ -730,6 +991,38 @@ public class CouchDB {
         }
     }
 
+    public static class FindUserById implements Command<User>
+    {
+    	String id;
+    	
+    	public FindUserById (String id)
+    	{
+    		this.id = id;
+    	}
+    	
+		@Override
+		public User execute() throws JSONException, IOException {
+			
+			id = "\"" + id + "\"";
+
+	        try {
+	            id = URLEncoder.encode(id, "UTF-8");
+	        } catch (UnsupportedEncodingException e1) {
+	            e1.printStackTrace();
+
+	            return null;
+	        }
+
+	        JSONObject json = ConnectionHandler.getJsonObject(sUrl
+	                + "_design/app/_view/find_user_by_id?key=" + id, UsersManagement.getLoginUser()
+	                .getId());
+
+	        Log.e("CouchDB", "findUserById");
+	        
+	        return CouchDBHelper.parseSingleUserObject(json); 
+		}
+    }
+    
     public static String findAvatarFileId(String userId) {
 
         userId = "\"" + userId + "\"";
@@ -915,6 +1208,7 @@ public class CouchDB {
      * @param id
      * @return
      */
+    @Deprecated
     public static ActivitySummary findUserActivitySummary(String id) {
 
         id = "\"" + id + "\"";
@@ -933,6 +1227,36 @@ public class CouchDB {
         // Logger.error("ActivitySummaryJSON", json.toString());
 
         return CouchDBHelper.parseSingleActivitySummaryObject(json);
+    }
+    
+    public class FindUserActivitySummary implements Command<ActivitySummary>
+    {
+    	String id;
+    	
+    	public FindUserActivitySummary (String id)
+    	{
+    		this.id = id;
+    	}
+
+		@Override
+		public ActivitySummary execute() throws JSONException, IOException {
+			id = "\"" + id + "\"";
+
+	        try {
+	            id = URLEncoder.encode(id, "UTF-8");
+	        } catch (UnsupportedEncodingException e) {
+	            e.printStackTrace();
+	            return null;
+	        }
+
+	        JSONObject json = ConnectionHandler.getJsonObject(sUrl
+	                + "_design/app/_view/user_activity_summary?key=" + id, UsersManagement
+	                .getLoginUser().getId());
+
+	        // Logger.error("ActivitySummaryJSON", json.toString());
+
+	        return CouchDBHelper.parseSingleActivitySummaryObject(json);
+		}
     }
 
     /**
@@ -1738,8 +2062,26 @@ public class CouchDB {
 
         final String URL = Const.PASSWORDREMINDER_URL + "email=" + email;
 
-        ConnectionHandler.getJsonArray(URL, null, null);
-        
+        ConnectionHandler.getJsonArray(URL, null, null); 
+    }
+    
+    public class SendPassword implements Command<Void>
+    {
+    	String email;
+    	
+    	public SendPassword (String email)
+    	{
+    		this.email = email; 
+    	}
+
+		@Override
+		public Void execute() throws JSONException, IOException {
+			
+			final String URL = Const.PASSWORDREMINDER_URL + "email=" + email;
+
+	        ConnectionHandler.getJsonArray(URL, null, null);
+			return null;
+		}
     }
     
     /**

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  * 
- * Copyright ½ 2013 Clover Studio Ltd. All rights reserved.
+ * Copyright ï¿½ 2013 Clover Studio Ltd. All rights reserved.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,6 +32,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -62,9 +63,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.R.string;
+import android.app.Application;
 import android.graphics.Bitmap;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.cloverstudio.spikademo.R;
 import com.cloverstudio.spikademo.SpikaApp;
 import com.cloverstudio.spikademo.management.BitmapManagement;
 import com.cloverstudio.spikademo.management.FileManagement;
@@ -319,6 +324,7 @@ public class ConnectionHandler {
 
 		retVal = jObjectFromString(result);
 
+		Log.e("Response: ", retVal.toString());
 		return retVal;
 	}
 
@@ -351,6 +357,7 @@ public class ConnectionHandler {
 
 		}
 
+		Log.e("Response: ", retVal.toString());
 		return retVal;
 	}
 
@@ -385,6 +392,7 @@ public class ConnectionHandler {
 
 		}
 
+		Log.e("Response: ", retVal.toString());
 		return retVal;
 	}
 
@@ -471,6 +479,7 @@ public class ConnectionHandler {
 	 */
 	private static JSONObject jObjectFromString(String result)
 			throws JSONException {
+		Log.e("resonse to json", result);
 		return new JSONObject(result);
 	}
 	
@@ -483,6 +492,7 @@ public class ConnectionHandler {
 	 */
 	private static JSONArray jArrayFromString(String result)
 			throws JSONException {
+		Log.e("resonse to json", result);
 		return new JSONArray(result);
 	}
 
@@ -596,6 +606,11 @@ public class ConnectionHandler {
 		
 		HttpResponse response = HttpSingleton.getInstance().execute(httppost);
 		HttpEntity entity = response.getEntity();
+		
+		if (response.getStatusLine().getStatusCode() > 400)
+		{
+			throw new IOException(response.getStatusLine().getReasonPhrase());
+		}
 		
 		return entity.getContent();
 	}

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  * 
- * Copyright ½ 2013 Clover Studio Ltd. All rights reserved.
+ * Copyright ï¿½ 2013 Clover Studio Ltd. All rights reserved.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -45,6 +45,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cloverstudio.spikademo.couchdb.CouchDB;
+import com.cloverstudio.spikademo.couchdb.ResultListener;
+import com.cloverstudio.spikademo.couchdb.SpikaAsyncTask;
 import com.cloverstudio.spikademo.couchdb.model.ActivitySummary;
 import com.cloverstudio.spikademo.couchdb.model.User;
 import com.cloverstudio.spikademo.dialog.HookUpAlertDialog;
@@ -191,24 +193,26 @@ public class SignInActivity extends Activity {
 		mBtnSendPassword.setTypeface(SpikaApp.getTfMyriadProBold(),
 				Typeface.BOLD);
 		mBtnSendPassword.setVisibility(View.GONE);
+		
+		
+		
 		mBtnSendPassword.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 
-				if (isEmailValid(mEtSendPasswordEmail.getText().toString())) {
-					new CheckEmailAsync(SignInActivity.this)
-							.execute(mEtSendPasswordEmail.getText().toString());
+				if (isEmailValid(mEtSendPasswordEmail.getText().toString())) 
+				{
+					getUserByEmail(mEtSendPasswordEmail.getText().toString());
 				} else {
 
 					final HookUpDialog dialog = new HookUpDialog(
 							SignInActivity.this);
 					dialog.showOnlyOK(getString(R.string.email_not_valid));
-
 				}
-
 			}
 		});
+		
 		mLlSignIn = (LinearLayout) findViewById(R.id.llSignInBody);
 		mLlSignIn.setVisibility(View.VISIBLE);
 		mLlSignUp = (LinearLayout) findViewById(R.id.llSignUpBody);
@@ -448,54 +452,54 @@ public class SignInActivity extends Activity {
 		}
 	}
 
-	private class CheckEmailAsync extends SpikaAsync<String, Void, Boolean> {
-
-		private String mEmail;
-		private User mUserByEmail;
-
-		private HookUpProgressDialog mProgressDialog;
-
-		protected CheckEmailAsync(Context context) {
-			super(context);
-			mProgressDialog = new HookUpProgressDialog(SignInActivity.this);
-		}
-
-		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-			mProgressDialog.show();
-		}
-
-		@Override
-		protected Boolean doInBackground(String... params) {
-
-			mEmail = params[0];
-			mUserByEmail = CouchDB.getUserByEmail(mEmail);
-
-			return null;
-		}
-
-		@Override
-		protected void onPostExecute(Boolean result) {
-			super.onPostExecute(result);
-
-			mProgressDialog.dismiss();
-
-			if (mUserByEmail != null) {
-
-				mSendPasswordEmail = mEtSendPasswordEmail.getText().toString();
-				mSendPasswordDialog.show(getString(R.string.send_password)
-						+ "\n" + mSendPasswordEmail + "?");
-
-			} else {
-
-				final HookUpDialog dialog = new HookUpDialog(
-						SignInActivity.this);
-				dialog.showOnlyOK(getString(R.string.email_notexists));
-
-			}
-		}
-	}
+//	private class CheckEmailAsync extends SpikaAsync<String, Void, Boolean> {
+//
+//		private String mEmail;
+//		private User mUserByEmail;
+//
+//		private HookUpProgressDialog mProgressDialog;
+//
+//		protected CheckEmailAsync(Context context) {
+//			super(context);
+//			mProgressDialog = new HookUpProgressDialog(SignInActivity.this);
+//		}
+//
+//		@Override
+//		protected void onPreExecute() {
+//			super.onPreExecute();
+//			mProgressDialog.show();
+//		}
+//
+//		@Override
+//		protected Boolean doInBackground(String... params) {
+//
+//			mEmail = params[0];
+//			mUserByEmail = CouchDB.getUserByEmail(mEmail);
+//
+//			return null;
+//		}
+//
+//		@Override
+//		protected void onPostExecute(Boolean result) {
+//			super.onPostExecute(result);
+//
+//			mProgressDialog.dismiss();
+//
+//			if (mUserByEmail != null) {
+//
+//				mSendPasswordEmail = mEtSendPasswordEmail.getText().toString();
+//				mSendPasswordDialog.show(getString(R.string.send_password)
+//						+ "\n" + mSendPasswordEmail + "?");
+//
+//			} else {
+//
+//				final HookUpDialog dialog = new HookUpDialog(
+//						SignInActivity.this);
+//				dialog.showOnlyOK(getString(R.string.email_notexists));
+//
+//			}
+//		}
+//	}
 
 	private class AvailabilityAsync extends AsyncTask<Void, Void, Void> {
 
@@ -775,5 +779,30 @@ public class SignInActivity extends Activity {
 	private enum Screen {
 		SIGN_IN, SIGN_UP, FORGOT_PASSWORD
 	}
-
+	
+	private void getUserByEmail (String email)
+	{
+		new SpikaAsyncTask<Void, Void, User>(new CouchDB.GetUserByEmail(email), new EmailListener(), SignInActivity.this, true).execute();
+	}
+	
+	private class EmailListener implements ResultListener<User>
+	{
+		@Override
+		public void onResultsSucceded(User result) {
+			User mUserByEmail = result;
+			if (mUserByEmail != null) {
+				mSendPasswordEmail = mEtSendPasswordEmail.getText().toString();
+				mSendPasswordDialog.show(getString(R.string.send_password)
+						+ "\n" + mSendPasswordEmail + "?");
+			} else {
+				final HookUpDialog dialog = new HookUpDialog(
+						SignInActivity.this);
+				dialog.showOnlyOK(getString(R.string.email_notexists));
+			}
+		}
+		
+		@Override
+		public void onResultsFail() {	
+		}
+	}
 }

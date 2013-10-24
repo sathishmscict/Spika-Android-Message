@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  * 
- * Copyright © 2013 Clover Studio Ltd. All rights reserved.
+ * Copyright ï¿½ 2013 Clover Studio Ltd. All rights reserved.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -49,6 +49,8 @@ import com.cloverstudio.spikademo.SplashScreenActivity;
 import com.cloverstudio.spikademo.UsersActivity;
 import com.cloverstudio.spikademo.WallActivity;
 import com.cloverstudio.spikademo.couchdb.CouchDB;
+import com.cloverstudio.spikademo.couchdb.ResultListener;
+import com.cloverstudio.spikademo.couchdb.SpikaAsyncTask;
 import com.cloverstudio.spikademo.couchdb.model.ActivitySummary;
 import com.cloverstudio.spikademo.couchdb.model.User;
 import com.cloverstudio.spikademo.dialog.HookUpDialog;
@@ -125,7 +127,22 @@ public class SideBarActivity extends SpikaActivity {
 		new GetActivitySummary(this).execute();
 
 		if(UsersManagement.getSupportUser() == null){
-		    new GetSupportUserAsync(this).execute();
+//		    new GetSupportUserAsync(this).execute();
+		    ResultListener<User> resultListener = new ResultListener<User>() {
+
+				@Override
+				public void onResultsSucceded(User result) {
+					// TODO Auto-generated method stub
+					
+				}
+
+				@Override
+				public void onResultsFail() {
+					// TODO Auto-generated method stub
+					
+				}
+			};
+			new SpikaAsyncTask<Void, Void, User>(new CouchDB.FindUserById("7df093b56d11b8c5f961cf120d2ebc4c"), resultListener, this, true).execute();
 		}
 		
 	}

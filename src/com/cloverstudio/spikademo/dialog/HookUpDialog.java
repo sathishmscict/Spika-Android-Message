@@ -2,8 +2,10 @@ package com.cloverstudio.spikademo.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Typeface;
+import android.util.Log;
+import android.view.ActionMode;
+import android.view.ActionMode.Callback;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -122,4 +124,16 @@ public class HookUpDialog extends Dialog {
 		}
 	}
 
+	@Override
+	public void onWindowFocusChanged(boolean hasFocus) {
+		Log.v("Dialog focus change", "" + hasFocus);
+		if (!hasFocus) this.dismiss();
+		super.onWindowFocusChanged(hasFocus);
+	}
+
+	
+
+	
+	
+	
 }

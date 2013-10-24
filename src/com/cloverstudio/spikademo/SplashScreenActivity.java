@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  * 
- * Copyright © 2013 Clover Studio Ltd. All rights reserved.
+ * Copyright ï¿½ 2013 Clover Studio Ltd. All rights reserved.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,14 +24,9 @@
 
 package com.cloverstudio.spikademo;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-
-import org.json.JSONException;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -39,9 +34,10 @@ import android.os.Handler;
 import android.widget.Toast;
 
 import com.cloverstudio.spikademo.couchdb.CouchDB;
+import com.cloverstudio.spikademo.couchdb.ResultListener;
+import com.cloverstudio.spikademo.couchdb.SpikaAsyncTask;
 import com.cloverstudio.spikademo.couchdb.model.User;
 import com.cloverstudio.spikademo.extendables.SideBarActivity;
-import com.cloverstudio.spikademo.extendables.SpikaAsync;
 import com.cloverstudio.spikademo.management.UsersManagement;
 import com.cloverstudio.spikademo.utils.Const;
 import com.cloverstudio.spikademo.utils.Preferences;
@@ -59,7 +55,7 @@ public class SplashScreenActivity extends Activity {
 	private String mSavedPassword;
 	public static SplashScreenActivity sInstance = null;
 	private User mUser;
-
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -72,7 +68,7 @@ public class SplashScreenActivity extends Activity {
 
 		new CouchDB();
 		// new UsersManagement();
-
+		
 		if (SpikaApp.hasNetworkConnection()) {
 
 			if (checkIfUserSignIn()) {
@@ -80,31 +76,8 @@ public class SplashScreenActivity extends Activity {
 				mSavedPassword = SpikaApp.getPreferences().getUserPassword();
 
 				mUser = new User();
-				try {
-					mUser = new GetUserByEmailAsync(SplashScreenActivity.this)
-							.execute(mSavedEmail,mSavedPassword).get();
-
-					 boolean tokenOk = new AuthentificationAsync(
-					 SplashScreenActivity.this).execute().get();
-					if (tokenOk && mUser!=null) {
-						if (authentificationOk(mUser)) {
-							new Handler().postDelayed(new Runnable() {
-
-								@Override
-								public void run() {
-									signIn(mUser);
-								}
-							}, 2000);
-						}
-					} else {
-						SideBarActivity.appLogout(false, false, true);
-					}
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				} catch (ExecutionException e) {
-					e.printStackTrace();
-				}
-
+				
+				getUserByEmailAndPassword(mSavedEmail, mSavedPassword);
 			} else {
 				new Handler().postDelayed(new Runnable() {
 
@@ -115,13 +88,9 @@ public class SplashScreenActivity extends Activity {
 						finish();
 					}
 				}, 2000);
-
 			}
-
 		} else {
-
 			new Handler().postDelayed(new Runnable() {
-
 				@Override
 				public void run() {
 					Intent intent = new Intent(SplashScreenActivity.this,
@@ -133,10 +102,9 @@ public class SplashScreenActivity extends Activity {
 							Toast.LENGTH_LONG).show();
 				}
 			}, 2000);
-
 		}
 	}
-
+	
 	private boolean checkIfUserSignIn() {
 		boolean isSessionSaved = false;
 		Preferences prefs = SpikaApp.getPreferences();
@@ -149,62 +117,6 @@ public class SplashScreenActivity extends Activity {
 			isSessionSaved = true;
 		}
 		return isSessionSaved;
-	}
-
-	private class GetUserByEmailAsync extends SpikaAsync<String, Void, User> {
-
-		protected GetUserByEmailAsync(Context context) {
-			super(context);
-		}
-
-		@Override
-		protected User doInBackground(String... params) {
-
-            String email = params[0];
-            String passwrod = params[1];
-
-			User user = null;
-			try {
-				user = CouchDB.getUserByEmailAndPassword(email,passwrod);
-			} catch (JSONException e) {
-				// ignore. doInBackground return null.
-			} catch (IOException e) {
-				// ignore. doInBackground return null.
-			}
-			return user;
-		}
-
-		@Override
-		protected void onPostExecute(User user) {
-
-		}
-	}
-
-	private class AuthentificationAsync extends
-			SpikaAsync<Void, Void, Boolean> {
-
-		protected AuthentificationAsync(Context context) {
-			super(context);
-		}
-
-		@Override
-		protected Boolean doInBackground(Void... params) {
-
-			try {
-				return CouchDB.auth(mSavedEmail, mSavedPassword).equals(
-						Const.LOGIN_SUCCESS);
-			} catch (JSONException e) {
-				// ignore. doInBackground return false.
-			} catch (IOException e) {
-				// ignore. doInBackground return false.
-			}
-			return false;
-		}
-
-		@Override
-		protected void onPostExecute(Boolean result) {
-
-		}
 	}
 
 	private void signIn(User u) {
@@ -269,5 +181,53 @@ public class SplashScreenActivity extends Activity {
 		}
 		return authentificationOk;
 	}
+	
+	private void getUserByEmailAndPassword(String email, String password)
+	{
+		new SpikaAsyncTask<Void, Void, User>(new CouchDB.GetUserByEmailAndPassword(email, password), new UserLoginListener(), this).execute();
+	}
+	
+	private class UserLoginListener implements ResultListener<User>
+	{
+		@Override
+		public void onResultsSucceded(User result) {				
+			mUser = result;
+			auth(mSavedEmail, mSavedPassword);
+		}
+		@Override
+		public void onResultsFail() {
+			SideBarActivity.appLogout(false, false, true);
+		}
+	}
 
+	private void auth (String username, String password)
+	{
+		new SpikaAsyncTask<Void, Void, String>(new CouchDB.Auth(username, password), new TokenListener(), SplashScreenActivity.this).execute();
+	}
+	
+	private class TokenListener implements ResultListener<String>
+	{
+		@Override
+		public void onResultsSucceded(String result) {
+			// TODO Auto-generated method stub
+			boolean tokenOk = result.equals(Const.LOGIN_SUCCESS);
+			if (tokenOk && mUser!=null) {
+				if (authentificationOk(mUser)) {
+					new Handler().postDelayed(new Runnable() {
+
+						@Override
+						public void run() {
+							signIn(mUser);
+						}
+					}, 2000);
+				}
+			} else {
+				SideBarActivity.appLogout(false, false, true);
+			}
+		}
+		@Override
+		public void onResultsFail() {
+			SideBarActivity.appLogout(false, false, true);
+		}
+	}
 }
