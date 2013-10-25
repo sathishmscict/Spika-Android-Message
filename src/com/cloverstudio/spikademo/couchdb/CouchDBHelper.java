@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  * 
- * Copyright © 2013 Clover Studio Ltd. All rights reserved.
+ * Copyright ï¿½ 2013 Clover Studio Ltd. All rights reserved.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -713,8 +713,9 @@ public class CouchDBHelper {
 	 * 
 	 * @param json
 	 * @return
+	 * @throws JSONException 
 	 */
-	public static String createUser(JSONObject json) {
+	public static String createUser(JSONObject json) throws JSONException {
 
 		boolean ok = false;
 		String id = null;
@@ -726,13 +727,8 @@ public class CouchDBHelper {
 				return null;
 			}
 
-			try {
-				ok = json.getBoolean(Const.OK);
-				id = json.getString(Const.ID);
-			} catch (Exception e) {
-				Logger.error(TAG + "createUser",
-						"Error while retrieving data from json", e);
-			}
+			ok = json.getBoolean(Const.OK);
+			id = json.getString(Const.ID);
 		}
 
 		if (!ok) {

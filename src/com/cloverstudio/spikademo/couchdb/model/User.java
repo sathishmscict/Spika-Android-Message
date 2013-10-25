@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  * 
- * Copyright © 2013 Clover Studio Ltd. All rights reserved.
+ * Copyright ï¿½ 2013 Clover Studio Ltd. All rights reserved.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -351,4 +351,19 @@ public class User {
 		return (getFavoritesCount() < getMaxFavoriteCount());
 	}
 
+	@Override
+	public String toString() {
+		return "User [mId=" + mId + ", mRev=" + mRev + ", mEmail=" + mEmail
+				+ ", mPassword=" + mPassword + ", mType=" + mType + ", mName="
+				+ mName + ", mLastLogin=" + mLastLogin + ", mGender=" + mGender
+				+ ", mBirthday=" + mBirthday + ", mAbout=" + mAbout
+				+ ", mAndroidPushToken=" + mAndroidPushToken + ", mToken="
+				+ mToken + ", mTokenTimestamp=" + mTokenTimestamp
+				+ ", mOnlineStatus=" + mOnlineStatus + ", mAvatarFileId="
+				+ mAvatarFileId + ", mMaxContactCount=" + mMaxContactCount
+				+ ", mMaxFavoriteCount=" + mMaxFavoriteCount
+				+ ", mAvatarThumbFileId=" + mAvatarThumbFileId
+				+ ", mContactIds=" + mContactIds + ", mGroupIds=" + mGroupIds
+				+ ", mActivitySummary=" + mActivitySummary + "]";
+	}
 }

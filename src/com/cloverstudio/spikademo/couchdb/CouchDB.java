@@ -38,6 +38,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Log;
 
@@ -154,32 +155,35 @@ public class CouchDB {
      * @param password
      * @return
      */
-    @Deprecated
-    public static String createUser(String name, String email, String password) {
-
-        JSONObject userJson = new JSONObject();
-
-        try {
-            userJson.put(Const.NAME, name);
-            userJson.put(Const.PASSWORD, password);
-            userJson.put(Const.TYPE, Const.USER);
-            userJson.put(Const.EMAIL, email);
-            userJson.put(Const.LAST_LOGIN, Utils.getCurrentDateTime());
-            userJson.put(Const.TOKEN_TIMESTAMP, Utils.getCurrentDateTime() / 1000);
-            userJson.put(Const.TOKEN, Utils.generateToken());
-            userJson.put(Const.MAX_CONTACT_COUNT, Const.MAX_CONTACTS);
-            userJson.put(Const.MAX_FAVORITE_COUNT, Const.MAX_FAVORITES);
-            userJson.put(Const.ONLINE_STATUS, Const.ONLINE);
-        } catch (JSONException e) {
-            e.printStackTrace();
-
-            return null;
-        }
-
-        Log.e("Json", userJson.toString());
-        
-        return CouchDBHelper.createUser(ConnectionHandler.postJsonObject("createUser",userJson,
-                Const.CREATE_USER, ""));
+//    public static String createUser(String name, String email, String password) {
+//
+//        JSONObject userJson = new JSONObject();
+//
+//        try {
+//            userJson.put(Const.NAME, name);
+//            userJson.put(Const.PASSWORD, password);
+//            userJson.put(Const.TYPE, Const.USER);
+//            userJson.put(Const.EMAIL, email);
+//            userJson.put(Const.LAST_LOGIN, Utils.getCurrentDateTime());
+//            userJson.put(Const.TOKEN_TIMESTAMP, Utils.getCurrentDateTime() / 1000);
+//            userJson.put(Const.TOKEN, Utils.generateToken());
+//            userJson.put(Const.MAX_CONTACT_COUNT, Const.MAX_CONTACTS);
+//            userJson.put(Const.MAX_FAVORITE_COUNT, Const.MAX_FAVORITES);
+//            userJson.put(Const.ONLINE_STATUS, Const.ONLINE);
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//
+//            return null;
+//        }
+//
+//        Log.e("Json", userJson.toString());
+//        
+//        return CouchDBHelper.createUser(ConnectionHandler.postJsonObject("createUser",userJson,
+//                Const.CREATE_USER, ""));
+//    }
+    
+    public static void createUser(String name, String email, String password, ResultListener<String> resultListener, Context context, boolean showProgressBar) {
+    	new SpikaAsyncTask<Void, Void, String>(new CouchDB.CreateUser(name, email, password), resultListener, context, showProgressBar).execute();
     }
     
     public static class CreateUser implements Command<String>
@@ -237,7 +241,7 @@ public class CouchDB {
 
         final String URL = Const.CHECKUNIQUE_URL + "username=" + params;
 
-        JSONArray jsonArray = ConnectionHandler.getJsonArray(URL, null, null);
+        JSONArray jsonArray = ConnectionHandler.getJsonArrayDeprecated(URL, null, null);
 
         if (jsonArray.length() == 0)
             return null;
@@ -251,6 +255,10 @@ public class CouchDB {
         }
 
         return user;
+    }
+    
+    public static void getUserByName(String username, ResultListener<User> resultListener, Context context, boolean showProgressBar) {
+    	new SpikaAsyncTask<Void, Void, User>(new CouchDB.GetUserByName(username), resultListener, context, showProgressBar).execute();
     }
     
     public static class GetUserByName implements Command<User>
@@ -304,7 +312,7 @@ public class CouchDB {
 
         final String URL = Const.CHECKUNIQUE_URL + "email=" + params;
 
-        JSONArray jsonArray = ConnectionHandler.getJsonArray(URL, null, null);
+        JSONArray jsonArray = ConnectionHandler.getJsonArrayDeprecated(URL, null, null);
 
         if (jsonArray.length() == 0)
             return null;
@@ -318,6 +326,10 @@ public class CouchDB {
         }
 
         return user;
+    }
+    
+    public static void getUserByEmail(String email, ResultListener<User> resultListener, Context context, boolean showProgressBar) {
+    	new SpikaAsyncTask<Void, Void, User>(new CouchDB.GetUserByEmail(email), resultListener, context, showProgressBar).execute();
     }
     
     public static class GetUserByEmail implements Command<User>
@@ -370,7 +382,7 @@ public class CouchDB {
 
         final String URL = Const.CHECKUNIQUE_URL + "groupname=" + params;
 
-        JSONArray jsonArray = ConnectionHandler.getJsonArray(URL, null, null);
+        JSONArray jsonArray = ConnectionHandler.getJsonArrayDeprecated(URL, null, null);
 
         if (jsonArray.length() == 0)
             return null;
@@ -557,7 +569,7 @@ public class CouchDB {
         
         Logger.error("Search", Const.SEARCH_USERS_URL + searchParams);
 
-        JSONArray json = ConnectionHandler.getJsonArray(Const.SEARCH_USERS_URL + searchParams,
+        JSONArray json = ConnectionHandler.getJsonArrayDeprecated(Const.SEARCH_USERS_URL + searchParams,
                 UsersManagement.getLoginUser().getId(), UsersManagement.getLoginUser().getToken());
 
         return CouchDBHelper.parseSearchUsersResult(json);
@@ -583,7 +595,7 @@ public class CouchDB {
             searchParams = "n=" + groupSearch.getName();
         }
 
-        JSONArray json = ConnectionHandler.getJsonArray(Const.SEARCH_GROUPS_URL + searchParams,
+        JSONArray json = ConnectionHandler.getJsonArrayDeprecated(Const.SEARCH_GROUPS_URL + searchParams,
                 UsersManagement.getLoginUser().getId(), UsersManagement.getLoginUser().getToken());
 
         return CouchDBHelper.parseSearchGroupsResult(json);
@@ -635,6 +647,10 @@ public class CouchDB {
                 return null;
             }
         }
+    }
+    
+    public static void findUserByEmail(String email, boolean isLoggedIn, ResultListener<User> resultListener, Context context, boolean showProgressBar) {
+    	new SpikaAsyncTask<Void, Void, User>(new CouchDB.FindUserByEmail(email, isLoggedIn), resultListener, context, showProgressBar).execute();
     }
     
     public static class FindUserByEmail implements Command<User>
@@ -722,6 +738,10 @@ public class CouchDB {
         }
     }
     
+    public static void auth(String email, String password, ResultListener<String> resultListener, Context context, boolean showProgressBar) {
+    	new SpikaAsyncTask<Void, Void, String>(new CouchDB.Auth(email, password), resultListener, context, showProgressBar).execute();
+    }
+    
     public static class Auth implements Command<String>
     {
     	String email;
@@ -807,6 +827,10 @@ public class CouchDB {
         }
     }
 
+    public static void getUserByEmailAndPassword(String email, String password, ResultListener<User> resultListener, Context context, boolean showProgressBar) {
+    	new SpikaAsyncTask<Void, Void, User>(new CouchDB.GetUserByEmailAndPassword(email, password), resultListener, context, showProgressBar).execute();
+    }
+    
     public static class GetUserByEmailAndPassword implements Command<User>
     {
     	String email;
@@ -878,6 +902,10 @@ public class CouchDB {
                 .getId());
 
         return CouchDBHelper.parseMultiUserObjects(json);
+    }
+    
+    public static void findUsersByName(String name, ResultListener<List<User>> resultListener, Context context, boolean showProgressBar) {
+    	new SpikaAsyncTask<Void, Void, List<User>>(new CouchDB.FindUsersByName(name), resultListener, context, showProgressBar).execute();
     }
     
     public static class FindUsersByName implements Command<List<User>> {
@@ -989,6 +1017,10 @@ public class CouchDB {
 
             return null;
         }
+    }
+    
+    public static void findUserById(String id, ResultListener<User> resultListener, Context context, boolean showProgressBar) {
+    	new SpikaAsyncTask<Void, Void, User>(new CouchDB.FindUserById(id), resultListener, context, showProgressBar).execute();
     }
 
     public static class FindUserById implements Command<User>
@@ -1229,7 +1261,11 @@ public class CouchDB {
         return CouchDBHelper.parseSingleActivitySummaryObject(json);
     }
     
-    public class FindUserActivitySummary implements Command<ActivitySummary>
+    public static void findUserActivitySummary(String id, ResultListener<ActivitySummary> resultListener, Context context, boolean showProgressBar) {
+    	new SpikaAsyncTask<Void, Void, ActivitySummary>(new CouchDB.FindUserActivitySummary(id), resultListener, context, showProgressBar).execute();
+    }
+    
+    public static class FindUserActivitySummary implements Command<ActivitySummary>
     {
     	String id;
     	
@@ -2058,14 +2094,19 @@ public class CouchDB {
         CouchDB.sAuthUrl = authUrl;
     }
 
+    @Deprecated
     public static void sendPassword(String email) {
 
         final String URL = Const.PASSWORDREMINDER_URL + "email=" + email;
 
-        ConnectionHandler.getJsonArray(URL, null, null); 
+        ConnectionHandler.getJsonArrayDeprecated(URL, null, null); 
     }
     
-    public class SendPassword implements Command<Void>
+    public static void sendPassword(String email, ResultListener<Void> resultListener, Context context, boolean showProgressBar) {
+    	new SpikaAsyncTask<Void, Void, Void>(new CouchDB.SendPassword(email), resultListener, context, showProgressBar).execute();
+    }
+    
+    public static class SendPassword implements Command<Void>
     {
     	String email;
     	

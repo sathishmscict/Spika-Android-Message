@@ -36,6 +36,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -45,6 +46,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cloverstudio.spikademo.couchdb.CouchDB;
+import com.cloverstudio.spikademo.couchdb.CouchDB.GetUserByName;
 import com.cloverstudio.spikademo.couchdb.ResultListener;
 import com.cloverstudio.spikademo.couchdb.SpikaAsyncTask;
 import com.cloverstudio.spikademo.couchdb.model.ActivitySummary;
@@ -133,9 +135,7 @@ public class SignInActivity extends Activity {
 
 					@Override
 					public void onClick(View v) {
-						new SendPasswordAsync(SignInActivity.this)
-								.execute(mEtSendPasswordEmail.getText()
-										.toString());
+						CouchDB.sendPassword(mEtSendPasswordEmail.getText().toString(), new SendPasswordListener() ,SignInActivity.this, true);
 						mSendPasswordDialog.dismiss();
 					}
 				});
@@ -203,7 +203,7 @@ public class SignInActivity extends Activity {
 
 				if (isEmailValid(mEtSendPasswordEmail.getText().toString())) 
 				{
-					getUserByEmail(mEtSendPasswordEmail.getText().toString());
+					CouchDB.getUserByEmail(mEtSendPasswordEmail.getText().toString(), new GetUserByEmailListener(), SignInActivity.this, true);
 				} else {
 
 					final HookUpDialog dialog = new HookUpDialog(
@@ -282,8 +282,9 @@ public class SignInActivity extends Activity {
 					mSignInEmail = mEtSignInEmail.getText().toString();
 					mSignInPassword = mEtSignInPassword.getText().toString();
 
-					new AuthentificationAsync().execute("SignIn");
-
+					if (!mSignInPassword.equals("") && !mSignInEmail.equals("")) {
+						CouchDB.auth(mSignInEmail, mSignInPassword, new AuthListener(), SignInActivity.this, true);
+					}
 				}
 			});
 			mBtnInactive.setOnClickListener(new OnClickListener() {
@@ -319,10 +320,8 @@ public class SignInActivity extends Activity {
 					mSignUpEmail = mEtSignUpEmail.getText().toString();
 					mSignUpPassword = mEtSignUpPassword.getText().toString();
 
-					if (isNameValid(mSignUpName) && isEmailValid(mSignUpEmail)
-							&& isPasswordValid(mSignUpPassword)) {
-						new AvailabilityAsync(mSignUpName, mSignUpEmail)
-								.execute();
+					if (isNameValid(mSignUpName) && isEmailValid(mSignUpEmail) && isPasswordValid(mSignUpPassword)) {
+						checkAvailability(mSignUpName, mSignUpEmail);
 					}
 
 				}
@@ -416,41 +415,41 @@ public class SignInActivity extends Activity {
 		}
 	}
 
-	private class SendPasswordAsync extends SpikaAsync<String, Void, Void> {
-
-		private HookUpProgressDialog mProgressDialog;
-
-		protected SendPasswordAsync(Context context) {
-			super(context);
-			mProgressDialog = new HookUpProgressDialog(SignInActivity.this);
-		}
-
-		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-			mProgressDialog.show();
-		}
-
-		@Override
-		protected Void doInBackground(String... params) {
-
-			CouchDB.sendPassword(params[0]);
-
-			return null;
-		}
-
-		@Override
-		protected void onPostExecute(Void param) {
-			super.onPostExecute(param);
-
-			mProgressDialog.dismiss();
-
-			final HookUpAlertDialog emailSentDialog = new HookUpAlertDialog(
-					SignInActivity.this);
-			emailSentDialog.show(getString(R.string.email_sent), ButtonType.OK);
-
-		}
-	}
+//	private class SendPasswordAsync extends SpikaAsync<String, Void, Void> {
+//
+//		private HookUpProgressDialog mProgressDialog;
+//
+//		protected SendPasswordAsync(Context context) {
+//			super(context);
+//			mProgressDialog = new HookUpProgressDialog(SignInActivity.this);
+//		}
+//
+//		@Override
+//		protected void onPreExecute() {
+//			super.onPreExecute();
+//			mProgressDialog.show();
+//		}
+//
+//		@Override
+//		protected Void doInBackground(String... params) {
+//
+//			CouchDB.sendPassword(params[0]);
+//
+//			return null;
+//		}
+//
+//		@Override
+//		protected void onPostExecute(Void param) {
+//			super.onPostExecute(param);
+//
+//			mProgressDialog.dismiss();
+//
+//			final HookUpAlertDialog emailSentDialog = new HookUpAlertDialog(
+//					SignInActivity.this);
+//			emailSentDialog.show(getString(R.string.email_sent), ButtonType.OK);
+//
+//		}
+//	}
 
 //	private class CheckEmailAsync extends SpikaAsync<String, Void, Boolean> {
 //
@@ -501,268 +500,277 @@ public class SignInActivity extends Activity {
 //		}
 //	}
 
-	private class AvailabilityAsync extends AsyncTask<Void, Void, Void> {
-
-		private String mUsername;
-		private String mEmail;
-
-		private User mUserByName;
-		private User mUserByEmail;
-
-		private HookUpProgressDialog mProgressDialog;
-
-		public AvailabilityAsync(String username, String email) {
-			this.mUsername = username;
-			this.mEmail = email;
-
-			mProgressDialog = new HookUpProgressDialog(SignInActivity.this);
-		}
-
-		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-			mProgressDialog.show();
-		}
-
-		@Override
-		protected Void doInBackground(Void... voids) {
-
-			mUserByName = CouchDB.getUserByName(mUsername);
-			mUserByEmail = CouchDB.getUserByEmail(mEmail);
-
-			return null;
-		}
-
-		@Override
-		protected void onPostExecute(Void aVoid) {
-			super.onPostExecute(aVoid);
-			mProgressDialog.dismiss();
-
-			if (mUserByName != null && mUserByEmail != null) {
-
-				final HookUpDialog dialog = new HookUpDialog(
-						SignInActivity.this);
-				dialog.showOnlyOK(getString(R.string.username_and_email_taken));
-
-			} else if (mUserByName != null) {
-
-				final HookUpDialog dialog = new HookUpDialog(
-						SignInActivity.this);
-				dialog.showOnlyOK(getString(R.string.username_taken));
-
-			} else if (mUserByEmail != null) {
-
-				final HookUpDialog dialog = new HookUpDialog(
-						SignInActivity.this);
-				dialog.showOnlyOK(getString(R.string.email_taken));
-
-			} else {
-				new AuthentificationAsync().execute("SignUp");
-			}
-		}
+	private void checkAvailability (String username, String email)
+	{
+		CouchDB.getUserByEmail(email, new GetUserByEmailListenerForAvailability(username), SignInActivity.this, true); 
 	}
+	
+//	private class AvailabilityAsync extends AsyncTask<Void, Void, Void> {
+//
+//		private String mUsername;
+//		private String mEmail;
+//
+//		private User mUserByName;
+//		private User mUserByEmail;
+//
+//		private HookUpProgressDialog mProgressDialog;
+//
+//		public AvailabilityAsync(String username, String email) {
+//			this.mUsername = username;
+//			this.mEmail = email;
+//
+//			mProgressDialog = new HookUpProgressDialog(SignInActivity.this);
+//		}
+//
+//		@Override
+//		protected void onPreExecute() {
+//			super.onPreExecute();
+//			mProgressDialog.show();
+//		}
+//
+//		@Override
+//		protected Void doInBackground(Void... voids) {
+//
+//			mUserByName = CouchDB.getUserByName(mUsername);
+//			mUserByEmail = CouchDB.getUserByEmail(mEmail);
+//
+//			return null;
+//		}
+//
+//		@Override
+//		protected void onPostExecute(Void aVoid) {
+//			super.onPostExecute(aVoid);
+//			mProgressDialog.dismiss();
+//
+//			if (mUserByName != null && mUserByEmail != null) {
+//
+//				final HookUpDialog dialog = new HookUpDialog(
+//						SignInActivity.this);
+//				dialog.showOnlyOK(getString(R.string.username_and_email_taken));
+//
+//			} else if (mUserByName != null) {
+//
+//				final HookUpDialog dialog = new HookUpDialog(
+//						SignInActivity.this);
+//				dialog.showOnlyOK(getString(R.string.username_taken));
+//
+//			} else if (mUserByEmail != null) {
+//
+//				final HookUpDialog dialog = new HookUpDialog(
+//						SignInActivity.this);
+//				dialog.showOnlyOK(getString(R.string.email_taken));
+//
+//			} else {
+//				new AuthentificationAsync().execute("SignUp");
+//			}
+//		}
+//	}
 
-	private class AuthentificationAsync extends AsyncTask<String, Void, String> {
-
-		private String action;
-		private Exception exception;
-
-		@Override
-		protected void onPreExecute() {
-
-			super.onPreExecute();
-			mProgressDialog = new HookUpProgressDialog(SignInActivity.this);
-			mProgressDialog.show();
-
-		}
-
-		@Override
-		protected String doInBackground(String... params) {
-
-			action = params[0];
-
-			if (action.equals("SignIn")) {
-				if (mSignInPassword.equals("") && mSignInEmail.equals("")) {
-					return Const.LOGIN_ERROR;
-				} else {
-					mUserSignedIn = true;
-					//return CouchDB.auth(mSignInEmail, mSignInPassword);
-					try {
-						return CouchDB.auth(mSignInEmail, mSignInPassword);
-					} catch (JSONException e) {
-						e.printStackTrace();
-						exception = e;
-						return Const.LOGIN_ERROR;
-					} catch (IOException e) {
-						e.printStackTrace();
-						exception = e;
-						return Const.LOGIN_ERROR;
-					} catch (Exception e){
-						e.printStackTrace();
-						exception = e;
-						return Const.LOGIN_ERROR;
-					}
-				}
-			} else if (action.equals("SignUp")) {
-				if (mSignUpName.equals("") && mSignUpEmail.equals("")
-						&& mSignUpPassword.equals("")) {
-					return Const.LOGIN_ERROR;
-				} else {
-					User user = CouchDB.findUserByEmail(mSignUpEmail, false);
-					if (user == null) {
-						mUserCreated = true;
-						String newUser = CouchDB.createUser(mSignUpName, mSignUpEmail,
-								mSignUpPassword);
-						
-						//return CouchDB.auth(mSignUpEmail, mSignUpPassword);
-						try {
-							return CouchDB.auth(mSignUpEmail, mSignUpPassword);
-						} catch (JSONException e) {
-							exception = e;
-							return Const.LOGIN_ERROR;
-						} catch (IOException e) {
-							exception = e;
-							return Const.LOGIN_ERROR;
-						}
-					} else {
-						mUserCreated = false;
-					}
-				}
-			}
-			return Const.LOGIN_ERROR;
-		}
-
-		@Override
-		protected void onPostExecute(String result) {
-
-			mProgressDialog.dismiss();
-
-			if (SpikaApp.hasNetworkConnection()) {
-				if (result != null) {
-
-					if (mUserSignedIn || mUserCreated) {
-						if (result.equals(Const.LOGIN_SUCCESS)) {
-
-							signIn();
-
-						} else {
-
-							final HookUpDialog dialog = new HookUpDialog(
-									SignInActivity.this);
-							//dialog.showOnlyOK(getString(R.string.no_valid_email_password));
-							String errorMessage = null;
-							if (exception == null){
-								errorMessage = getString(R.string.no_valid_email_password);
-							}else if (exception instanceof IOException){
-							    errorMessage = getString(R.string.can_not_connect_to_server);
-							}else if(exception instanceof JSONException){
-							    errorMessage = getString(R.string.an_internal_error_has_occurred,exception.getClass().getName());
-							}else{
-							    errorMessage = getString(R.string.an_internal_error_has_occurred,exception.getClass().getName());
-							}
-							dialog.showOnlyOK(errorMessage);
-						}
-					} else {
-						if (action.equals("SignIn")) {
-
-							final HookUpDialog dialog = new HookUpDialog(
-									SignInActivity.this);
-							dialog.showOnlyOK(getString(R.string.no_user_registered));
-						}
-						if (action.equals("SignUp")) {
-
-							final HookUpDialog dialog = new HookUpDialog(
-									SignInActivity.this);
-							dialog.showOnlyOK(getString(R.string.no_valid_email_password));
-
-						}
-
-					}
-				} else {
-
-					final HookUpDialog dialog = new HookUpDialog(
-							SignInActivity.this);
-					dialog.showOnlyOK(getString(R.string.no_email_password));
-
-				}
-			} else {
-
-				final HookUpDialog dialog = new HookUpDialog(
-						SignInActivity.this);
-				dialog.showOnlyOK(getString(R.string.no_internet_connection));
-
-			}
-		}
-	}
+	
+//	private class AuthentificationAsync extends AsyncTask<String, Void, String> {
+//
+//		private String action;
+//		private Exception exception;
+//
+//		@Override
+//		protected void onPreExecute() {
+//
+//			super.onPreExecute();
+//			mProgressDialog = new HookUpProgressDialog(SignInActivity.this);
+//			mProgressDialog.show();
+//
+//		}
+//
+//		@Override
+//		protected String doInBackground(String... params) {
+//
+//			action = params[0];
+//
+//			if (action.equals("SignIn")) {
+//				if (mSignInPassword.equals("") && mSignInEmail.equals("")) {
+//					return Const.LOGIN_ERROR;
+//				} else {
+//					mUserSignedIn = true;
+//					//return CouchDB.auth(mSignInEmail, mSignInPassword);
+//					try {
+//						return CouchDB.auth(mSignInEmail, mSignInPassword);
+//					} catch (JSONException e) {
+//						e.printStackTrace();
+//						exception = e;
+//						return Const.LOGIN_ERROR;
+//					} catch (IOException e) {
+//						e.printStackTrace();
+//						exception = e;
+//						return Const.LOGIN_ERROR;
+//					} catch (Exception e){
+//						e.printStackTrace();
+//						exception = e;
+//						return Const.LOGIN_ERROR;
+//					}
+//				}
+//			} else if (action.equals("SignUp")) {
+//				if (mSignUpName.equals("") && mSignUpEmail.equals("")
+//						&& mSignUpPassword.equals("")) {
+//					return Const.LOGIN_ERROR;
+//				} else {
+//					User user = CouchDB.findUserByEmail(mSignUpEmail, false);
+//					if (user == null) {
+//						mUserCreated = true;
+////						String newUser = CouchDB.createUser(mSignUpName, mSignUpEmail,
+////								mSignUpPassword);
+//						
+//						//return CouchDB.auth(mSignUpEmail, mSignUpPassword);
+//						try {
+//							return CouchDB.auth(mSignUpEmail, mSignUpPassword);
+//						} catch (JSONException e) {
+//							exception = e;
+//							return Const.LOGIN_ERROR;
+//						} catch (IOException e) {
+//							exception = e;
+//							return Const.LOGIN_ERROR;
+//						}
+//					} else {
+//						mUserCreated = false;
+//					}
+//				}
+//			}
+//			return Const.LOGIN_ERROR;
+//		}
+//
+//		@Override
+//		protected void onPostExecute(String result) {
+//
+//			mProgressDialog.dismiss();
+//
+//			if (SpikaApp.hasNetworkConnection()) {
+//				if (result != null) {
+//
+//					if (mUserSignedIn || mUserCreated) {
+//						if (result.equals(Const.LOGIN_SUCCESS)) {
+//
+//							signIn();
+//
+//						} else {
+//
+//							final HookUpDialog dialog = new HookUpDialog(
+//									SignInActivity.this);
+//							//dialog.showOnlyOK(getString(R.string.no_valid_email_password));
+//							String errorMessage = null;
+//							if (exception == null){
+//								errorMessage = getString(R.string.no_valid_email_password);
+//							}else if (exception instanceof IOException){
+//							    errorMessage = getString(R.string.can_not_connect_to_server);
+//							}else if(exception instanceof JSONException){
+//							    errorMessage = getString(R.string.an_internal_error_has_occurred,exception.getClass().getName());
+//							}else{
+//							    errorMessage = getString(R.string.an_internal_error_has_occurred,exception.getClass().getName());
+//							}
+//							dialog.showOnlyOK(errorMessage);
+//						}
+//					} else {
+//						if (action.equals("SignIn")) {
+//
+//							final HookUpDialog dialog = new HookUpDialog(
+//									SignInActivity.this);
+//							dialog.showOnlyOK(getString(R.string.no_user_registered));
+//						}
+//						if (action.equals("SignUp")) {
+//
+//							final HookUpDialog dialog = new HookUpDialog(
+//									SignInActivity.this);
+//							dialog.showOnlyOK(getString(R.string.no_valid_email_password));
+//
+//						}
+//
+//					}
+//				} else {
+//
+//					final HookUpDialog dialog = new HookUpDialog(
+//							SignInActivity.this);
+//					dialog.showOnlyOK(getString(R.string.no_email_password));
+//
+//				}
+//			} else {
+//
+//				final HookUpDialog dialog = new HookUpDialog(
+//						SignInActivity.this);
+//				dialog.showOnlyOK(getString(R.string.no_internet_connection));
+//
+//			}
+//		}
+//	}
 
 	private void signIn() {
-		new SignInUserAsync(this).execute();
+		if (UsersManagement.getLoginUser() != null) {
+			 CouchDB.findUserActivitySummary(UsersManagement.getLoginUser().getId(), new FindUserActivitySummaryListener(), SignInActivity.this, true);
+		}
+//		new SignInUserAsync(this).execute();
 	}
 
-	private class SignInUserAsync extends SpikaAsync<Void, Void, User> {
-
-		protected SignInUserAsync(Context context) {
-			super(context);
-		}
-
-		@Override
-		protected void onPreExecute() {
-
-			super.onPreExecute();
-			mProgressDialog = new HookUpProgressDialog(SignInActivity.this);
-			mProgressDialog.show();
-
-		}
-
-		@Override
-		protected User doInBackground(Void... params) {
-
-			if (UsersManagement.getLoginUser() != null) {
-				ActivitySummary loginUserActivitySummary = CouchDB
-						.findUserActivitySummary(UsersManagement.getLoginUser()
-								.getId());
-				UsersManagement.getLoginUser().setActivitySummary(
-						loginUserActivitySummary);
-
-				return UsersManagement.getLoginUser();
-			} else {
-				return null;
-			}
-		}
-
-		@Override
-		protected void onPostExecute(User loginUser) {
-
-			mProgressDialog.dismiss();
-
-			if (loginUser == null) {
-
-				final HookUpDialog dialog = new HookUpDialog(
-						SignInActivity.this);
-				dialog.showOnlyOK(getString(R.string.no_internet_connection));
-
-				return;
-			}
-
-			UsersManagement.setLoginUser(loginUser);
-
-			// setEmailAndPassToPreference(UsersManagement.getLoginUser()
-			// .getEmail(), UsersManagement.getLoginUser().getPassword());
-			Intent intent = new Intent(SignInActivity.this,
-					RecentActivityActivity.class);
-			intent.putExtra(Const.SIGN_IN, true);
-			SignInActivity.this.startActivity(intent);
-
-			if (SpikaApp.getPreferences().getPasscodeProtect() == true) {
-				Intent passcode = new Intent(SignInActivity.this,
-						PasscodeActivity.class);
-				passcode.putExtra("protect", true);
-				SignInActivity.this.startActivity(passcode);
-			}
-			SignInActivity.this.finish();
-
-		}
-	}
+//	private class SignInUserAsync extends SpikaAsync<Void, Void, User> {
+//
+//		protected SignInUserAsync(Context context) {
+//			super(context);
+//		}
+//
+//		@Override
+//		protected void onPreExecute() {
+//
+//			super.onPreExecute();
+//			mProgressDialog = new HookUpProgressDialog(SignInActivity.this);
+//			mProgressDialog.show();
+//
+//		}
+//
+//		@Override
+//		protected User doInBackground(Void... params) {
+//
+//			if (UsersManagement.getLoginUser() != null) {
+//				ActivitySummary loginUserActivitySummary = CouchDB
+//						.findUserActivitySummary(UsersManagement.getLoginUser()
+//								.getId());
+//				UsersManagement.getLoginUser().setActivitySummary(
+//						loginUserActivitySummary);
+//
+//				return UsersManagement.getLoginUser();
+//			} else {
+//				return null;
+//			}
+//		}
+//
+//		@Override
+//		protected void onPostExecute(User loginUser) {
+//
+//			mProgressDialog.dismiss();
+//
+//			if (loginUser == null) {
+//
+//				final HookUpDialog dialog = new HookUpDialog(
+//						SignInActivity.this);
+//				dialog.showOnlyOK(getString(R.string.no_internet_connection));
+//
+//				return;
+//			}
+//
+//			UsersManagement.setLoginUser(loginUser);
+//
+//			// setEmailAndPassToPreference(UsersManagement.getLoginUser()
+//			// .getEmail(), UsersManagement.getLoginUser().getPassword());
+//			Intent intent = new Intent(SignInActivity.this,
+//					RecentActivityActivity.class);
+//			intent.putExtra(Const.SIGN_IN, true);
+//			SignInActivity.this.startActivity(intent);
+//
+//			if (SpikaApp.getPreferences().getPasscodeProtect() == true) {
+//				Intent passcode = new Intent(SignInActivity.this,
+//						PasscodeActivity.class);
+//				passcode.putExtra("protect", true);
+//				SignInActivity.this.startActivity(passcode);
+//			}
+//			SignInActivity.this.finish();
+//
+//		}
+//	}
 
 	public static SignInActivity getInstance() {
 		return sInstance;
@@ -780,12 +788,155 @@ public class SignInActivity extends Activity {
 		SIGN_IN, SIGN_UP, FORGOT_PASSWORD
 	}
 	
-	private void getUserByEmail (String email)
+	private class AuthListener implements ResultListener<String>
 	{
-		new SpikaAsyncTask<Void, Void, User>(new CouchDB.GetUserByEmail(email), new EmailListener(), SignInActivity.this, true).execute();
+
+		@Override
+		public void onResultsSucceded(String result) {
+			if (result == Const.LOGIN_SUCCESS)
+			{
+				signIn();
+			}
+			else
+			{
+				final HookUpDialog dialog = new HookUpDialog(SignInActivity.this);
+				dialog.showOnlyOK(getString(R.string.no_user_registered));
+			}
+			
+		}
+
+		@Override
+		public void onResultsFail() {
+			// TODO Auto-generated method stub
+			
+		}
 	}
 	
-	private class EmailListener implements ResultListener<User>
+	private class CreateUserListener implements ResultListener<String>
+	{
+		@Override
+		public void onResultsSucceded(String result) {
+			if (result != null)
+			{
+				CouchDB.auth(mSignUpEmail, mSignUpPassword, new AuthListener(), SignInActivity.this, true);
+			}
+			else
+			{
+				final HookUpDialog dialog = new HookUpDialog(SignInActivity.this);
+				dialog.showOnlyOK(getString(R.string.an_internal_error_has_occurred));
+			}
+		}
+
+		@Override
+		public void onResultsFail() {
+		}
+	}
+	
+	private class FindUserActivitySummaryListener implements ResultListener<ActivitySummary>
+	{
+		@Override
+		public void onResultsSucceded(ActivitySummary result) {
+			ActivitySummary loginUserActivitySummary = result;
+			UsersManagement.getLoginUser().setActivitySummary(loginUserActivitySummary);
+			
+			Intent intent = new Intent(SignInActivity.this, RecentActivityActivity.class);
+			intent.putExtra(Const.SIGN_IN, true);
+			SignInActivity.this.startActivity(intent);
+
+			if (SpikaApp.getPreferences().getPasscodeProtect() == true) {
+				Intent passcode = new Intent(SignInActivity.this, PasscodeActivity.class);
+				passcode.putExtra("protect", true);
+				SignInActivity.this.startActivity(passcode);
+			}
+			SignInActivity.this.finish();
+		}
+
+		@Override
+		public void onResultsFail() {
+		}
+	}
+	
+	private class SendPasswordListener implements ResultListener<Void>
+	{
+
+		@Override
+		public void onResultsSucceded(Void result) {
+			final HookUpAlertDialog emailSentDialog = new HookUpAlertDialog(
+			SignInActivity.this);
+			emailSentDialog.show(getString(R.string.email_sent), ButtonType.OK);
+		}
+
+		@Override
+		public void onResultsFail() {
+		}
+		
+	}
+	
+	private class GetUserByEmailListenerForAvailability implements ResultListener<User>
+	{
+		private String username;
+		
+		public GetUserByEmailListenerForAvailability (String username)
+		{
+			this.username = username;
+		}
+		
+		@Override
+		public void onResultsSucceded(User result) {
+			User userByEmail = result;
+			CouchDB.getUserByName(username, new GetUserByNameForAvailability(userByEmail), SignInActivity.this, true);
+		}
+
+		@Override
+		public void onResultsFail() {
+		}
+	}
+	
+	private class GetUserByNameForAvailability implements ResultListener<User>
+	{
+		private User userByEmail;
+		private User userByName;
+		
+		public GetUserByNameForAvailability(User userByEmail)
+		{
+			this.userByEmail = userByEmail;
+		}
+		
+		@Override
+		public void onResultsSucceded(User result) {
+			userByName = result;
+			
+			if (userByName != null && userByEmail != null) {
+
+				final HookUpDialog dialog = new HookUpDialog(
+						SignInActivity.this);
+				dialog.showOnlyOK(getString(R.string.username_and_email_taken));
+
+			} else if (userByName != null) {
+
+				final HookUpDialog dialog = new HookUpDialog(
+						SignInActivity.this);
+				dialog.showOnlyOK(getString(R.string.username_taken));
+
+			} else if (userByEmail != null) {
+
+				final HookUpDialog dialog = new HookUpDialog(
+						SignInActivity.this);
+				dialog.showOnlyOK(getString(R.string.email_taken));
+
+			} else {
+				if (!mSignUpName.equals("") && !mSignUpEmail.equals("") && !mSignUpPassword.equals("")) {
+					CouchDB.createUser(mSignUpName, mSignUpEmail, mSignUpPassword, new CreateUserListener(), SignInActivity.this, true);
+				}
+			}
+		}
+
+		@Override
+		public void onResultsFail() {
+		}
+	}
+	
+	private class GetUserByEmailListener implements ResultListener<User>
 	{
 		@Override
 		public void onResultsSucceded(User result) {

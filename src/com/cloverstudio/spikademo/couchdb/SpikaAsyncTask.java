@@ -24,14 +24,6 @@ public class SpikaAsyncTask<Params, Progress, Result> extends AsyncTask<Params, 
 	private HookUpProgressDialog progressDialog;
 	private boolean showProgressBar = false;
 	
-	public SpikaAsyncTask(Command<Result> command, ResultListener<Result> resultListener, Context context) {
-		super();
-		this.command = command;
-		this.resultListener = resultListener;
-		this.context = context;
-		
-	}
-	
 	public SpikaAsyncTask(Command<Result> command, ResultListener<Result> resultListener, Context context, boolean showProgressBar) {
 		super();
 		this.command = command;
@@ -46,9 +38,8 @@ public class SpikaAsyncTask<Params, Progress, Result> extends AsyncTask<Params, 
 			super.onPreExecute();
 			if (showProgressBar)
 			{
-				
 				progressDialog = new HookUpProgressDialog(context);
-				progressDialog.show();
+				if (!((Activity)context).isFinishing()) progressDialog.show();
 			}
 		} else {
 			this.cancel(false);
@@ -79,7 +70,7 @@ public class SpikaAsyncTask<Params, Progress, Result> extends AsyncTask<Params, 
 		
 		if (showProgressBar)
 		{
-			if (progressDialog.isShowing()) progressDialog.dismiss();
+			if (progressDialog.isShowing() && !((Activity)context).isFinishing()) progressDialog.dismiss();
 		}
 		
 		if (exception != null)
@@ -88,22 +79,20 @@ public class SpikaAsyncTask<Params, Progress, Result> extends AsyncTask<Params, 
 			
 			final HookUpDialog dialog = new HookUpDialog(context);
 			String errorMessage = null;
-			if (exception == null){
-				errorMessage = context.getString(R.string.no_valid_email_password, exception.getMessage());
-			}else if (exception instanceof IOException){
+			if (exception instanceof IOException){
 			    errorMessage = context.getString(R.string.can_not_connect_to_server, exception.getMessage());
 			}else if(exception instanceof JSONException){
 			    errorMessage = context.getString(R.string.an_internal_error_has_occurred, exception.getClass().getName() + " " + exception.getMessage());
 			}else{
 			    errorMessage = context.getString(R.string.an_internal_error_has_occurred, exception.getClass().getName() + " " + exception.getMessage());
-			}
-						
-			if (((Activity)context).hasWindowFocus()) dialog.showOnlyOK(errorMessage);
+			}			
+			
+			dialog.showOnlyOK(errorMessage);
+			
 			if (resultListener != null) resultListener.onResultsFail();
 		}
 		else
 		{
-			Log.e(Const.OK, result.toString());
 			if (resultListener != null) resultListener.onResultsSucceded(result);
 		}
 	}

@@ -28,6 +28,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -97,6 +98,11 @@ public class HookUpProgressDialog extends Dialog {
 		super.show();
 	}
 	
-	
+	@Override
+	public void onWindowFocusChanged(boolean hasFocus) {
+		Log.v("Dialog focus change", "" + hasFocus);
+		if (!hasFocus) this.dismiss();
+		super.onWindowFocusChanged(hasFocus);
+	}
 	
 }

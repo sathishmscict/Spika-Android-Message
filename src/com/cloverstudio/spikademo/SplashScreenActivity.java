@@ -77,7 +77,7 @@ public class SplashScreenActivity extends Activity {
 
 				mUser = new User();
 				
-				getUserByEmailAndPassword(mSavedEmail, mSavedPassword);
+				CouchDB.getUserByEmailAndPassword(mSavedEmail, mSavedPassword, new GetUserByEmailAndPasswordListener(), SplashScreenActivity.this, false);
 			} else {
 				new Handler().postDelayed(new Runnable() {
 
@@ -182,30 +182,20 @@ public class SplashScreenActivity extends Activity {
 		return authentificationOk;
 	}
 	
-	private void getUserByEmailAndPassword(String email, String password)
-	{
-		new SpikaAsyncTask<Void, Void, User>(new CouchDB.GetUserByEmailAndPassword(email, password), new UserLoginListener(), this).execute();
-	}
-	
-	private class UserLoginListener implements ResultListener<User>
+	private class GetUserByEmailAndPasswordListener implements ResultListener<User>
 	{
 		@Override
 		public void onResultsSucceded(User result) {				
 			mUser = result;
-			auth(mSavedEmail, mSavedPassword);
+			CouchDB.auth(mSavedEmail, mSavedPassword, new AuthListener(), SplashScreenActivity.this, false);
 		}
 		@Override
 		public void onResultsFail() {
 			SideBarActivity.appLogout(false, false, true);
 		}
 	}
-
-	private void auth (String username, String password)
-	{
-		new SpikaAsyncTask<Void, Void, String>(new CouchDB.Auth(username, password), new TokenListener(), SplashScreenActivity.this).execute();
-	}
 	
-	private class TokenListener implements ResultListener<String>
+	private class AuthListener implements ResultListener<String>
 	{
 		@Override
 		public void onResultsSucceded(String result) {

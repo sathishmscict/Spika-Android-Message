@@ -156,7 +156,8 @@ public class ConnectionHandler {
 	 * @param url
 	 * @return
 	 */
-	public static JSONArray getJsonArray(String url, String userId,
+	@Deprecated
+	public static JSONArray getJsonArrayDeprecated(String url, String userId,
 			String token) {
 
 		JSONArray retVal = null;
@@ -177,6 +178,22 @@ public class ConnectionHandler {
 			return null;
 
 		}
+
+		Log.e("Response: ", retVal.toString());
+		return retVal;
+	}
+	
+	public static JSONArray getJsonArray(String url, String userId,
+			String token) throws ClientProtocolException, IOException, JSONException {
+
+		JSONArray retVal = null;
+
+		InputStream is = httpGetRequest(url, userId);
+		String result = getString(is);
+
+		is.close();
+
+		retVal = jArrayFromString(result);	
 
 		Log.e("Response: ", retVal.toString());
 		return retVal;
