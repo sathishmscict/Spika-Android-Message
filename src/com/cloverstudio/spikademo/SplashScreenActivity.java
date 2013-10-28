@@ -156,7 +156,7 @@ public class SplashScreenActivity extends Activity {
         		    	intent.putExtra(Const.GROUP_URI_NAME, groupName);
         		}
 		}
-				
+			
 		intent.putExtra(Const.SIGN_IN, true);
 		SplashScreenActivity.this.startActivity(intent);
 		

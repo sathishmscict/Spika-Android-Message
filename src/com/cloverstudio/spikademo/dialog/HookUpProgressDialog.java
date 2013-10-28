@@ -53,7 +53,7 @@ public class HookUpProgressDialog extends Dialog {
 		this.setContentView(R.layout.progress_dialog);
 		mTvProgressTitle = (TextView) this.findViewById(R.id.tvProgressTitle);
 		mTvProgressTitle.setVisibility(View.GONE);
-		this.setCancelable(true);
+		this.setCancelable(false);
 		mIvAnimation = (ImageView) findViewById(R.id.ivAnim);
 		mCloverAnimation = (AnimationDrawable) mIvAnimation.getDrawable();
 		

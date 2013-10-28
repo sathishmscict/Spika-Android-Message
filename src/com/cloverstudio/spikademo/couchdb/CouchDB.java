@@ -371,6 +371,7 @@ public class CouchDB {
      * @return true if the provided string is already taken email, otherwise
      *         false
      */
+    @Deprecated
     public static Group getGroupByName(String groupname) {
     	
     	String params = "";
@@ -397,6 +398,42 @@ public class CouchDB {
 
         return group;
     }
+    
+    public static void getGroupByName(String groupname, ResultListener<Group> resultListener, Context context, boolean showProgressBar) {
+    	new SpikaAsyncTask<Void, Void, Group>(new CouchDB.GetGroupByName(groupname), resultListener, context, showProgressBar).execute();
+    }
+    
+    public static class GetGroupByName implements Command<Group>
+    {
+    	String groupname;
+    	
+    	public GetGroupByName (String groupname)
+    	{
+    		this.groupname = groupname;
+    	}
+    	
+		@Override
+		public Group execute() throws JSONException, IOException {
+			String params = "";
+	    	try {
+				params = URLEncoder.encode(groupname, "UTF-8");
+			} catch (UnsupportedEncodingException e1) {
+				e1.printStackTrace();
+			}
+
+	        final String URL = Const.CHECKUNIQUE_URL + "groupname=" + params;
+
+	        JSONArray jsonArray = ConnectionHandler.getJsonArray(URL, null, null);
+
+	        if (jsonArray.length() == 0)
+	            return null;
+
+	        Group group = CouchDBHelper.parseSingleGroupObjectWithoutRowParam(jsonArray.getJSONObject(0));
+
+	        return group;
+		}
+    	
+    }
 
     /**
      * Method used for updating user attributes
@@ -407,6 +444,7 @@ public class CouchDB {
      * @param user
      * @return user object
      */
+    @Deprecated
     public static boolean updateUser(User user) {
 
         JSONObject userJson = new JSONObject();
@@ -518,18 +556,104 @@ public class CouchDB {
 
         return CouchDBHelper.updateUser(json, contactIds, groupIds);
     }
+    
+    public static void updateUser (User user, ResultListener<Boolean> resultListener, Context context, boolean showProgressBar) {
+    	new SpikaAsyncTask<Void, Void, Boolean>(new UpdateUser(user), resultListener, context, showProgressBar).execute();;
+    }
+    
+    public static class UpdateUser implements Command<Boolean>
+    {
+    	User user;
+    	
+    	public UpdateUser (User user)
+    	{
+    		this.user = user;
+    	}
+
+		@Override
+		public Boolean execute() throws JSONException, IOException {
+			JSONObject userJson = new JSONObject();
+	        List<String> contactIds = new ArrayList<String>();
+	        List<String> groupIds = new ArrayList<String>();
+
+            /* General user info */
+            userJson.put(Const._ID, user.getId());
+            userJson.put(Const._REV, user.getRev());
+            userJson.put(Const.EMAIL, user.getEmail());
+            userJson.put(Const.NAME, user.getName());
+            userJson.put(Const.TYPE, Const.USER);
+            userJson.put(Const.PASSWORD, SpikaApp.getPreferences().getUserPassword());
+            userJson.put(Const.LAST_LOGIN, user.getLastLogin());
+            userJson.put(Const.ABOUT, user.getAbout());
+            userJson.put(Const.BIRTHDAY, user.getBirthday());
+            userJson.put(Const.GENDER, user.getGender());
+            userJson.put(Const.TOKEN, SpikaApp.getPreferences().getUserToken());
+            userJson.put(Const.TOKEN_TIMESTAMP, user.getTokenTimestamp());
+            userJson.put(Const.ANDROID_PUSH_TOKEN, SpikaApp.getPreferences().getUserPushToken());
+            userJson.put(Const.ONLINE_STATUS, user.getOnlineStatus());
+            userJson.put(Const.AVATAR_FILE_ID, user.getAvatarFileId());
+            userJson.put(Const.MAX_CONTACT_COUNT, user.getMaxContactCount());
+            userJson.put(Const.AVATAR_THUMB_FILE_ID, user.getAvatarThumbFileId());
+
+            /* Set users favorite contacts */
+            JSONArray contactsArray = new JSONArray();
+            contactIds = user.getContactIds();
+            if (!contactIds.isEmpty()) {
+                for (String id : contactIds) {
+                    contactsArray.put(id);
+                }
+            }
+            if (contactsArray.length() > 0) {
+                userJson.put(Const.CONTACTS, contactsArray);
+            }
+
+            /* Set users favorite groups */
+            JSONArray groupsArray = new JSONArray();
+            groupIds = user.getGroupIds();
+
+            if (!groupIds.isEmpty()) {
+                for (String id : groupIds) {
+                    groupsArray.put(id);
+                }
+            }
+
+            if (groupsArray.length() > 0) {
+                userJson.put(Const.FAVORITE_GROUPS, groupsArray);
+            }
+
+	        JSONObject json = ConnectionHandler.putJsonObject(userJson, user.getId(), user.getId(), user.getToken());
+
+	        return CouchDBHelper.updateUser(json, contactIds, groupIds);
+		}
+    }
 
     /**
      * Find all users
      * 
      * @return
      */
+    @Deprecated
     public static List<User> findAllUsers() {
 
         JSONObject json = ConnectionHandler.getJsonObject(sUrl
                 + "_design/app/_view/find_user_by_email", UsersManagement.getLoginUser().getId());
 
         return CouchDBHelper.parseMultiUserObjects(json);
+    }
+    
+    public static void findAllUsers (ResultListener<List<User>> resultListener, Context context, boolean showProgressBar) {
+    	new SpikaAsyncTask<Void, Void, List<User>>(new FindAllUsers(), resultListener, context, showProgressBar).execute();
+    }
+    
+    public static class FindAllUsers implements Command<List<User>>
+    {
+		@Override
+		public List<User> execute() throws JSONException, IOException {
+			JSONObject json = ConnectionHandler.getJsonObject(sUrl
+	                + "_design/app/_view/find_user_by_email", UsersManagement.getLoginUser().getId());
+
+	        return CouchDBHelper.parseMultiUserObjects(json);
+		}
     }
 
     /**
@@ -538,6 +662,7 @@ public class CouchDB {
      * @param userSearch
      * @return
      */
+    @Deprecated
     public static List<User> searchUsers(UserSearch userSearch) {
 
         String searchParams = "";
@@ -574,6 +699,56 @@ public class CouchDB {
 
         return CouchDBHelper.parseSearchUsersResult(json);
     }
+    
+    public static void searchUsers(UserSearch userSearch, ResultListener<List<User>> resultListener, Context context, boolean showProgressBar) {
+    	new SpikaAsyncTask<Void, Void, List<User>>(new SearchUsers(userSearch), resultListener, context, showProgressBar).execute();
+    }
+    
+    public static class SearchUsers implements Command<List<User>>
+    {
+    	UserSearch userSearch;
+    	
+    	public SearchUsers (UserSearch userSearch)
+    	{
+    		this.userSearch = userSearch;
+    	}
+
+		@Override
+		public List<User> execute() throws JSONException, IOException {
+			String searchParams = "";
+
+	        if (userSearch.getName() != null) {
+	            try {
+	                userSearch.setName(URLEncoder.encode(userSearch.getName(), "UTF-8"));
+	            } catch (UnsupportedEncodingException e) {
+	                e.printStackTrace();
+	                return null;
+	            }
+	            searchParams = "n=" + userSearch.getName();
+	        }
+
+	        if (userSearch.getFromAge() != null && !"".equals(userSearch.getFromAge())) {
+	            searchParams += "&af=" + userSearch.getFromAge();
+	        }
+	        if (userSearch.getToAge() != null && !"".equals(userSearch.getToAge())) {
+	            searchParams += "&at=" + userSearch.getToAge();
+	        }
+	        if (userSearch.getGender() != null
+	                && (userSearch.getGender().equals(Const.FEMALE) || userSearch.getGender().equals(
+	                        Const.MALE))) {
+	            searchParams += "&g=" + userSearch.getGender();
+	        }
+	        if (userSearch.getOnlineStatus() != null && !userSearch.getOnlineStatus().equals("")) {
+	        	searchParams += "&status=" + userSearch.getOnlineStatus();
+	        }
+	        
+	        Logger.error("Search", Const.SEARCH_USERS_URL + searchParams);
+
+	        JSONArray json = ConnectionHandler.getJsonArray(Const.SEARCH_USERS_URL + searchParams, UsersManagement.getLoginUser().getId(), UsersManagement.getLoginUser().getToken());
+
+	        return CouchDBHelper.parseSearchUsersResult(json);
+		}
+    }
 
     /**
      * Finds groups given the search criteria in groupSearch
@@ -581,6 +756,7 @@ public class CouchDB {
      * @param groupSearch
      * @return
      */
+    @Deprecated
     public static List<Group> searchGroups(GroupSearch groupSearch) {
 
         String searchParams = "";
@@ -599,6 +775,39 @@ public class CouchDB {
                 UsersManagement.getLoginUser().getId(), UsersManagement.getLoginUser().getToken());
 
         return CouchDBHelper.parseSearchGroupsResult(json);
+    }
+    
+    public static void searchGroups (GroupSearch groupSearch, ResultListener<List<Group>> resultListener, Context context, boolean showProgressBar) {
+    	new SpikaAsyncTask<Void, Void, List<Group>>(new SearchGroups(groupSearch), resultListener, context, showProgressBar).execute();
+    }
+    
+    public static class SearchGroups implements Command<List<Group>>
+    {
+    	GroupSearch groupSearch;
+    	
+    	public SearchGroups (GroupSearch groupSearch)
+    	{
+    		this.groupSearch = groupSearch;
+    	}
+
+		@Override
+		public List<Group> execute() throws JSONException, IOException {
+			String searchParams = "";
+
+	        if (groupSearch.getName() != null) {
+	            try {
+	                groupSearch.setName(URLEncoder.encode(groupSearch.getName(), "UTF-8"));
+	            } catch (UnsupportedEncodingException e) {
+	                e.printStackTrace();
+	                return null;
+	            }
+	            searchParams = "n=" + groupSearch.getName();
+	        }
+
+	        JSONArray json = ConnectionHandler.getJsonArray(Const.SEARCH_GROUPS_URL + searchParams, UsersManagement.getLoginUser().getId(), UsersManagement.getLoginUser().getToken());
+
+	        return CouchDBHelper.parseSearchGroupsResult(json);
+		}
     }
 
     /**
@@ -946,6 +1155,7 @@ public class CouchDB {
      * @return
      */
     // TODO
+    @Deprecated
     public static List<User> findUsersByNameAgeGender(String name, String age, String gender) {
 
         //long time = System.currentTimeMillis() / 1000;
@@ -982,7 +1192,52 @@ public class CouchDB {
                 .getId());
 
         return CouchDBHelper.parseMultiUserObjects(json);
+    }
+    
+    public static void findUsersByNameAndGender (String name, String age, String gender, ResultListener<List<User>> resultListener, Context context, boolean showProgressBar) {
+    	new SpikaAsyncTask<Void, Void, List<User>>(new FindUsersByNameAndGender(name, age, gender), resultListener, context, showProgressBar).execute();
+    }
+    
+    public static class FindUsersByNameAndGender implements Command<List<User>>
+    {
+    	String name;
+    	String age;
+    	String gender;
+    	
+    	public FindUsersByNameAndGender (String name, String age, String gender)
+    	{
+    		this.name = name;
+    		this.age = age;
+    		this.gender = gender;
+    	}
 
+		@Override
+		public List<User> execute() throws JSONException, IOException {
+			String endKey = "[\"" + name + "\u9999\",\"" + gender + "\u9999\",{}]";
+
+	        name = "\"" + name + "\"";
+	        age = "\"" + age + "\"";
+	        gender = "\"" + gender + "\"";
+
+	        String startKey = "[" + name + "," + gender + "]";
+
+	        try {
+	            endKey = URLEncoder.encode(endKey, "UTF-8");
+	            startKey = URLEncoder.encode(startKey, "UTF-8");
+	        } catch (UnsupportedEncodingException e) {
+	            e.printStackTrace();
+
+	            return null;
+	        }
+
+	        String url = sUrl + "_design/app/_view/find_user_by_name_gender_age?startkey=" + startKey
+	                + "&endkey=" + endKey;
+
+	        JSONObject json = ConnectionHandler.getJsonObject(url, UsersManagement.getLoginUser()
+	                .getId());
+
+	        return CouchDBHelper.parseMultiUserObjects(json);
+		}
     }
 
     /**
@@ -1055,6 +1310,7 @@ public class CouchDB {
 		}
     }
     
+    @Deprecated
     public static String findAvatarFileId(String userId) {
 
         userId = "\"" + userId + "\"";
@@ -1072,12 +1328,45 @@ public class CouchDB {
 
         return CouchDBHelper.findAvatarFileId(json);
     }
+    
+    public static void findAvatarById (String userId, ResultListener<String> resultListener, Context context, boolean showProgressBar) {
+    	new SpikaAsyncTask<Void, Void, String>(new FindAvatarFileId(userId), resultListener, context, showProgressBar).execute();
+    }
+    
+    public static class FindAvatarFileId implements Command<String>
+    {
+    	String userId;
+    	
+    	public FindAvatarFileId (String userId)
+    	{
+    		this.userId = userId; 
+    	}
+
+		@Override
+		public String execute() throws JSONException, IOException {
+			userId = "\"" + userId + "\"";
+
+	        try {
+	            userId = URLEncoder.encode(userId, "UTF-8");
+	        } catch (UnsupportedEncodingException e1) {
+	            e1.printStackTrace();
+	            return null;
+	        }
+
+	        JSONObject json = ConnectionHandler.getJsonObject(sUrl
+	                + "_design/app/_view/find_avatar_file_id?key=" + userId, UsersManagement
+	                .getLoginUser().getId());
+
+	        return CouchDBHelper.findAvatarFileId(json);
+		}
+    }
 
     /**
      * Find users favorite contacts
      * 
      * @return
      */
+    @Deprecated
     public static List<User> findUserContacts(String id) {
 
         id = "\"" + id + "\"";
@@ -1097,12 +1386,46 @@ public class CouchDB {
         return CouchDBHelper.parseUserContacts(json);
     }
 
+    public void findUserContacts (String id, ResultListener<List<User>> resultListener, Context context, boolean showProgressBar) {
+    	new SpikaAsyncTask<Void, Void, List<User>>(new FindUserContacts(id), resultListener, context, showProgressBar).execute();
+    }
+    
+    public class FindUserContacts implements Command<List<User>>
+    {
+    	String id;
+    	
+    	public FindUserContacts (String id)
+    	{
+    		this.id = id;
+    	}
+
+		@Override
+		public List<User> execute() throws JSONException, IOException {
+			id = "\"" + id + "\"";
+
+	        try {
+	            id = URLEncoder.encode(id, "UTF-8");
+	        } catch (UnsupportedEncodingException e) {
+
+	            e.printStackTrace();
+	            return null;
+	        }
+
+	        JSONObject json = ConnectionHandler.getJsonObject(sUrl
+	                + "_design/app/_view/find_contacts?key=" + id + "&include_docs=true",
+	                UsersManagement.getLoginUser().getId());
+
+	        return CouchDBHelper.parseUserContacts(json);
+		}
+    }
+    
     /**
      * Add favorite user contact to current logged in user
      * 
      * @param userId
      * @return
      */
+    @Deprecated
     public static boolean addUserContact(String userId) {
 
         User user = UsersManagement.getLoginUser();
@@ -1112,6 +1435,25 @@ public class CouchDB {
 
         return CouchDB.updateUser(userUpdated);
     }
+    
+    public static void addUserContact (final String userId, final ResultListener<Boolean> resultListener, final Context context, final boolean showProgressBar)
+    {
+    	 User user = UsersManagement.getLoginUser();
+    	 
+    	 findUserById(user.getId(), new ResultListener<User>() {
+			
+			@Override
+			public void onResultsSucceded(User result) {
+				User userUpdated = result;
+				userUpdated.getContactIds().add(userId);
+				CouchDB.updateUser(userUpdated, resultListener, context, showProgressBar);
+			}
+			
+			@Override
+			public void onResultsFail() {
+			}
+		}, context, showProgressBar);
+    }
 
     /**
      * Remove a user from favorite user contacts of current logged in user
@@ -1119,6 +1461,7 @@ public class CouchDB {
      * @param userId
      * @return
      */
+    @Deprecated
     public static boolean removeUserContact(String userId) {
 
         User user = CouchDB.findUserById(UsersManagement.getLoginUser().getId());
@@ -1142,12 +1485,49 @@ public class CouchDB {
 
         return false;
     }
+    
+    public static void removeUserContact (final String userId, final ResultListener<Boolean> resultListener, final Context context, final boolean showProgressBar)
+    {
+    	CouchDB.findUserById(UsersManagement.getLoginUser().getId(), new ResultListener<User>() {
+			
+			@Override
+			public void onResultsSucceded(User result) {
+				User user = result;
+				
+				List<String> currentContactIds = UsersManagement.getLoginUser().getContactIds();
+				
+				if (!currentContactIds.isEmpty()) {
+
+		            List<String> newContactIds = new ArrayList<String>();
+
+		            for (String id : currentContactIds) {
+		                if (!id.equals(userId)) {
+		                    newContactIds.add(id);
+		                }
+		            }
+
+		            user.setContactIds(newContactIds);
+
+		            CouchDB.updateUser(user, resultListener, context, showProgressBar);
+		        }
+				else
+				{
+					resultListener.onResultsSucceded(false);
+				}
+			}
+			
+			@Override
+			public void onResultsFail() {
+			}
+		}, context, showProgressBar);
+    }
 
     /**
      * Find all groups
      * 
      * @return
      */
+    @Deprecated
     public static List<Group> findAllGroups() {
 
         JSONObject json = ConnectionHandler.getJsonObject(sUrl
@@ -1155,12 +1535,29 @@ public class CouchDB {
 
         return CouchDBHelper.parseMultiGroupObjects(json);
     }
+    
+    public static void findAllGroups (ResultListener<List<Group>> resultListener, Context context, boolean showProgressBar)
+    {
+    	new SpikaAsyncTask<Void, Void, List<Group>>(new FindAllGroups(), resultListener, context, showProgressBar).execute();
+    }
+    
+    public static class FindAllGroups implements Command<List<Group>>
+    {
+		@Override
+		public List<Group> execute() throws JSONException, IOException {
+			JSONObject json = ConnectionHandler.getJsonObject(sUrl
+	                + "_design/app/_view/find_group_by_name", UsersManagement.getLoginUser().getId());
+
+	        return CouchDBHelper.parseMultiGroupObjects(json);
+		}	
+    }
 
     /**
      * Find group by id
      * 
      * @return
      */
+    @Deprecated
     public static Group findGroupById(String id) {
 
         id = "\"" + id + "\"";
@@ -1179,6 +1576,40 @@ public class CouchDB {
 
         return CouchDBHelper.parseSingleGroupObject(json);
     }
+    
+    public static void findGroupById(String id, ResultListener<Group> resultListener, Context context, boolean showProgressBar)
+    {
+    	new SpikaAsyncTask<Void, Void, Group>(new FindGroupById(id), resultListener, context, showProgressBar).execute();
+    }
+    
+    public static class FindGroupById implements Command<Group>
+    {
+    	String id;
+    	
+    	public FindGroupById (String id)
+    	{
+    		this.id = id;
+    	}
+
+		@Override
+		public Group execute() throws JSONException, IOException {
+			id = "\"" + id + "\"";
+
+	        try {
+	            id = URLEncoder.encode(id, "UTF-8");
+	        } catch (UnsupportedEncodingException e) {
+
+	            e.printStackTrace();
+	            return null;
+	        }
+
+	        JSONObject json = ConnectionHandler.getJsonObject(sUrl
+	                + "_design/app/_view/find_group_by_id?key=" + id, UsersManagement.getLoginUser()
+	                .getId());
+
+	        return CouchDBHelper.parseSingleGroupObject(json);
+		}
+    }
 
     /**
      * Find group/groups by name
@@ -1186,6 +1617,7 @@ public class CouchDB {
      * @param name
      * @return
      */
+    @Deprecated
     public static List<Group> findGroupsByName(String name) {
 
         String endKey = "\"" + name + "\u9999\"";
@@ -1208,6 +1640,41 @@ public class CouchDB {
 
         return CouchDBHelper.parseMultiGroupObjects(json);
     }
+    
+    public static void findGroupsByName (String name, ResultListener<List<Group>> resultListener, Context context, boolean showProgressBar) {
+    	new SpikaAsyncTask<Void, Void, List<Group>>(new FindGroupsByName(name), resultListener, context, showProgressBar).execute();
+    }
+    
+    public static class FindGroupsByName implements Command<List<Group>>
+    {
+    	String name;
+
+		public FindGroupsByName(String name)
+    	{
+    		this.name = name;
+    	}
+
+		@Override
+		public List<Group> execute() throws JSONException, IOException {
+			String endKey = "\"" + name + "\u9999\"";
+	        name = "\"" + name + "\"";
+
+	        try {
+	            name = URLEncoder.encode(name, "UTF-8");
+	            endKey = URLEncoder.encode(endKey, "UTF-8");
+	        } catch (UnsupportedEncodingException e) {
+	            e.printStackTrace();
+
+	            return null;
+	        }
+
+	        String url = sUrl + "_design/app/_view/find_group_by_name?startkey=" + name + "&endkey=" + endKey;
+
+	        JSONObject json = ConnectionHandler.getJsonObject(url, UsersManagement.getLoginUser().getId());
+
+	        return CouchDBHelper.parseMultiGroupObjects(json);
+		}
+    }
 
     /**
      * Find users favorite groups
@@ -1215,6 +1682,7 @@ public class CouchDB {
      * @param id
      * @return
      */
+    @Deprecated
     public static List<Group> findUserFavoriteGroups(String id) {
 
         id = "\"" + id + "\"";
@@ -1232,6 +1700,39 @@ public class CouchDB {
                 UsersManagement.getLoginUser().getId());
 
         return CouchDBHelper.parseFavoriteGroups(json);
+    }
+    
+    public static void findUserFavoriteGroups (String id, ResultListener<List<Group>> resultListener, Context context, boolean showProgressBar) {
+    	new SpikaAsyncTask<Void, Void, List<Group>>(new FindUserFavoriteGroups(id), resultListener, context, showProgressBar).execute();
+    }
+    
+    public static class FindUserFavoriteGroups implements Command<List<Group>>
+    {
+    	String id;
+    	
+    	public FindUserFavoriteGroups (String id)
+    	{
+    		this.id = id;
+    	}
+
+		@Override
+		public List<Group> execute() throws JSONException, IOException {
+			id = "\"" + id + "\"";
+
+	        try {
+	            id = URLEncoder.encode(id, "UTF-8");
+	        } catch (UnsupportedEncodingException e) {
+	            e.printStackTrace();
+
+	            return null;
+	        }
+
+	        JSONObject json = ConnectionHandler.getJsonObject(sUrl
+	                + "_design/app/_view/find_favorite_groups?key=" + id + "&include_docs=true",
+	                UsersManagement.getLoginUser().getId());
+
+	        return CouchDBHelper.parseFavoriteGroups(json);
+		}
     }
 
     /**
@@ -1301,6 +1802,7 @@ public class CouchDB {
      * @param groupId
      * @return
      */
+    @Deprecated
     public static boolean addFavoriteGroup(String groupId) {
 
         User user = CouchDB.findUserById(UsersManagement.getLoginUser().getId());
@@ -1315,6 +1817,39 @@ public class CouchDB {
 
         return CouchDB.updateUser(user);
     }
+    
+    public static void addFavoriteGroup(final String groupId, final ResultListener<Boolean> resultListener, final Context context, final boolean showProgressBar) {
+    	CouchDB.findUserById(UsersManagement.getLoginUser().getId(), new ResultListener<User>() {
+			
+			@Override
+			public void onResultsSucceded(User result) {
+				final User user = result;
+				user.getGroupIds().add(groupId);
+				
+				UserGroup userGroup = new UserGroup();
+		        userGroup.setGroupId(groupId);
+		        userGroup.setType(Const.USER_GROUP);
+		        userGroup.setUserId(user.getId());
+		        userGroup.set_userName(user.getName());
+		        
+		        CouchDB.createUserGroup(userGroup, new ResultListener<String>() {
+					
+					@Override
+					public void onResultsSucceded(String result) {
+						CouchDB.updateUser(user, resultListener, context, showProgressBar);
+					}
+					
+					@Override
+					public void onResultsFail() {
+					}
+				}, context, showProgressBar);
+			}
+			
+			@Override
+			public void onResultsFail() {
+			}
+		}, context, showProgressBar);
+    }
 
     /**
      * Remove a group from favorite user groups of current logged in user
@@ -1322,6 +1857,7 @@ public class CouchDB {
      * @param groupId
      * @return
      */
+    @Deprecated
     public static boolean removeFavoriteGroup(String groupId) {
 
         User user = CouchDB.findUserById(UsersManagement.getLoginUser().getId());
@@ -1353,6 +1889,59 @@ public class CouchDB {
 
         return false;
     }
+    
+    
+    public static void removeFavoriteGroup (final String groupId, final ResultListener<Boolean> resultListener, final Context context, final boolean showProgressBar) {
+    	CouchDB.findUserById(UsersManagement.getLoginUser().getId(), new ResultListener<User>() {
+    		
+			@Override
+			public void onResultsSucceded(User result) {
+				final User user = result;
+				findUserGroupByIds(groupId, user.getId(), new ResultListener<List<UserGroup>>() {
+
+					@Override
+					public void onResultsSucceded(List<UserGroup> result) {
+						
+						final List<UserGroup> usersGroup = result;
+						deleteUsersGroup(usersGroup, new ResultListener<Boolean>() {
+							@Override
+							public void onResultsSucceded(Boolean result) {
+								List<String> currentGroupIds = UsersManagement.getLoginUser().getGroupIds();
+
+						        if (!currentGroupIds.isEmpty()) {
+
+						            List<String> newGroupsIds = new ArrayList<String>();
+
+						            for (String id : currentGroupIds) {
+						                if (!id.equals(groupId)) {
+						                    newGroupsIds.add(id);
+						                }
+						            }
+
+						            user.setGroupIds(newGroupsIds);
+						            
+						            CouchDB.updateUser(user, resultListener, context, showProgressBar);
+						        }
+							}
+
+							@Override
+							public void onResultsFail() {
+							}
+						}, context, showProgressBar);
+					}
+
+					@Override
+					public void onResultsFail() {
+					}
+				}, context, showProgressBar);
+				
+			}
+			
+			@Override
+			public void onResultsFail() {
+			}
+		}, context, showProgressBar);
+    }
 
     /**
      * Create new user group
@@ -1360,6 +1949,7 @@ public class CouchDB {
      * @param userGroup
      * @return
      */
+    @Deprecated
     private static String createUserGroup(UserGroup userGroup) {
 
         JSONObject userGroupJson = new JSONObject();
@@ -1377,11 +1967,84 @@ public class CouchDB {
         return CouchDBHelper.createUserGroup(ConnectionHandler.deprecatedPostJsonObject(userGroupJson,
                 UsersManagement.getLoginUser().getId(), UsersManagement.getLoginUser().getToken()));
     }
+    
+    public static void createUserGroup (UserGroup userGroup, ResultListener<String> resultListener, Context context, boolean showProgressBar) {
+    	new SpikaAsyncTask<Void, Void, String>(new CreateUserGroup(userGroup), resultListener, context, showProgressBar).execute();
+    }
 
+    public static class CreateUserGroup implements Command<String>
+    {
+    	UserGroup userGroup;
+    	
+    	public CreateUserGroup (UserGroup userGroup)
+    	{
+    		this.userGroup = userGroup;
+    	}
+
+		@Override
+		public String execute() throws JSONException, IOException {
+			JSONObject userGroupJson = new JSONObject();
+	       
+			userGroupJson.put(Const.GROUP_ID, userGroup.getGroupId());
+			userGroupJson.put(Const.TYPE, Const.USER_GROUP);
+            userGroupJson.put(Const.USER_ID, userGroup.getUserId());
+            userGroupJson.put(Const.USER_NAME, userGroup.getUserName());
+
+	        return CouchDBHelper.createUserGroup(ConnectionHandler.postJsonObject(userGroupJson, UsersManagement.getLoginUser().getId(), UsersManagement.getLoginUser().getToken()));
+		}
+    }
+    
+    @Deprecated
     private static boolean deleteUserGroup(String id, String rev) {
 
         return CouchDBHelper.deleteUserGroup(ConnectionHandler.deleteJsonObject(id, rev,
                 UsersManagement.getLoginUser().getId(), UsersManagement.getLoginUser().getToken()));
+    }
+    
+    public static void deleteUserGroup (String id, String rev, ResultListener<Boolean> resultListener, Context context, boolean showProgressBar) {
+    	new SpikaAsyncTask<Void, Void, Boolean>(new DeleteUserGroup(id, rev), resultListener, context, showProgressBar).execute();
+    } 
+    
+    public static class DeleteUserGroup implements Command<Boolean>
+    {
+    	String id;
+    	String rev;
+    	
+    	public DeleteUserGroup(String id, String rev)
+    	{
+    		this.id = id;
+    		this.rev = rev;
+    	}
+    	
+		@Override
+		public Boolean execute() throws JSONException, IOException {
+			return CouchDBHelper.deleteUserGroup(ConnectionHandler.deleteJsonObject(id, rev, UsersManagement.getLoginUser().getId(), UsersManagement.getLoginUser().getToken()));
+		}
+    }
+    
+    public static void deleteUsersGroup (List<UserGroup> usersGroup, ResultListener<Boolean> resultListener, Context context, boolean showProgressBar)
+    {
+    	new SpikaAsyncTask<Void, Void, Boolean>(new DeleteUsersGroup(usersGroup), resultListener, context, showProgressBar).execute();
+    }
+    
+    public static class DeleteUsersGroup implements Command<Boolean>
+    {
+    	List<UserGroup> usersGroup;
+    	
+    	public DeleteUsersGroup (List<UserGroup> usersGroup)
+    	{
+    		this.usersGroup = usersGroup;
+    	}
+
+		@Override
+		public Boolean execute() throws JSONException, IOException {
+			if (usersGroup != null) {
+	            for (UserGroup userGroup : usersGroup) {
+	                CouchDBHelper.deleteUserGroup(ConnectionHandler.deleteJsonObject(userGroup.getId(), userGroup.getRev(), UsersManagement.getLoginUser().getId(), UsersManagement.getLoginUser().getToken()));
+	            }
+	        }
+			return true;
+		}
     }
 
     /**
@@ -1391,6 +2054,7 @@ public class CouchDB {
      * @param userId
      * @return
      */
+    @Deprecated
     private static List<UserGroup> findUserGroupByIds(String groupId, String userId) {
 
         String key = "[\"" + groupId + "\",\"" + userId + "\"]";
@@ -1408,6 +2072,41 @@ public class CouchDB {
                 .getId());
 
         return CouchDBHelper.parseMultiUserGroupObjects(json);
+    }
+    
+    public static void findUserGroupByIds(String groupId, String userId, ResultListener<List<UserGroup>> resultListener, Context context, boolean showProgressBar) {
+    	new SpikaAsyncTask<Void, Void, List<UserGroup>>(new FindUserGroupByIds(groupId, userId), resultListener, context, showProgressBar).execute();
+    }
+    
+    public static class FindUserGroupByIds implements Command<List<UserGroup>>
+    {
+    	String groupId;
+    	String userId;
+    	
+    	public FindUserGroupByIds (String groupId, String userId)
+    	{
+    		this.groupId = groupId;
+    		this.userId = userId;
+    	}
+
+		@Override
+		public List<UserGroup> execute() throws JSONException, IOException {
+			String key = "[\"" + groupId + "\",\"" + userId + "\"]";
+
+	        try {
+	            key = URLEncoder.encode(key, "UTF-8");
+	        } catch (UnsupportedEncodingException e) {
+	            e.printStackTrace();
+
+	            return null;
+	        }
+
+	        JSONObject json = ConnectionHandler.getJsonObject(sUrl
+	                + "_design/app/_view/find_users_group?key=" + key, UsersManagement.getLoginUser()
+	                .getId());
+
+	        return CouchDBHelper.parseMultiUserGroupObjects(json);
+		}
     }
 
     /**

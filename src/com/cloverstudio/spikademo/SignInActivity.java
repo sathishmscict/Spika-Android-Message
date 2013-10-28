@@ -111,6 +111,8 @@ public class SignInActivity extends Activity {
 		SpikaApp.gOpenFromBackground = true;
 
 		showTutorial(getString(R.string.tutorial_login));
+		
+		moveTaskToBack(false);
 	}
 
 	private void showTutorial(String textTutorial) {

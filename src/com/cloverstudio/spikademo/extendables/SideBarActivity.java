@@ -30,6 +30,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -95,29 +96,29 @@ public class SideBarActivity extends SpikaActivity {
 
 	public HookUpDialog mLogoutDialog;
    
-    private class GetSupportUserAsync extends SpikaAsync<Void, Void, User> {
-
-        protected GetSupportUserAsync(Context context) {
-            super(context);
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected User doInBackground(Void... params) {
-
-            User supportUser = CouchDB.findUserById("7df093b56d11b8c5f961cf120d2ebc4c");
-            return supportUser;
-        }
-
-        @Override
-        protected void onPostExecute(User supportUser) {
-            UsersManagement.setSupportUser(supportUser);
-        }
-    }
+//    private class GetSupportUserAsync extends SpikaAsync<Void, Void, User> {
+//
+//        protected GetSupportUserAsync(Context context) {
+//            super(context);
+//        }
+//
+//        @Override
+//        protected void onPreExecute() {
+//            super.onPreExecute();
+//        }
+//
+//        @Override
+//        protected User doInBackground(Void... params) {
+//
+//            User supportUser = CouchDB.findUserById("7df093b56d11b8c5f961cf120d2ebc4c");
+//            return supportUser;
+//        }
+//
+//        @Override
+//        protected void onPostExecute(User supportUser) {
+//            UsersManagement.setSupportUser(supportUser);
+//        }
+//    }
 
     
 	@Override
@@ -126,23 +127,21 @@ public class SideBarActivity extends SpikaActivity {
 		super.onCreate(savedInstanceState);
 		new GetActivitySummary(this).execute();
 
-		if(UsersManagement.getSupportUser() == null){
+		if(UsersManagement.getSupportUser() == null) {
+			Log.e("support user", " WTF? ");
 //		    new GetSupportUserAsync(this).execute();
 		    ResultListener<User> resultListener = new ResultListener<User>() {
 
 				@Override
 				public void onResultsSucceded(User result) {
-					// TODO Auto-generated method stub
-					
+					 UsersManagement.setSupportUser(result);
 				}
 
 				@Override
 				public void onResultsFail() {
-					// TODO Auto-generated method stub
-					
 				}
 			};
-			new SpikaAsyncTask<Void, Void, User>(new CouchDB.FindUserById("7df093b56d11b8c5f961cf120d2ebc4c"), resultListener, this, true).execute();
+			new SpikaAsyncTask<Void, Void, User>(new CouchDB.FindUserById(UsersManagement.getLoginUser().getId()), resultListener, this, true).execute();
 		}
 		
 	}

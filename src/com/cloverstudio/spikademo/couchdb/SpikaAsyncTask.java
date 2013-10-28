@@ -70,7 +70,10 @@ public class SpikaAsyncTask<Params, Progress, Result> extends AsyncTask<Params, 
 		
 		if (showProgressBar)
 		{
-			if (progressDialog.isShowing() && !((Activity)context).isFinishing()) progressDialog.dismiss();
+			if (!((Activity)context).isFinishing())
+			{
+				if (progressDialog.isShowing()) progressDialog.dismiss();
+			}
 		}
 		
 		if (exception != null)
