@@ -205,28 +205,21 @@ public class ConnectionHandler {
      * 
      * @param create
      * @return
+     * @throws IOException 
+     * @throws ClientProtocolException 
+     * @throws JSONException 
      */
     public static JSONObject postJsonObject(String apiName,JSONObject create, String userId,
-            String token) {
+            String token) throws ClientProtocolException, IOException, JSONException {
 
         JSONObject retVal = null;
 
-        try {
+        InputStream is = httpPostRequest(CouchDB.getUrl() + apiName, create, userId);
+        String result = getString(is);
 
-            InputStream is = httpPostRequest(CouchDB.getUrl() + apiName, create, userId);
-            String result = getString(is);
+        is.close();
 
-            is.close();
-
-            retVal = jObjectFromString(result);
-
-        } catch (Exception e) {
-
-            Logger.error(TAG + "postJsonObject", e);
-
-            return null;
-
-        }
+        retVal = jObjectFromString(result);
 
         Log.e("Response: ", retVal.toString());
         return retVal;

@@ -51,7 +51,6 @@ import com.cloverstudio.spikademo.UsersActivity;
 import com.cloverstudio.spikademo.WallActivity;
 import com.cloverstudio.spikademo.couchdb.CouchDB;
 import com.cloverstudio.spikademo.couchdb.ResultListener;
-import com.cloverstudio.spikademo.couchdb.SpikaAsyncTask;
 import com.cloverstudio.spikademo.couchdb.model.ActivitySummary;
 import com.cloverstudio.spikademo.couchdb.model.User;
 import com.cloverstudio.spikademo.dialog.HookUpDialog;
@@ -141,7 +140,7 @@ public class SideBarActivity extends SpikaActivity {
 				public void onResultsFail() {
 				}
 			};
-			new SpikaAsyncTask<Void, Void, User>(new CouchDB.FindUserById(UsersManagement.getLoginUser().getId()), resultListener, this, true).execute();
+			CouchDB.findUserById("a223b2ebb575bc7d8997014b6b000055", resultListener, this, true);
 		}
 		
 	}

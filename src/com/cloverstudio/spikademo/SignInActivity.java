@@ -24,19 +24,14 @@
 
 package com.cloverstudio.spikademo;
 
-import java.io.IOException;
 
-import org.json.JSONException;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -46,9 +41,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cloverstudio.spikademo.couchdb.CouchDB;
-import com.cloverstudio.spikademo.couchdb.CouchDB.GetUserByName;
 import com.cloverstudio.spikademo.couchdb.ResultListener;
-import com.cloverstudio.spikademo.couchdb.SpikaAsyncTask;
 import com.cloverstudio.spikademo.couchdb.model.ActivitySummary;
 import com.cloverstudio.spikademo.couchdb.model.User;
 import com.cloverstudio.spikademo.dialog.HookUpAlertDialog;
@@ -56,7 +49,6 @@ import com.cloverstudio.spikademo.dialog.HookUpAlertDialog.ButtonType;
 import com.cloverstudio.spikademo.dialog.HookUpDialog;
 import com.cloverstudio.spikademo.dialog.HookUpProgressDialog;
 import com.cloverstudio.spikademo.dialog.Tutorial;
-import com.cloverstudio.spikademo.extendables.SpikaAsync;
 import com.cloverstudio.spikademo.management.FileManagement;
 import com.cloverstudio.spikademo.management.UsersManagement;
 import com.cloverstudio.spikademo.utils.Const;
