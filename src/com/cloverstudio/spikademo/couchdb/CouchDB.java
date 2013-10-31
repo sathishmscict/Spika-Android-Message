@@ -2052,7 +2052,6 @@ public class CouchDB {
 		}	
     }
 
-    //TODO: Add Asyncs from here down
     @Deprecated
     public static String createGroup(Group group) {
 
@@ -2103,6 +2102,10 @@ public class CouchDB {
 
         return CouchDBHelper.createGroup(ConnectionHandler.deprecatedPostJsonObject(groupJson,
                 UsersManagement.getLoginUser().getId(), UsersManagement.getLoginUser().getToken()));
+    }
+    
+    public static void createGroup(Group group, ResultListener<String> resultListener, Context context, boolean showProgressBar) {
+    	new SpikaAsyncTask<Void, Void, String>(new CreateGroup(group), resultListener, context, showProgressBar).execute();
     }
     
     private static class CreateGroup implements Command<String>
@@ -2164,6 +2167,10 @@ public class CouchDB {
                 UsersManagement.getLoginUser().getId(), UsersManagement.getLoginUser().getToken()));
     }
 
+    public static void updateGroup(Group group, ResultListener<Boolean> resultListener, Context context, boolean showProgressBar) {
+    	new SpikaAsyncTask<Void, Void, Boolean>(new UpdateGroup(group), resultListener, context, showProgressBar).execute();
+    }
+    
     private static class UpdateGroup implements Command<Boolean> {
     	
     	Group group;
@@ -2190,6 +2197,10 @@ public class CouchDB {
 
         return CouchDBHelper.deleteGroup(ConnectionHandler.deleteJsonObject(id, rev,
                 UsersManagement.getLoginUser().getId(), UsersManagement.getLoginUser().getToken()));
+    }
+    
+    public static void deleteGroup(String id, String rev, ResultListener<Boolean> resultListener, Context context, boolean showProgressBar) {
+    	new SpikaAsyncTask<Void, Void, Boolean>(new DeleteGroup(id, rev), resultListener, context, showProgressBar).execute();
     }
     
     private static class DeleteGroup implements Command<Boolean> {
@@ -2220,6 +2231,10 @@ public class CouchDB {
                 + "_design/app/_view/find_all_emoticons", UsersManagement.getLoginUser().getId());
 
         return CouchDBHelper.parseMultiEmoticonObjects(json);
+    }
+    
+    public static void findAllEmoticons(ResultListener<List<Emoticon>> resultListener, Context context, boolean showProgressBar) {
+    	new SpikaAsyncTask<Void, Void, List<Emoticon>>(new FindAllEmoticons(), resultListener, context, showProgressBar).execute();
     }
     
     public static class FindAllEmoticons implements Command<List<Emoticon>>
@@ -2268,6 +2283,10 @@ public class CouchDB {
         }        
     }
     
+    public static void findGroupCategories(ResultListener<List<GroupCategory>> resultListener, Context context, boolean showProgressBar) {
+    	new SpikaAsyncTask<Void, Void, List<GroupCategory>>(new FindGroupCategories(), resultListener, context, showProgressBar).execute();
+    }
+    
     private static class FindGroupCategories implements Command<List<GroupCategory>>
     {
 		@Override
@@ -2301,6 +2320,10 @@ public class CouchDB {
         return CouchDBHelper.parseMultiGroupObjects(json);
     }
     
+    public static void findGroupByCategoryId(String id, ResultListener<List<Group>> resultListener, Context context, boolean showProgressBar) {
+    	new SpikaAsyncTask<Void, Void, List<Group>>(new FindGroupByCategoryId(id), resultListener, context, showProgressBar).execute();
+    }
+    
     private static class FindGroupByCategoryId implements Command<List<Group>> {
     	
     	String id;
@@ -2321,10 +2344,15 @@ public class CouchDB {
      * @param url
      * @return
      */
+    @Deprecated
     public static Bitmap getBitmapObject(String url) {
 
         return ConnectionHandler.getBitmapObject(url, UsersManagement.getLoginUser().getId(),
                 UsersManagement.getLoginUser().getToken());
+    }
+    
+    public static void getBitmapObject(String url, ResultListener<Bitmap> resultListener, Context context, boolean showProgressBar) {
+    	new SpikaAsyncTask<Void, Void, Bitmap>(new GetBitmapObject(url), resultListener, context, showProgressBar).execute();
     }
     
     public static class GetBitmapObject implements Command<Bitmap>{
@@ -2348,6 +2376,7 @@ public class CouchDB {
      * @param id
      * @return
      */
+    @Deprecated
     public static Message findMessageById(String id) {
 
         JSONObject json = ConnectionHandler.getJsonObject(sUrl + id, UsersManagement.getLoginUser()
@@ -2356,6 +2385,26 @@ public class CouchDB {
         return CouchDBHelper.findMessage(json);
     }
 
+    public static void findMessageById(String id, ResultListener<Message> resultListener, Context context, boolean showProgressBar) {
+    	new SpikaAsyncTask<Void, Void, Message>(new FindMessageById(id), resultListener, context, showProgressBar).execute();
+    }
+    
+    private static class FindMessageById implements Command<Message> {
+    	
+    	String id;
+    	
+    	public FindMessageById (String id) {
+    		this.id = id;
+    	}
+
+		@Override
+		public Message execute() throws JSONException, IOException, SpikaException {
+			return findMessageById(id);
+		}
+    	
+    	
+    }
+    
     /**
      * Find messages sent to user
      * 
@@ -2363,6 +2412,8 @@ public class CouchDB {
      * @param page
      * @return
      */
+    
+    @Deprecated
     public static ArrayList<Message> findMessagesForUser(User from, int page) {
 
         int skip = page * SettingsManager.sMessageCount;
@@ -2435,6 +2486,27 @@ public class CouchDB {
 
         return CouchDBHelper.findMessagesForUser(json);
     }
+    
+    public static void findMessagesForUser(User from, int page, ResultListener<ArrayList<Message>> resultListener, Context context, boolean showProgressBar) {
+    	new SpikaAsyncTask<Void, Void, ArrayList<Message>>(new FindMessagesForUser(from, page), resultListener, context, showProgressBar).execute();
+    }
+    
+    private static class FindMessagesForUser implements Command<ArrayList<Message>> {
+    	
+    	User from;
+    	int page; 
+    	
+    	public FindMessagesForUser(User from, int page) {
+    		this.from = from;
+    		this.page = page;
+    	}
+
+		@Override
+		public ArrayList<Message> execute() throws JSONException, IOException,
+				SpikaException {
+			return findMessagesForUser(from, page);
+		}
+    } 
 
     /**
      * Send message to user
@@ -2443,6 +2515,7 @@ public class CouchDB {
      * @param isPut
      * @return
      */
+    @Deprecated
     public static boolean sendMessageToUser(Message m, boolean isPut) {
 
         boolean isSuccess = true;
@@ -2509,12 +2582,34 @@ public class CouchDB {
         return isSuccess;
     }
 
+    public static void sendMessageToUser(Message m, boolean isPut, ResultListener<Boolean> resultListener, Context context, boolean showProgressBar) {
+    	new SpikaAsyncTask<Void, Void, Boolean>(new SendMessageToUser(m, isPut), resultListener, context, showProgressBar).execute();
+    }
+    
+    private static class SendMessageToUser implements Command<Boolean> {
+    	
+    	Message m;
+    	boolean isPut;
+    	
+    	public SendMessageToUser(Message m, boolean isPut) {
+			this.m = m;
+			this.isPut = isPut;
+		}
+
+		@Override
+		public Boolean execute() throws JSONException, IOException,
+				SpikaException {
+			return sendMessageToUser(m, isPut);
+		}
+    }
+    
     /**
      * Update message for a user
      * 
      * @param m
      * @return
      */
+    @Deprecated
     public static boolean updateMessageForUser(Message m) {
     	
     	Log.d("log", "couchDB: "+m.getImageThumbFileId());
@@ -2577,6 +2672,25 @@ public class CouchDB {
         return isSuccess;
     }
 
+    public static void updateMessageForUser(Message m, ResultListener<Boolean> resultListener, Context context, boolean showProgressBar) {
+    	new SpikaAsyncTask<Void, Void, Boolean>(new UpdateMessageForUser(m), resultListener, context, showProgressBar).execute();
+    }
+    
+    private static class UpdateMessageForUser implements Command<Boolean> {
+    	
+    	Message m;
+    	
+    	public UpdateMessageForUser(Message m) {
+    		this.m = m;
+    	}
+
+		@Override
+		public Boolean execute() throws JSONException, IOException,
+				SpikaException {
+			return updateMessageForUser(m);
+		}
+    }
+    
     /**
      * Send message to a group
      * 
@@ -2584,6 +2698,7 @@ public class CouchDB {
      * @param isPut
      * @return
      */
+    @Deprecated
     public static boolean sendMessageToGroup(Message m, boolean isPut) {
 
         boolean isSuccess = true;
@@ -2647,6 +2762,27 @@ public class CouchDB {
         }
         return isSuccess;
     }
+    
+    public static void sendMessageToGroup(Message m, boolean isPut, ResultListener<Boolean> resultListener, Context context, boolean showProgressBar) {
+    	new SpikaAsyncTask<Void, Void, Boolean>(new SendMessageToGroup(m, isPut), resultListener, context, showProgressBar).execute();
+    }
+    
+    private static class SendMessageToGroup implements Command<Boolean> {
+    	
+    	Message m;
+    	boolean isPut;
+    	
+    	public SendMessageToGroup(Message m, boolean isPut) {
+    		this.m = m;
+    		this.isPut = isPut;
+    	}
+
+		@Override
+		public Boolean execute() throws JSONException, IOException,
+				SpikaException {
+			return sendMessageToGroup(m, isPut);
+		}
+    }
 
     /**
      * Update message from group
@@ -2654,6 +2790,7 @@ public class CouchDB {
      * @param m
      * @return
      */
+    @Deprecated
     public static boolean updateMessageForGroup(Message m) {
         boolean isSuccess = true;
 
@@ -2712,14 +2849,34 @@ public class CouchDB {
             isSuccess = false;
         }
         return isSuccess;
-
     }
 
+    public static void updateMessageForGroup(Message m, ResultListener<Boolean> resultListener, Context context, boolean showProgressBar) {
+    	new SpikaAsyncTask<Void, Void, Boolean>(new UpdateMessageForGroup(m), resultListener, context, showProgressBar).execute();
+    }
+    
+    private static class UpdateMessageForGroup implements Command<Boolean>
+    {
+    	Message m;
+    	
+    	public UpdateMessageForGroup(Message m)
+    	{
+    		this.m = m;
+    	}
+
+		@Override
+		public Boolean execute() throws JSONException, IOException,
+				SpikaException {
+			return updateMessageForGroup(m);
+		}
+    }
+    
     /**
      * Create new comment
      * 
      * @return
      */
+    @Deprecated
     public static String createComment(Comment comment) {
 
         JSONObject commentJson = new JSONObject();
@@ -2739,12 +2896,32 @@ public class CouchDB {
         return CouchDBHelper.createComment(ConnectionHandler.deprecatedPostJsonObject(commentJson,
                 UsersManagement.getLoginUser().getId(), UsersManagement.getLoginUser().getToken()));
     }
+    
+    public static void updateMessageForGroup(Comment comment, ResultListener<String> resultListener, Context context, boolean showProgressBar) {
+    	new SpikaAsyncTask<Void, Void, String>(new CreateComment(comment), resultListener, context, showProgressBar).execute();
+    }
+    
+    private static class CreateComment implements Command<String>
+    {
+    	Comment comment;
+    	
+    	public CreateComment(Comment comment) {
+			this.comment = comment;
+		}
+
+		@Override
+		public String execute() throws JSONException, IOException,
+				SpikaException {
+			return createComment(comment);
+		}
+    } 
 
     /**
      * Find comments by message id
      * 
      * @return
      */
+    @Deprecated
     public static List<Comment> findCommentsByMessageId(String messageId) {
 
         messageId = "\"" + messageId + "\"";
@@ -2762,12 +2939,33 @@ public class CouchDB {
 
         return CouchDBHelper.parseMultiCommentObjects(json);
     }
+    
+    public static void findCommentsByMessageId (String messageId, ResultListener<List<Comment>> resultListener, Context context, boolean showProgressBar) {
+    	new SpikaAsyncTask<Void, Void, List<Comment>>(new FindCommentsByMessageId(messageId), resultListener, context, showProgressBar).execute();
+    }
+    
+    private static class FindCommentsByMessageId implements Command<List<Comment>> {
+    	
+    	String messageId;
+    	
+    	public FindCommentsByMessageId (String messageId)
+    	{
+    		this.messageId = messageId;
+    	}
+
+		@Override
+		public List<Comment> execute() throws JSONException, IOException,
+				SpikaException {
+			return findCommentsByMessageId(messageId);
+		}
+    }
 
     /**
      * Get comment count using reduce function
      * 
      * @return
      */
+    @Deprecated
     public static int getCommentCount(String messageId) {
 
         messageId = "\"" + messageId + "\"";
@@ -2786,15 +2984,56 @@ public class CouchDB {
 
         return CouchDBHelper.getCommentCount(json);
     }
+    
+    public static void GetCommentCount (String messageId, ResultListener<Integer> resultListener, Context context, boolean showProgressBar) {
+    	new SpikaAsyncTask<Void, Void, Integer>(new GetCommentCount(messageId), resultListener, context, showProgressBar).execute();
+    }
+    
+    private static class GetCommentCount implements Command<Integer> {
+    	
+    	String messageId;
+    	
+    	public GetCommentCount(String messageId) {
+			this.messageId = messageId;
+		}
+
+		@Override
+		public Integer execute() throws JSONException, IOException,
+				SpikaException {
+			return getCommentCount(messageId);
+		}
+    }
 
     /**
      * Get File from web
      * 
      * @return
      */
+    @Deprecated
     public static void getFile(String url, File file) {
         ConnectionHandler.getFile(url, file, UsersManagement.getLoginUser().getId(),
                 UsersManagement.getLoginUser().getToken());
+    }
+    
+    public static void GetFile(String url, File file, ResultListener<Void> resultListener, Context context, boolean showProgressBar) {
+    	new SpikaAsyncTask<Void, Void, Void>(new GetFile(url, file), resultListener, context, showProgressBar).execute();
+    }
+    
+    private static class GetFile implements Command<Void> {
+    	
+    	String url;
+    	File file;
+    	
+    	public GetFile(String url, File file) {
+			this.file = file;
+			this.url = url;
+		}
+
+		@Override
+		public Void execute() throws JSONException, IOException, SpikaException {
+			getFile(url, file);
+			return null;
+		}
     }
 
     public static String getAuthUrl() {
@@ -2840,6 +3079,7 @@ public class CouchDB {
      * Create watching group log
      * 
      */
+    @Deprecated
     public static String createWatchingGroupLog(WatchingGroupLog watchingGroupLog) {
 
         JSONObject jsonObj = new JSONObject();
@@ -2858,14 +3098,57 @@ public class CouchDB {
         		UsersManagement.getLoginUser().getId(), ""));
     }
     
+    public static void CreateWatchingGroupLog (WatchingGroupLog watchingGroupLog, ResultListener<String> resultListener, Context context, boolean showProgressBar) {
+    	new SpikaAsyncTask<Void, Void, String>(new CreateWatchingGroupLog (watchingGroupLog), resultListener, context, showProgressBar).execute();
+    }
+    
+    private static class CreateWatchingGroupLog implements Command<String> {
+    	
+    	WatchingGroupLog watchingGroupLog;
+    	
+    	public CreateWatchingGroupLog (WatchingGroupLog watchingGroupLog)
+    	{
+    		this.watchingGroupLog = watchingGroupLog;
+    	}
+
+		@Override
+		public String execute() throws JSONException, IOException,
+				SpikaException {
+			return createWatchingGroupLog(watchingGroupLog);
+		}
+    }
+    
     /**
      * Delete watching group log
      * 
      */
+    @Deprecated
     public static boolean deleteWatchingGroupLog(String id, String rev) {
 
         return CouchDBHelper.deleteWatchingGroupLog((ConnectionHandler.deleteJsonObject(id, rev,
                 UsersManagement.getLoginUser().getId(), "")));
+    }
+    
+    public static void DeleteWatchingGroupLog(String id, String rev, ResultListener<Boolean> resultListener, Context context, boolean showProgressBar) {
+    	new SpikaAsyncTask<Void, Void, Boolean>(new DeleteWatchingGroupLog(id, rev), resultListener, context, showProgressBar).execute();
+    }
+    
+    private static class DeleteWatchingGroupLog implements Command<Boolean> {
+    	
+    	String id;
+    	String rev;
+    	
+    	public DeleteWatchingGroupLog(String id, String rev)
+    	{
+    		this.id = id;
+    		this.rev = rev;
+    	}
+
+		@Override
+		public Boolean execute() throws JSONException, IOException,
+				SpikaException {
+			return deleteWatchingGroupLog(id, rev);
+		}
     }
 
 }
