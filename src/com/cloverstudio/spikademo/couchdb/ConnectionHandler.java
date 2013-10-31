@@ -208,9 +208,11 @@ public class ConnectionHandler {
      * @throws IOException 
      * @throws ClientProtocolException 
      * @throws JSONException 
+     * @throws SpikaException 
+     * @throws IllegalStateException 
      */
     public static JSONObject postJsonObject(String apiName,JSONObject create, String userId,
-            String token) throws ClientProtocolException, IOException, JSONException {
+            String token) throws ClientProtocolException, IOException, JSONException, IllegalStateException, SpikaException {
 
         JSONObject retVal = null;
 
@@ -265,9 +267,11 @@ public class ConnectionHandler {
 	 * @return
 	 * @throws IOException 
 	 * @throws JSONException 
+	 * @throws SpikaException 
+	 * @throws IllegalStateException 
 	 */
     public static JSONObject postJsonObject(JSONObject create, String userId,
-			String token) throws IOException, JSONException {
+			String token) throws IOException, JSONException, IllegalStateException, SpikaException {
 
 		JSONObject retVal = null;
 
@@ -321,9 +325,11 @@ public class ConnectionHandler {
 	 * @return
 	 * @throws IOException
 	 * @throws JSONException
+	 * @throws SpikaException 
+	 * @throws IllegalStateException 
 	 */
 	public static JSONObject postAuth(JSONObject jPost) throws IOException,
-			JSONException {
+			JSONException, IllegalStateException, SpikaException {
 
 		JSONObject retVal = null;
 
@@ -579,10 +585,13 @@ public class ConnectionHandler {
 	 * @return
 	 * @throws ClientProtocolException
 	 * @throws IOException
+	 * @throws SpikaException 
+	 * @throws IllegalStateException 
+	 * @throws JSONException 
 	 */
 	private static InputStream httpPostRequest(String url, Object create,
 			String userId) throws ClientProtocolException,
-			IOException {
+			IOException, IllegalStateException, SpikaException, JSONException {
 
 		HttpPost httppost = new HttpPost(url);
 
@@ -617,8 +626,11 @@ public class ConnectionHandler {
 		HttpResponse response = HttpSingleton.getInstance().execute(httppost);
 		HttpEntity entity = response.getEntity();
 		
+		Log.e("STATUS", "" + response.getStatusLine().getStatusCode());
+		
 		if (response.getStatusLine().getStatusCode() > 400)
 		{
+			if (response.getStatusLine().getStatusCode() == 403) throw new SpikaException(getError(entity.getContent()));
 			throw new IOException(response.getStatusLine().getReasonPhrase());
 		}
 		
@@ -776,5 +788,18 @@ public class ConnectionHandler {
 		for (Header header : headers) {
 			Log.e("headers", header.toString());
 		}
+	}
+	
+	private static String getError (InputStream inputStream) throws IOException, JSONException {
+		
+		String error = "Unknown Spika Error";
+		
+		String jsonString = getString(inputStream);
+		JSONObject jsonObject = jObjectFromString(jsonString);
+		if (jsonObject.has("message"))
+		{
+			error = jsonObject.getString("message");
+		}
+		return error;
 	}
 }

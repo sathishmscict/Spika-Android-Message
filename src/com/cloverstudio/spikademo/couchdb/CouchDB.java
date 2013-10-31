@@ -219,8 +219,10 @@ public class CouchDB {
      * @throws JSONException 
      * @throws IOException 
      * @throws ClientProtocolException 
+     * @throws SpikaException 
+     * @throws IllegalStateException 
      */
-    private static String createUser(String name, String email, String password) throws JSONException, ClientProtocolException, IOException {
+    private static String createUser(String name, String email, String password) throws JSONException, ClientProtocolException, IOException, IllegalStateException, SpikaException {
 
     	JSONObject userJson = new JSONObject();
 
@@ -259,7 +261,7 @@ public class CouchDB {
     	}
 
 		@Override
-		public String execute() throws JSONException, IOException {
+		public String execute() throws JSONException, IOException, IllegalStateException, SpikaException {
 			return createUser(name, email, password);
 		}
     }
@@ -952,9 +954,11 @@ public class CouchDB {
      * @return
      * @throws JSONException 
      * @throws IOException 
+     * @throws SpikaException 
+     * @throws IllegalStateException 
      */
     @Deprecated
-    public static String auth(String email, String password) throws IOException, JSONException {
+    public static String auth(String email, String password) throws IOException, JSONException, IllegalStateException, SpikaException {
 
         JSONObject jPost = new JSONObject();
 
@@ -1006,7 +1010,7 @@ public class CouchDB {
     	}
 
 		@Override
-		public String execute() throws JSONException, IOException {
+		public String execute() throws JSONException, IOException, IllegalStateException, SpikaException {
 			JSONObject jPost = new JSONObject();
 
 	        jPost.put("email", email);
@@ -1018,7 +1022,7 @@ public class CouchDB {
 
 	        Log.e("CouchDB", "auth");
 
-	        user = CouchDBHelper.parseSingleUserObject(json);
+	        user = CouchDBHelper.parseSingleUserObjectWithoutRowParam(json);
 	            
 	        if (user != null) {
 
@@ -1045,9 +1049,11 @@ public class CouchDB {
      * @return
      * @throws JSONException 
      * @throws IOException 
+     * @throws SpikaException 
+     * @throws IllegalStateException 
      */
     @Deprecated
-    public static User getUserByEmailAndPassword(String email, String password) throws JSONException, IOException {
+    public static User getUserByEmailAndPassword(String email, String password) throws JSONException, IOException, IllegalStateException, SpikaException {
 
         JSONObject jPost = new JSONObject();
 
@@ -1095,7 +1101,7 @@ public class CouchDB {
     	}
     	
 		@Override
-		public User execute() throws JSONException, IOException {
+		public User execute() throws JSONException, IOException, IllegalStateException, SpikaException {
 			JSONObject jPost = new JSONObject();
 
 	        jPost.put("email", email);
@@ -1958,7 +1964,7 @@ public class CouchDB {
     	}
 
 		@Override
-		public String execute() throws JSONException, IOException {
+		public String execute() throws JSONException, IOException, IllegalStateException, SpikaException {
 			JSONObject userGroupJson = new JSONObject();
 	       
 			userGroupJson.put(Const.GROUP_ID, userGroup.getGroupId());

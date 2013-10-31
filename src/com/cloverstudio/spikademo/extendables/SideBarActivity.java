@@ -140,7 +140,7 @@ public class SideBarActivity extends SpikaActivity {
 				public void onResultsFail() {
 				}
 			};
-			CouchDB.findUserById("a223b2ebb575bc7d8997014b6b000055", resultListener, this, true);
+			CouchDB.findUserById("326948e7cf5c85db29bd114224000d16", resultListener, this, true);
 		}
 		
 	}

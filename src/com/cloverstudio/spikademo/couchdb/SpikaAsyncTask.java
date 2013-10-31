@@ -60,6 +60,9 @@ public class SpikaAsyncTask<Params, Progress, Result> extends AsyncTask<Params, 
 		} catch (IOException e) {
 			exception = e;
 			e.printStackTrace();
+		} catch (SpikaException e) {
+			exception = e;
+			e.printStackTrace();
 		}
 		return result;
 	}
@@ -83,11 +86,14 @@ public class SpikaAsyncTask<Params, Progress, Result> extends AsyncTask<Params, 
 			final HookUpDialog dialog = new HookUpDialog(context);
 			String errorMessage = null;
 			if (exception instanceof IOException){
-			    errorMessage = context.getString(R.string.can_not_connect_to_server, exception.getMessage());
+			    errorMessage = context.getString(R.string.can_not_connect_to_server) + "\n" + exception.getClass().getName() + " " + exception.getMessage();
+			    Log.e("Error: ", exception.getMessage());
 			}else if(exception instanceof JSONException){
-			    errorMessage = context.getString(R.string.an_internal_error_has_occurred, exception.getClass().getName() + " " + exception.getMessage());
+			    errorMessage = context.getString(R.string.an_internal_error_has_occurred) + "\n" + exception.getClass().getName() + " " + exception.getMessage();
+			}else if(exception instanceof SpikaException){
+				errorMessage = exception.getMessage();
 			}else{
-			    errorMessage = context.getString(R.string.an_internal_error_has_occurred, exception.getClass().getName() + " " + exception.getMessage());
+			    errorMessage = context.getString(R.string.an_internal_error_has_occurred) + "\n" + exception.getClass().getName() + " " + exception.getMessage();
 			}			
 			
 			dialog.showOnlyOK(errorMessage);
