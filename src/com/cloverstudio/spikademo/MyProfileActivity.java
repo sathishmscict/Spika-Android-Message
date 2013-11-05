@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  * 
- * Copyright © 2013 Clover Studio Ltd. All rights reserved.
+ * Copyright ï¿½ 2013 Clover Studio Ltd. All rights reserved.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,10 @@
 
 package com.cloverstudio.spikademo;
 
+import java.io.IOException;
 import java.util.Calendar;
+
+import org.json.JSONException;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -59,7 +62,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cloverstudio.spikademo.R;
+import com.cloverstudio.spikademo.couchdb.Command;
 import com.cloverstudio.spikademo.couchdb.CouchDB;
+import com.cloverstudio.spikademo.couchdb.ResultListener;
+import com.cloverstudio.spikademo.couchdb.SpikaAsyncTask;
+import com.cloverstudio.spikademo.couchdb.SpikaException;
 import com.cloverstudio.spikademo.couchdb.model.User;
 import com.cloverstudio.spikademo.dialog.DatePickerDialogWithRange;
 import com.cloverstudio.spikademo.dialog.HookUpProgressDialog;
@@ -394,7 +401,7 @@ public class MyProfileActivity extends SideBarActivity {
 		protected User doInBackground(Void... params) {
 
 			Preferences prefs = SpikaApp.getPreferences();
-			return CouchDB.findUserByEmail(prefs.getUserEmail(), true);
+			return CouchDB.findUserByEmail(prefs.getUserEmail());
 		}
 
 		@Override
@@ -601,7 +608,7 @@ public class MyProfileActivity extends SideBarActivity {
 				mUserAvatarId = mNewAvatarId;
 				hideKeyboard();
 
-				new CheckUniqueAsync(MyProfileActivity.this).execute(mUserName);
+				checkUnique(mUserName);
 
 			}
 		});
@@ -742,70 +749,39 @@ public class MyProfileActivity extends SideBarActivity {
 		}
 	}
 
-	private class CheckUniqueAsync extends SpikaAsync<String, Void, Boolean> {
-
-		private String mUsername;
-		private User mUserByName;
-
-		protected CheckUniqueAsync(Context context) {
-			super(context);
-		}
-
+	private void checkUnique (String username) {
+		CouchDB.findUserByName(username, new CheckUniqueFinish(), MyProfileActivity.this, true);
+	}
+	
+	private class CheckUniqueFinish implements ResultListener<User>{
 		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-		}
-
-		@Override
-		protected Boolean doInBackground(String... params) {
-
-			mUsername = params[0];
-			mUserByName = CouchDB.getUserByName(mUsername);
-
-			return null;
-		}
-
-		@Override
-		protected void onPostExecute(Boolean result) {
-			super.onPostExecute(result);
-
-			if (mUserByName != null
-					&& !mUserByName.getId().equals(
+		public void onResultsSucceded(User result) {
+			User userByName = result;
+			if (userByName != null
+					&& !userByName.getId().equals(
 							UsersManagement.getLoginUser().getId())) {
 				Toast.makeText(MyProfileActivity.this,
 						getString(R.string.username_taken), Toast.LENGTH_SHORT)
 						.show();
 			} else {
-				new UpdateUserAsync(MyProfileActivity.this).execute();
+				updateUserAsync();
 			}
+		}
+
+		@Override
+		public void onResultsFail() {
 		}
 	}
 
-	private class UpdateUserAsync extends SpikaAsync<Void, Void, Boolean> {
-
-		protected UpdateUserAsync(Context context) {
-			super(context);
-		}
-
-		User currentUserData = null;
-		private HookUpProgressDialog progressDialog;
+	private void updateUserAsync () {
+		new SpikaAsyncTask<Void, Void, Boolean>(new UpdateUser(), new UpdateUserFinish(UsersManagement.getLoginUser()), MyProfileActivity.this, true).execute();
+	}
+	
+	private class UpdateUser implements Command<Boolean> {
 
 		@Override
-		protected void onPreExecute() {
-			// save data of current login user so if anything goes wrong with
-			// update, we can return to previous state
-			currentUserData = UsersManagement.getLoginUser();
-			if (progressDialog == null) {
-				progressDialog = new HookUpProgressDialog(
-						MyProfileActivity.this);
-			}
-			progressDialog.show();
-			super.onPreExecute();
-		}
-
-		@Override
-		protected Boolean doInBackground(Void... params) {
-
+		public Boolean execute() throws JSONException, IOException,
+				SpikaException {
 			if (gProfileImage != null) {
 
 				String tmppath = MyProfileActivity.this.getExternalCacheDir()
@@ -842,9 +818,18 @@ public class MyProfileActivity extends SideBarActivity {
 
 			return CouchDB.updateUser(UsersManagement.getLoginUser());
 		}
+	}
+	
+	private class UpdateUserFinish implements ResultListener<Boolean> {
 
+		User user;
+		
+		public UpdateUserFinish (User user) {
+			this.user = user;
+		}
+		
 		@Override
-		protected void onPostExecute(Boolean result) {
+		public void onResultsSucceded(Boolean result) {
 			if (result) {
 				/* update successful */
 
@@ -862,7 +847,7 @@ public class MyProfileActivity extends SideBarActivity {
 				Toast.makeText(MyProfileActivity.this, "Error",
 						Toast.LENGTH_SHORT).show();
 
-				UsersManagement.setLoginUser(currentUserData);
+				UsersManagement.setLoginUser(user);
 
 				mUserName = UsersManagement.getLoginUser().getName();
 				mUserAbout = UsersManagement.getLoginUser().getAbout();
@@ -872,9 +857,18 @@ public class MyProfileActivity extends SideBarActivity {
 						.getAvatarFileId();
 			}
 			setProfileMode(ProfileMode.CANCEL);
-			progressDialog.dismiss();
-			super.onPostExecute(result);
+		}
+
+		@Override
+		public void onResultsFail() {
+			UsersManagement.setLoginUser(user);
+
+			mUserName = UsersManagement.getLoginUser().getName();
+			mUserAbout = UsersManagement.getLoginUser().getAbout();
+			mUserBirthday = UsersManagement.getLoginUser().getBirthday();
+			mUserGender = UsersManagement.getLoginUser().getGender();
+			mUserAvatarId = UsersManagement.getLoginUser()
+					.getAvatarFileId();
 		}
 	}
-
 }

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  * 
- * Copyright © 2013 Clover Studio Ltd. All rights reserved.
+ * Copyright ï¿½ 2013 Clover Studio Ltd. All rights reserved.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -51,6 +51,7 @@ import android.widget.TextView;
 
 import com.cloverstudio.spikademo.R;
 import com.cloverstudio.spikademo.couchdb.CouchDB;
+import com.cloverstudio.spikademo.couchdb.ResultListener;
 import com.cloverstudio.spikademo.dialog.HookUpAlertDialog;
 import com.cloverstudio.spikademo.dialog.HookUpDialog;
 import com.cloverstudio.spikademo.dialog.HookUpProgressDialog;
@@ -247,7 +248,7 @@ public class RecordingActivity extends SpikaActivity {
 			@Override
 			public void onClick(View v) {
 				Log.d("LOG", sFileName);
-				new FileUploadAsync(RecordingActivity.this).execute(sFileName);
+				fileUploadAsync(sFileName);
 			}
 		});
 
@@ -431,43 +432,15 @@ public class RecordingActivity extends SpikaActivity {
 	protected void checkIfAppIsInForeground() {
 		SpikaApp.gOpenFromBackground = false;
 	}
-
-	private class FileUploadAsync extends SpikaAsync<String, Void, String> {
-
-		private HookUpProgressDialog mProgressDialog;
-
-		protected FileUploadAsync(Context context) {
-			super(context);
-		}
+	
+	private void fileUploadAsync (String filePath) {
+		CouchDB.uploadFile(filePath, new FileUploadFinish(), RecordingActivity.this, true);
+	}
+	
+	private class FileUploadFinish implements ResultListener<String>{
 
 		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-			if (mProgressDialog == null) {
-				mProgressDialog = new HookUpProgressDialog(
-						RecordingActivity.this);
-			}
-			mProgressDialog.show();
-		}
-
-		@Override
-		protected String doInBackground(String... params) {
-			String filePath = params[0];
-			String fileId = CouchDB.uploadFile(filePath);
-			return fileId;
-		}
-
-		@Override
-		protected void onPostExecute(String result) {
-			super.onPostExecute(result);
-			if (result != null) {
-
-			} else {
-
-			}
-			if (mProgressDialog.isShowing())
-				mProgressDialog.dismiss();
-
+		public void onResultsSucceded(String result) {
 			String voiceSubject = mEtNameOfUserVoice.getText().toString();
 			if (voiceSubject.equals(null) || voiceSubject.equals("")) {
 				voiceSubject = "";
@@ -483,6 +456,11 @@ public class RecordingActivity extends SpikaActivity {
 			}
 			finish();
 		}
+
+		@Override
+		public void onResultsFail() {
+		}
+		
 	}
 	
 	@Override

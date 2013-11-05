@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  * 
- * Copyright © 2013 Clover Studio Ltd. All rights reserved.
+ * Copyright ï¿½ 2013 Clover Studio Ltd. All rights reserved.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -202,7 +202,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 
 			// New code
 			User loginUser = CouchDB.findUserByEmail(UsersManagement
-					.getLoginUser().getEmail(), false);
+					.getLoginUser().getEmail());
 			SpikaApp.getPreferences().setUserEmail(
 					UsersManagement.getLoginUser().getEmail());
 			// end:New code

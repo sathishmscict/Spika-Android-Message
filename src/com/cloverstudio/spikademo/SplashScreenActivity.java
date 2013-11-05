@@ -35,7 +35,6 @@ import android.widget.Toast;
 
 import com.cloverstudio.spikademo.couchdb.CouchDB;
 import com.cloverstudio.spikademo.couchdb.ResultListener;
-import com.cloverstudio.spikademo.couchdb.SpikaAsyncTask;
 import com.cloverstudio.spikademo.couchdb.model.User;
 import com.cloverstudio.spikademo.extendables.SideBarActivity;
 import com.cloverstudio.spikademo.management.UsersManagement;
@@ -77,7 +76,7 @@ public class SplashScreenActivity extends Activity {
 
 				mUser = new User();
 				
-				CouchDB.getUserByEmailAndPassword(mSavedEmail, mSavedPassword, new GetUserByEmailAndPasswordListener(), SplashScreenActivity.this, false);
+				CouchDB.auth(mSavedEmail, mSavedPassword, new AuthListener(), SplashScreenActivity.this, false);
 			} else {
 				new Handler().postDelayed(new Runnable() {
 
@@ -182,25 +181,12 @@ public class SplashScreenActivity extends Activity {
 		return authentificationOk;
 	}
 	
-	private class GetUserByEmailAndPasswordListener implements ResultListener<User>
-	{
-		@Override
-		public void onResultsSucceded(User result) {				
-			mUser = result;
-			CouchDB.auth(mSavedEmail, mSavedPassword, new AuthListener(), SplashScreenActivity.this, false);
-		}
-		@Override
-		public void onResultsFail() {
-			SideBarActivity.appLogout(false, false, true);
-		}
-	}
-	
 	private class AuthListener implements ResultListener<String>
 	{
 		@Override
 		public void onResultsSucceded(String result) {
-			// TODO Auto-generated method stub
 			boolean tokenOk = result.equals(Const.LOGIN_SUCCESS);
+			mUser = UsersManagement.getLoginUser();
 			if (tokenOk && mUser!=null) {
 				if (authentificationOk(mUser)) {
 					new Handler().postDelayed(new Runnable() {

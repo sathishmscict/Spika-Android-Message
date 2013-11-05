@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  * 
- * Copyright © 2013 Clover Studio Ltd. All rights reserved.
+ * Copyright ï¿½ 2013 Clover Studio Ltd. All rights reserved.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,9 +24,12 @@
 
 package com.cloverstudio.spikademo;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+
+import org.json.JSONException;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -58,7 +61,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cloverstudio.spikademo.R;
+import com.cloverstudio.spikademo.couchdb.Command;
 import com.cloverstudio.spikademo.couchdb.CouchDB;
+import com.cloverstudio.spikademo.couchdb.ResultListener;
+import com.cloverstudio.spikademo.couchdb.SpikaAsyncTask;
+import com.cloverstudio.spikademo.couchdb.SpikaException;
 import com.cloverstudio.spikademo.couchdb.model.Group;
 import com.cloverstudio.spikademo.couchdb.model.GroupCategory;
 import com.cloverstudio.spikademo.couchdb.model.GroupSearch;
@@ -693,39 +700,20 @@ public class GroupProfileActivity extends SpikaActivity {
 				Toast.makeText(mContext, getString(R.string.groupname_taken),
 						Toast.LENGTH_SHORT).show();
 			} else {
-				new UpdateGroupAsync(mContext).execute();
+				updateGroupAsync();
 			}
 		}
 	}
 
-	private class UpdateGroupAsync extends SpikaAsync<Void, Void, Boolean> {
-
-		private HookUpProgressDialog progressDialog;
-
-		protected UpdateGroupAsync(Context context) {
-			super(context);
-		}
-
-		Group currentGroupData = null;
+	private void updateGroupAsync () {
+		new SpikaAsyncTask<Void, Void, Boolean>(new UpdateGroup(), new UpdateGroupFinished(mGroup), GroupProfileActivity.this, true).execute();
+	}
+	
+	private class UpdateGroup implements Command<Boolean>{
 
 		@Override
-		protected void onPreExecute() {
-			// save data of current group so if anything goes wrong with
-			// update, we can return to previous state
-			currentGroupData = mGroup;
-
-			if (progressDialog == null) {
-				progressDialog = new HookUpProgressDialog(
-						GroupProfileActivity.this);
-			}
-			progressDialog.show();
-
-			super.onPreExecute();
-		}
-
-		@Override
-		protected Boolean doInBackground(Void... params) {
-
+		public Boolean execute() throws JSONException, IOException,
+				SpikaException {
 			if (gGroupImage != null) {
 
 				String tmppath = GroupProfileActivity.this
@@ -765,9 +753,19 @@ public class GroupProfileActivity extends SpikaActivity {
 
 			return CouchDB.updateGroup(mGroup);
 		}
+	}
+	
+	private class UpdateGroupFinished implements ResultListener<Boolean> {
 
+		Group group;
+		
+		public UpdateGroupFinished(Group group)
+		{
+			this.group = group;
+		}
+		
 		@Override
-		protected void onPostExecute(Boolean result) {
+		public void onResultsSucceded(Boolean result) {
 			if (result) {
 				/* update successful */
 				Toast.makeText(GroupProfileActivity.this,
@@ -784,17 +782,23 @@ public class GroupProfileActivity extends SpikaActivity {
 				Toast.makeText(GroupProfileActivity.this,
 						getString(R.string.failed_to_update_group),
 						Toast.LENGTH_SHORT).show();
-				mGroupName = currentGroupData.getName();
-				mGroupPassword = currentGroupData.getPassword();
-				mGroupDescription = currentGroupData.getDescription();
-				mGroupAvatarId = currentGroupData.getAvatarFileId();
-				mGroup = currentGroupData;
+				mGroupName = group.getName();
+				mGroupPassword = group.getPassword();
+				mGroupDescription = group.getDescription();
+				mGroupAvatarId = group.getAvatarFileId();
+				mGroup = group;
 			}
-			super.onPostExecute(result);
 			setProfileMode(ProfileMode.CANCEL);
-			progressDialog.dismiss();
 		}
 
+		@Override
+		public void onResultsFail() {
+			mGroupName = group.getName();
+			mGroupPassword = group.getPassword();
+			mGroupDescription = group.getDescription();
+			mGroupAvatarId = group.getAvatarFileId();
+			mGroup = group;
+		}
 	}
 
 	/**
@@ -958,7 +962,7 @@ public class GroupProfileActivity extends SpikaActivity {
 	public void setNewPassword(String newPassword) {
 		mGroupPassword = newPassword;
 		hideKeyboard();
-		new UpdateGroupAsync(this).execute();
+		updateGroupAsync();
 	}
 
 	private class GetGroupCategoriesAsync extends

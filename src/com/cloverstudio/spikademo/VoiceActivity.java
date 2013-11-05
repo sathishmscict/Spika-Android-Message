@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  * 
- * Copyright © 2013 Clover Studio Ltd. All rights reserved.
+ * Copyright ï¿½ 2013 Clover Studio Ltd. All rights reserved.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -50,6 +50,7 @@ import android.widget.Toast;
 import com.cloverstudio.spikademo.R;
 import com.cloverstudio.spikademo.adapters.CommentsAdapter;
 import com.cloverstudio.spikademo.couchdb.CouchDB;
+import com.cloverstudio.spikademo.couchdb.ResultListener;
 import com.cloverstudio.spikademo.couchdb.model.Comment;
 import com.cloverstudio.spikademo.couchdb.model.Message;
 import com.cloverstudio.spikademo.dialog.HookUpProgressDialog;
@@ -124,7 +125,7 @@ public class VoiceActivity extends SpikaActivity {
 		TextView tvNameOfUser = (TextView) findViewById(R.id.tvNameOfUserVoice);
 
 		// message from somebody
-		new FileDownloadAsync(this).execute(mMessage.getVoiceFileId());
+		fileDownloadAsync(mMessage.getVoiceFileId(), new File(getHookUpPath(), "voice_download.wav"));
 
 		String idOfUser = mExtras.getString("idOfUser");
 		String nameOfUser = mExtras.getString("nameOfUser");
@@ -336,108 +337,25 @@ public class VoiceActivity extends SpikaActivity {
 		mHandlerForProgressBar.removeCallbacks(mRunnForProgressBar);
 	}
 
-	private class GetVoiceFileAsync extends SpikaAsync<Void, Void, Void> {
-
-		protected GetVoiceFileAsync(Context context) {
-			super(context);
-		}
-
-		HookUpProgressDialog progressBarLoadingBar = new HookUpProgressDialog(
-				VoiceActivity.this);
-		boolean isLoaded = false;
-
-		@Override
-		protected void onPreExecute() {
-			progressBarLoadingBar.show();
-			super.onPreExecute();
-		}
-
-		@Override
-		protected Void doInBackground(Void... params) {
-			try {
-
-				File file = new File(getHookUpPath(), "voice_download.wav");
-
-				CouchDB.getFile(sFileName, file);
-
-				isLoaded = true;
-
-			} catch (Exception e) {
-				Log.e("LOG", e.toString());
-				isLoaded = false;
-			}
-			return null;
-		}
-
-		@Override
-		protected void onPostExecute(Void result) {
-			progressBarLoadingBar.dismiss();
-			if (isLoaded) {
-				sFileName = getHookUpPath().getAbsolutePath()
-						+ "/voice_download.wav";
-			} else {
-				Toast.makeText(VoiceActivity.this,
-						"Error in downloading voice...", Toast.LENGTH_LONG)
-						.show();
-				mPlayPause.setClickable(false);
-
-			}
-			super.onPostExecute(result);
-		}
-
+	private void fileDownloadAsync (String fileId, File file) {
+		CouchDB.downloadFile(fileId, file, new FileDownloadFinish(), VoiceActivity.this, true);
 	}
-
-	private class FileDownloadAsync extends SpikaAsync<String, Void, Void> {
-
-		protected FileDownloadAsync(Context context) {
-			super(context);
-		}
-
-		private HookUpProgressDialog mProgressDialog;
-		boolean isLoaded = false;
-
+	
+	private class FileDownloadFinish implements ResultListener<File> {
 		@Override
-		protected void onPreExecute() {
-			if (mProgressDialog == null) {
-				mProgressDialog = new HookUpProgressDialog(VoiceActivity.this);
-			}
-			mProgressDialog.show();
-			super.onPreExecute();
+		public void onResultsSucceded(File result) {
+			sFileName = getHookUpPath().getAbsolutePath()
+					+ "/voice_download.wav";
+			
 		}
 
 		@Override
-		protected Void doInBackground(String... params) {
-			try {
-
-				File file = new File(getHookUpPath(), "voice_download.wav");
-
-				CouchDB.downloadFile(params[0], file);
-
-				isLoaded = true;
-
-			} catch (Exception e) {
-				Log.e("LOG", e.toString());
-				isLoaded = false;
-			}
-			return null;
+		public void onResultsFail() {
+			Toast.makeText(VoiceActivity.this,
+					"Error in downloading voice...", Toast.LENGTH_LONG)
+					.show();
+			mPlayPause.setClickable(false);
 		}
-
-		@Override
-		protected void onPostExecute(Void result) {
-			mProgressDialog.dismiss();
-			if (isLoaded) {
-				sFileName = getHookUpPath().getAbsolutePath()
-						+ "/voice_download.wav";
-			} else {
-				Toast.makeText(VoiceActivity.this,
-						"Error in downloading voice...", Toast.LENGTH_LONG)
-						.show();
-				mPlayPause.setClickable(false);
-
-			}
-			super.onPostExecute(result);
-		}
-
 	}
 
 	private File getHookUpPath() {

@@ -17,12 +17,12 @@ import android.util.Log;
 
 public class SpikaAsyncTask<Params, Progress, Result> extends AsyncTask<Params, Progress, Result>{
 
-	private Command<Result> command;
-	private Context context;
-	private ResultListener<Result> resultListener;
-	private Exception exception;
-	private HookUpProgressDialog progressDialog;
-	private boolean showProgressBar = false;
+	protected Command<Result> command;
+	protected Context context;
+	protected ResultListener<Result> resultListener;
+	protected Exception exception;
+	protected HookUpProgressDialog progressDialog;
+	protected boolean showProgressBar = false;
 	
 	public SpikaAsyncTask(Command<Result> command, ResultListener<Result> resultListener, Context context, boolean showProgressBar) {
 		super();
@@ -31,6 +31,18 @@ public class SpikaAsyncTask<Params, Progress, Result> extends AsyncTask<Params, 
 		this.context = context;
 		this.showProgressBar = showProgressBar;
 	}
+	
+//	public SpikaAsyncTask(Command<Result> command, Context context, boolean showProgressBar) {
+//		super();
+//		this.command = command;
+//		this.context = context;
+//		this.showProgressBar = showProgressBar;
+//	}
+//	
+//	protected SpikaAsyncTask(Context context){
+//		super();
+//		this.context = context;
+//	}
 	
 	@Override
 	protected void onPreExecute() {

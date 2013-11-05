@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  * 
- * Copyright © 2013 Clover Studio Ltd. All rights reserved.
+ * Copyright ï¿½ 2013 Clover Studio Ltd. All rights reserved.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,8 +24,11 @@
 
 package com.cloverstudio.spikademo;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.json.JSONException;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -56,7 +59,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cloverstudio.spikademo.R;
+import com.cloverstudio.spikademo.couchdb.Command;
 import com.cloverstudio.spikademo.couchdb.CouchDB;
+import com.cloverstudio.spikademo.couchdb.ResultListener;
+import com.cloverstudio.spikademo.couchdb.SpikaAsyncTask;
+import com.cloverstudio.spikademo.couchdb.SpikaException;
 import com.cloverstudio.spikademo.couchdb.model.Group;
 import com.cloverstudio.spikademo.couchdb.model.GroupCategory;
 import com.cloverstudio.spikademo.couchdb.model.GroupSearch;
@@ -134,7 +141,6 @@ public class CreateGroupActivity extends SpikaActivity {
 		
 		mSpinnerCategory = (Spinner) findViewById(R.id.spinnerCategory);
 		new GetGroupCategoriesAsync(this).execute();
-
 	}
 	
 	public void setNewPassword(String newPassword) {
@@ -254,29 +260,27 @@ public class CreateGroupActivity extends SpikaActivity {
             if (mGroupFound != null) {
                 Toast.makeText(CreateGroupActivity.this, getString(R.string.groupname_taken), Toast.LENGTH_SHORT).show();
             }  else {
-                new CreateGroupAsync(CreateGroupActivity.this)
-                .execute(mGroup);
+            	createGroupAsync(mGroup);
             }
         }
     }
 
+    private void createGroupAsync (Group group) {
+    	new SpikaAsyncTask<Void, Void, String>(new CreateGroup(group), new UserCreatedFinish(), CreateGroupActivity.this, true).execute();
+    }
     
-	private class CreateGroupAsync extends SpikaAsync<Group, Void, String> {
+    private class CreateGroup implements Command<String> {
 
-		protected CreateGroupAsync(Context context) {
-			super(context);
-		}
-
+    	Group group;
+    	
+    	public CreateGroup(Group group)
+    	{
+    		this.group = group;
+    	}
+    	
 		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-			mProgressDialog.show();
-		}
-
-		@Override
-		protected String doInBackground(Group... params) {
-
-			Group group = params[0];
+		public String execute() throws JSONException, IOException,
+				SpikaException {
 			if (gGroupImagePath != null) {
 
                 String tmppath = CreateGroupActivity.this.getExternalCacheDir() + "/" + Const.TMP_BITMAP_FILENAME;              
@@ -300,10 +304,13 @@ public class CreateGroupActivity extends SpikaActivity {
 
 			return CouchDB.createGroup(group);
 		}
+    }
+    
+    private class UserCreatedFinish implements ResultListener<String> {
 
 		@Override
-		protected void onPostExecute(String result) {
-			if (null != result) {
+		public void onResultsSucceded(String result) {
+			if (result != null) {
 
 				Toast.makeText(getApplicationContext(), "Group created",
 						Toast.LENGTH_SHORT).show();
@@ -314,10 +321,13 @@ public class CreateGroupActivity extends SpikaActivity {
 			} else {
 				Toast.makeText(getApplicationContext(),
 						"Error while creating group", Toast.LENGTH_LONG).show();
-				mProgressDialog.dismiss();
 			}
 		}
-	}
+
+		@Override
+		public void onResultsFail() {
+		}
+    }
 
 	private class AddToFavoritesAsync extends
 			SpikaAsync<String, Void, Boolean> {
@@ -342,9 +352,7 @@ public class CreateGroupActivity extends SpikaActivity {
 		protected void onPostExecute(Boolean result) {
 			super.onPostExecute(result);
 			finish();
-
 		}
-
 	}
 
 	@Override

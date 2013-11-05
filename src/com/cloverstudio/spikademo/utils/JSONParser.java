@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -32,6 +33,9 @@ import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.cloverstudio.spikademo.couchdb.ConnectionHandler;
+import com.cloverstudio.spikademo.couchdb.SpikaException;
 
 import android.util.Log;
 
@@ -101,74 +105,64 @@ public class JSONParser {
 	}
 
 	public String getIdFromFileUploader(String url,
-			List<NameValuePair> params) {
+			List<NameValuePair> params) throws ClientProtocolException, IOException, UnsupportedOperationException, SpikaException, JSONException {
 		// Making HTTP request
-		try {
-			// defaultHttpClient
-			HttpParams httpParams = new BasicHttpParams();
-			HttpProtocolParams.setVersion(httpParams, HttpVersion.HTTP_1_1);
-			HttpProtocolParams.setContentCharset(httpParams, "UTF-8");
-			HttpClient httpClient = new DefaultHttpClient(httpParams);
-			HttpPost httpPost = new HttpPost(url);
+		
+		// defaultHttpClient
+		HttpParams httpParams = new BasicHttpParams();
+		HttpProtocolParams.setVersion(httpParams, HttpVersion.HTTP_1_1);
+		HttpProtocolParams.setContentCharset(httpParams, "UTF-8");
+		HttpClient httpClient = new DefaultHttpClient(httpParams);
+		HttpPost httpPost = new HttpPost(url);
 
-			httpPost.setHeader("database", Const.DATABASE);
-		     
-			Charset charSet = Charset.forName("UTF-8"); // Setting up the
-														// encoding
+		httpPost.setHeader("database", Const.DATABASE);
+	     
+		Charset charSet = Charset.forName("UTF-8"); // Setting up the
+													// encoding
 
-			try {
-				MultipartEntity entity = new MultipartEntity(
-						HttpMultipartMode.BROWSER_COMPATIBLE);
-				for (int index = 0; index < params.size(); index++) {
-					if (params.get(index).getName()
-							.equalsIgnoreCase(Const.FILE)) {
-						// If the key equals to "file", we use FileBody to
-						// transfer the data
-						entity.addPart(params.get(index).getName(),
-								new FileBody(new File(params.get(index)
-										.getValue())));
-					} else {
-						// Normal string data
-						entity.addPart(params.get(index).getName(),
-								new StringBody(params.get(index).getValue(),
-										charSet));
-					}
-				}
-
-				httpPost.setEntity(entity);
-			} catch (IOException e) {
-				e.printStackTrace();
+		MultipartEntity entity = new MultipartEntity(
+				HttpMultipartMode.BROWSER_COMPATIBLE);
+		for (int index = 0; index < params.size(); index++) {
+			if (params.get(index).getName()
+					.equalsIgnoreCase(Const.FILE)) {
+				// If the key equals to "file", we use FileBody to
+				// transfer the data
+				entity.addPart(params.get(index).getName(),
+						new FileBody(new File(params.get(index)
+								.getValue())));
+			} else {
+				// Normal string data
+				entity.addPart(params.get(index).getName(),
+						new StringBody(params.get(index).getValue(),
+								charSet));
 			}
-
-			HttpResponse httpResponse = httpClient.execute(httpPost);
-			HttpEntity httpEntity = httpResponse.getEntity();
-			is = httpEntity.getContent();
-
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		} catch (ClientProtocolException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
 
-		try {
-			// BufferedReader reader = new BufferedReader(new
-			// InputStreamReader(is, "iso-8859-1"), 8);
-			BufferedReader reader = new BufferedReader(new InputStreamReader(
-					is, Charset.forName("UTF-8")), 8);
-			StringBuilder sb = new StringBuilder();
-			String line = null;
-			while ((line = reader.readLine()) != null) {
-				sb.append(line);
-			}
-			is.close();
-			json = sb.toString();
+		httpPost.setEntity(entity);
 
-			Log.e("RESPONSE", json);
-		} catch (Exception e) {
-			Log.e("Buffer Error", "Error converting result " + e.toString());
+		HttpResponse httpResponse = httpClient.execute(httpPost);
+		HttpEntity httpEntity = httpResponse.getEntity();
+		is = httpEntity.getContent();
+
+		if (httpResponse.getStatusLine().getStatusCode() > 400)
+		{
+			if (httpResponse.getStatusLine().getStatusCode() == 403) throw new SpikaException(ConnectionHandler.getError(entity.getContent()));
+			throw new IOException(httpResponse.getStatusLine().getReasonPhrase());
 		}
+		
+		// BufferedReader reader = new BufferedReader(new
+		// InputStreamReader(is, "iso-8859-1"), 8);
+		BufferedReader reader = new BufferedReader(new InputStreamReader(
+				is, Charset.forName("UTF-8")), 8);
+		StringBuilder sb = new StringBuilder();
+		String line = null;
+		while ((line = reader.readLine()) != null) {
+			sb.append(line);
+		}
+		is.close();
+		json = sb.toString();
+
+		Log.e("RESPONSE", json);
 		
 		return json;
 

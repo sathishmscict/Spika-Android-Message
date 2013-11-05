@@ -95,7 +95,8 @@ public class ConnectionHandler {
 	 * @param url
 	 * @return
 	 */
-	public static JSONObject getJsonObject(String url, String userId) {
+	@Deprecated
+	public static JSONObject getJsonObjectDeprecated(String url, String userId) {
 
 		JSONObject retVal = null;
 
@@ -116,6 +117,21 @@ public class ConnectionHandler {
 
 		}
 
+		Log.e("Response: ", retVal.toString());
+		return retVal;
+	}
+	
+	public static JSONObject getJsonObject(String url, String userId) throws ClientProtocolException, IOException, JSONException, SpikaException {
+
+		JSONObject retVal = null;
+
+		InputStream is = httpGetRequest(url, userId);
+		String result = getString(is);
+
+		is.close();
+
+		retVal = jObjectFromString(result);
+			
 		Log.e("Response: ", retVal.toString());
 		return retVal;
 	}
@@ -184,7 +200,7 @@ public class ConnectionHandler {
 	}
 	
 	public static JSONArray getJsonArray(String url, String userId,
-			String token) throws ClientProtocolException, IOException, JSONException {
+			String token) throws ClientProtocolException, IOException, JSONException, SpikaException {
 
 		JSONArray retVal = null;
 
@@ -454,35 +470,34 @@ public class ConnectionHandler {
 	 * @param url
 	 * @param path
 	 * @return
+	 * @throws IOException 
+	 * @throws ClientProtocolException 
+	 * @throws SpikaException 
+	 * @throws JSONException 
+	 * @throws IllegalStateException 
 	 */
 	public static void getFile(String url, File file, String userId,
-			String token) {
+			String token) throws ClientProtocolException, IOException, SpikaException, IllegalStateException, JSONException {
 
 		File mFile = file;
 
-		try {
+		//URL mUrl = new URL(url); // you can write here any link
 
-			//URL mUrl = new URL(url); // you can write here any link
+		InputStream is = httpGetRequest(url, userId);
+		BufferedInputStream bis = new BufferedInputStream(is);
 
-			InputStream is = httpGetRequest(url, userId);
-			BufferedInputStream bis = new BufferedInputStream(is);
-
-			ByteArrayBuffer baf = new ByteArrayBuffer(20000);
-			int current = 0;
-			while ((current = bis.read()) != -1) {
-				baf.append((byte) current);
-			}
-
-			/* Convert the Bytes read to a String. */
-			FileOutputStream fos = new FileOutputStream(mFile);
-			fos.write(baf.toByteArray());
-			fos.flush();
-			fos.close();
-			is.close();
-
-		} catch (Exception e) {
-			Logger.error(TAG + "getFile", "Error retrieving file: ", e);
+		ByteArrayBuffer baf = new ByteArrayBuffer(20000);
+		int current = 0;
+		while ((current = bis.read()) != -1) {
+			baf.append((byte) current);
 		}
+
+		/* Convert the Bytes read to a String. */
+		FileOutputStream fos = new FileOutputStream(mFile);
+		fos.write(baf.toByteArray());
+		fos.flush();
+		fos.close();
+		is.close();
 
 	}
 
@@ -542,8 +557,10 @@ public class ConnectionHandler {
 	 * @return
 	 * @throws ClientProtocolException
 	 * @throws IOException
+	 * @throws JSONException 
+	 * @throws IllegalStateException 
 	 */
-	public static InputStream httpGetRequest(String url, String userId) throws ClientProtocolException, IOException {
+	public static InputStream httpGetRequest(String url, String userId) throws ClientProtocolException, IOException, SpikaException, IllegalStateException, JSONException {
 
 		HttpGet httpget = new HttpGet(url);
 
@@ -573,6 +590,13 @@ public class ConnectionHandler {
 		
 		HttpResponse response = HttpSingleton.getInstance().execute(httpget);
 		HttpEntity entity = response.getEntity();
+		
+		if (response.getStatusLine().getStatusCode() > 400)
+		{
+			Log.e("Koji k?", response.getStatusLine().getStatusCode() + "");
+			if (response.getStatusLine().getStatusCode() == 403) throw new SpikaException(getError(entity.getContent()));
+			throw new IOException(response.getStatusLine().getReasonPhrase());
+		}
 
 		return entity.getContent();
 	}
@@ -790,7 +814,7 @@ public class ConnectionHandler {
 		}
 	}
 	
-	private static String getError (InputStream inputStream) throws IOException, JSONException {
+	public static String getError (InputStream inputStream) throws IOException, JSONException {
 		
 		String error = "Unknown Spika Error";
 		

@@ -438,7 +438,7 @@ public class SpikaActivity extends Activity {
 		protected User doInBackground(Void... params) {
 			
 			Preferences prefs = SpikaApp.getPreferences();
-			return CouchDB.findUserByEmail(prefs.getUserEmail(), true);
+			return CouchDB.findUserByEmail(prefs.getUserEmail());
 		}
 
 		@Override

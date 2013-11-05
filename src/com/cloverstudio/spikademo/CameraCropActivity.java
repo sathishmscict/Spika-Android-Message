@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  * 
- * Copyright © 2013 Clover Studio Ltd. All rights reserved.
+ * Copyright ï¿½ 2013 Clover Studio Ltd. All rights reserved.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,6 +32,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
+
+import org.json.JSONException;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -70,7 +72,11 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.cloverstudio.spikademo.R;
+import com.cloverstudio.spikademo.couchdb.Command;
 import com.cloverstudio.spikademo.couchdb.CouchDB;
+import com.cloverstudio.spikademo.couchdb.ResultListener;
+import com.cloverstudio.spikademo.couchdb.SpikaAsyncTask;
+import com.cloverstudio.spikademo.couchdb.SpikaException;
 import com.cloverstudio.spikademo.dialog.HookUpProgressDialog;
 import com.cloverstudio.spikademo.extendables.SpikaActivity;
 import com.cloverstudio.spikademo.extendables.SpikaAsync;
@@ -207,9 +213,10 @@ public class CameraCropActivity extends SpikaActivity implements
 								GroupProfileActivity.gGroupImagePath = mFilePath;
 								finish();
 							} else {
+								fileUploadAsync(mFilePath);
 
-								new FileUploadAsync(CameraCropActivity.this)
-										.execute(mFilePath);
+//								new FileUploadAsync(CameraCropActivity.this)
+//										.execute(mFilePath);
 								// new SendMessageAsync(getApplicationContext(),
 								// SendMessageAsync.TYPE_PHOTO)
 								// .execute(resizedBitmap);
@@ -366,9 +373,10 @@ public class CameraCropActivity extends SpikaActivity implements
 									GroupProfileActivity.gGroupImage = getBitmapFromView(mImageView);
 									GroupProfileActivity.gGroupImagePath = mFilePath;
 								} else {
+									fileUploadAsync(mFilePath);
 
-									new FileUploadAsync(CameraCropActivity.this)
-											.execute(mFilePath);
+//									new FileUploadAsync(CameraCropActivity.this)
+//											.execute(mFilePath);
 									// new
 									// SendMessageAsync(getApplicationContext(),
 									// SendMessageAsync.TYPE_PHOTO)
@@ -710,26 +718,22 @@ public class CameraCropActivity extends SpikaActivity implements
 		SpikaApp.gOpenFromBackground = false;
 	}
 
-	private class FileUploadAsync extends SpikaAsync<String, Void, ArrayList<String>> {
-		
-		private HookUpProgressDialog mProgressDialog;
+	private void fileUploadAsync (String filePath) {
+		new SpikaAsyncTask<Void, Void, ArrayList<String>>(new FileUpload(filePath) , new FileUploadFinished(), CameraCropActivity.this, true).execute();
+	}
+	
+	private class FileUpload implements Command<ArrayList<String>> {
 
-		protected FileUploadAsync(Context context) {
-			super(context);
+		String filePath;
+		
+		public FileUpload (String filePath) {
+			this.filePath = filePath;
 		}
 		
 		@Override
-		protected void onPreExecute() {
-			if (mProgressDialog == null)
-				mProgressDialog = new HookUpProgressDialog(CameraCropActivity.this);
-			mProgressDialog.show();
-			super.onPreExecute();
-		}
-
-		@Override
-		protected ArrayList<String> doInBackground(String... params) {
-			String filePath = params[0];
-            String tmppath = CameraCropActivity.this.getExternalCacheDir() + "/" + Const.TMP_BITMAP_FILENAME;             
+		public ArrayList<String> execute() throws JSONException, IOException,
+				SpikaException {
+			String tmppath = CameraCropActivity.this.getExternalCacheDir() + "/" + Const.TMP_BITMAP_FILENAME;             
 
 			String fileId = CouchDB.uploadFile(filePath);
 			
@@ -744,11 +748,12 @@ public class CameraCropActivity extends SpikaActivity implements
             
 			return list;
 		}
+	}
+	
+	private class FileUploadFinished implements ResultListener<ArrayList<String>> {
 
 		@Override
-		protected void onPostExecute(ArrayList<String> result) {
-			super.onPostExecute(result);
-			mProgressDialog.dismiss();
+		public void onResultsSucceded(ArrayList<String> result) {
 			if (result != null) {
 				try {
 				    String fileId = result.get(0);
@@ -767,6 +772,10 @@ public class CameraCropActivity extends SpikaActivity implements
 				Logger.debug("FileUploadAsync", "Failed");
 			}
 			finish();
+		}
+
+		@Override
+		public void onResultsFail() {			
 		}
 	}
 }

@@ -197,7 +197,7 @@ public class SignInActivity extends Activity {
 
 				if (isEmailValid(mEtSendPasswordEmail.getText().toString())) 
 				{
-					CouchDB.getUserByEmail(mEtSendPasswordEmail.getText().toString(), new GetUserByEmailListener(), SignInActivity.this, true);
+					CouchDB.findUserByEmail(mEtSendPasswordEmail.getText().toString(), new GetUserByEmailListener(), SignInActivity.this, true);
 				} else {
 
 					final HookUpDialog dialog = new HookUpDialog(
