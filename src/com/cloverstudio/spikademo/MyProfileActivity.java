@@ -374,7 +374,8 @@ public class MyProfileActivity extends SideBarActivity {
 	}
 
 	private void getLoginUserData() {
-		new GetLoginUserAsync(this).execute();
+		
+		getLoginUserAsync();
 
 		mUserName = UsersManagement.getLoginUser().getName();
 		mUserAbout = UsersManagement.getLoginUser().getAbout();
@@ -391,22 +392,17 @@ public class MyProfileActivity extends SideBarActivity {
 		mNewOnlineStatus = mUserOnlineStatus;
 	}
 
-	private class GetLoginUserAsync extends SpikaAsync<Void, Void, User> {
-
-		public GetLoginUserAsync(Context context) {
-			super(context);
-		}
-
-		@Override
-		protected User doInBackground(Void... params) {
-
-			Preferences prefs = SpikaApp.getPreferences();
-			return CouchDB.findUserByEmail(prefs.getUserEmail());
-		}
+	private void getLoginUserAsync ()
+	{
+		Preferences prefs = SpikaApp.getPreferences();
+		CouchDB.findUserByEmail(prefs.getUserEmail(), new GetLoginUserListener(), MyProfileActivity.this, true);
+	}
+	
+	private class GetLoginUserListener implements ResultListener<User> {
 
 		@Override
-		protected void onPostExecute(User loginUser) {
-			UsersManagement.setLoginUser(loginUser);
+		public void onResultsSucceded(User result) {
+			UsersManagement.setLoginUser(result);
 
 			mUserName = UsersManagement.getLoginUser().getName();
 			mUserAbout = UsersManagement.getLoginUser().getAbout();
@@ -422,6 +418,10 @@ public class MyProfileActivity extends SideBarActivity {
 					.getOnlineStatus();
 			mUserEmail = UsersManagement.getLoginUser().getEmail();
 			mNewOnlineStatus = mUserOnlineStatus;
+		}
+
+		@Override
+		public void onResultsFail() {
 		}
 	}
 
@@ -836,7 +836,7 @@ public class MyProfileActivity extends SideBarActivity {
 				WallActivity.gIsRefreshUserProfile = true;
 				// MyProfileActivity.this.finish();
 
-				new GetLoginUserAsync(MyProfileActivity.this).execute();
+				getLoginUserAsync();
 
 			} else {
 				/*

@@ -139,41 +139,40 @@ public class CouchDBHelper {
 
         if (userJson != null) {
         	
+        	if (userJson.length() == 0) {
+        		Log.e("json", "empty");
+        		return null;
+        	}
+        	
         	if (userJson.has(Const.ERROR)) {
 				appLogout(null, false, isInvalidToken(userJson));
 				return null;
 			}
 
-            try {
+            user = sGsonExpose.fromJson(userJson.toString(), User.class);
+            
+            if (userJson.has(Const.FAVORITE_GROUPS)) {
+                JSONArray favorite_groups = userJson
+                        .getJSONArray(Const.FAVORITE_GROUPS);
 
-                user = sGsonExpose.fromJson(userJson.toString(), User.class);
-                
-                if (userJson.has(Const.FAVORITE_GROUPS)) {
-                    JSONArray favorite_groups = userJson
-                            .getJSONArray(Const.FAVORITE_GROUPS);
+                List<String> groups = new ArrayList<String>();
 
-                    List<String> groups = new ArrayList<String>();
-
-                    for (int i = 0; i < favorite_groups.length(); i++) {
-                        groups.add(favorite_groups.getString(i));
-                    }
-
-                    user.setGroupIds(groups);
+                for (int i = 0; i < favorite_groups.length(); i++) {
+                    groups.add(favorite_groups.getString(i));
                 }
 
-                if (userJson.has(Const.CONTACTS)) {
-                    JSONArray contacts = userJson.getJSONArray(Const.CONTACTS);
-
-                    for (int i = 0; i < contacts.length(); i++) {
-                        contactsIds.add(contacts.getString(i));
-                    }
-
-                    user.setContactIds(contactsIds);
-                }
-            } catch (JSONException e) {
-
+                user.setGroupIds(groups);
             }
 
+            if (userJson.has(Const.CONTACTS)) {
+                JSONArray contacts = userJson.getJSONArray(Const.CONTACTS);
+
+                for (int i = 0; i < contacts.length(); i++) {
+                    contactsIds.add(contacts.getString(i));
+                }
+
+                user.setContactIds(contactsIds);
+            }
         }
 
         return user;

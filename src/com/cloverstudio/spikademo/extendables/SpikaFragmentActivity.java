@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  * 
- * Copyright © 2013 Clover Studio Ltd. All rights reserved.
+ * Copyright ï¿½ 2013 Clover Studio Ltd. All rights reserved.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -45,6 +45,7 @@ import com.cloverstudio.spikademo.GCMIntentService;
 import com.cloverstudio.spikademo.SpikaApp;
 import com.cloverstudio.spikademo.WallActivity;
 import com.cloverstudio.spikademo.couchdb.CouchDB;
+import com.cloverstudio.spikademo.couchdb.ResultListener;
 import com.cloverstudio.spikademo.couchdb.model.ActivitySummary;
 import com.cloverstudio.spikademo.couchdb.model.Group;
 import com.cloverstudio.spikademo.couchdb.model.User;
@@ -139,7 +140,7 @@ public class SpikaFragmentActivity extends FragmentActivity {
 
 	private void handlePushNotification(Intent intent) {
 
-		new GetActivitySummary(this).execute();
+		getActivitySummary();
 
 		String message = intent.getStringExtra(Const.PUSH_MESSAGE);
 		String fromUserId = intent.getStringExtra(Const.PUSH_FROM_USER_ID);
@@ -274,31 +275,27 @@ public class SpikaFragmentActivity extends FragmentActivity {
 		// Child activities override this method
 	}
 
-	protected class GetActivitySummary extends
-			SpikaAsync<Void, Void, ActivitySummary> {
-
-		public GetActivitySummary(Context context) {
-			super(context);
+	protected void getActivitySummary () {
+		if (UsersManagement.getLoginUser() != null) {
+			String id = UsersManagement.getLoginUser().getId();
+			CouchDB.findUserActivitySummary(id, new GetActivitySummaryListener(), SpikaFragmentActivity.this, false);
 		}
-
+	}
+	
+	private class GetActivitySummaryListener implements ResultListener<ActivitySummary> {
+		
 		@Override
-		protected ActivitySummary doInBackground(Void... params) {
-			return CouchDB.findUserActivitySummary(UsersManagement
-					.getLoginUser().getId());
-		}
-
-		@Override
-		protected void onPostExecute(ActivitySummary activitySummary) {
+		public void onResultsSucceded(ActivitySummary activitySummary) {
 			if (activitySummary != null) {
-
 				UsersManagement.getLoginUser().setActivitySummary(
 						activitySummary);
 
-				// Refresh all views that show data from user activity summary
 				SpikaFragmentActivity.this.refreshActivitySummaryViews();
-
 			}
+		}
 
+		@Override
+		public void onResultsFail() {
 		}
 	}
 

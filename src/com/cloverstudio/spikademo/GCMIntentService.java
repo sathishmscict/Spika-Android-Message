@@ -24,7 +24,10 @@
 
 package com.cloverstudio.spikademo;
 
+import java.io.IOException;
 import java.util.concurrent.ExecutionException;
+
+import org.json.JSONException;
 
 import android.app.KeyguardManager;
 import android.app.Notification;
@@ -36,7 +39,11 @@ import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.cloverstudio.spikademo.R;
+import com.cloverstudio.spikademo.couchdb.Command;
 import com.cloverstudio.spikademo.couchdb.CouchDB;
+import com.cloverstudio.spikademo.couchdb.ResultListener;
+import com.cloverstudio.spikademo.couchdb.SpikaAsyncTask;
+import com.cloverstudio.spikademo.couchdb.SpikaException;
 import com.cloverstudio.spikademo.couchdb.model.User;
 import com.cloverstudio.spikademo.extendables.SpikaAsync;
 import com.cloverstudio.spikademo.management.UsersManagement;
@@ -70,8 +77,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 	protected void onRegistered(Context context, String registrationId) {
 
 		if (!registrationId.equals(null)) {
-			new SavePushTokenAsync(context).execute(registrationId,
-					Const.ONLINE);
+			savePushTokenAsync(registrationId, Const.ONLINE, context);
 		}
 
 	}
@@ -164,79 +170,62 @@ public class GCMIntentService extends GCMBaseIntentService {
 		}
 	}
 
-	private class SavePushTokenAsync extends SpikaAsync<String, Void, Boolean> {
+	private void savePushTokenAsync (String pushToken, String onlineStatus, Context context) {
+		new SpikaAsyncTask<Void, Void, Boolean>(new SavePushToken(pushToken, onlineStatus), new SavePushTokenListener(pushToken), context, false).execute();
+	}
+	
+	private class SavePushToken implements Command<Boolean>{
 
-		protected SavePushTokenAsync(Context context) {
-			super(context);
+		String pushToken;
+		String onlineStatus;
+		
+		public SavePushToken (String pushToken, String onlineStatus) {
+			this.pushToken = pushToken;
+			this.onlineStatus = onlineStatus;
 		}
-
-		User currentUserData = null;
-		String currentPushToken = null;
-
+		
 		@Override
-		protected void onPreExecute() {
-			// save data of current login user so if anything goes wrong with
-			// update, we can return to previous state
-
-			currentPushToken = SpikaApp.getPreferences().getUserPushToken();
-			super.onPreExecute();
-		}
-
-		String pushToken = null;
-		String onlineStatus = null;
-
-		@Override
-		protected Boolean doInBackground(String... params) {
-			/*
-			 * XXX SpikaApp.getPreferences().getUserEmail() returns null,
-			 * somewhere in code the email is lost from preferences. Preferences
-			 * are set in SignInActivity -> CouchDB.auth(mSignUpEmail,
-			 * mSignUpPassword);
-			 */
-
-			// Old code:
-			// User loginUser =
-			// CouchDB.findUserByEmail(SpikaApp.getPreferences()
-			// .getUserEmail(), false);
-			// end:Old code
-
-			// New code
-			User loginUser = CouchDB.findUserByEmail(UsersManagement
-					.getLoginUser().getEmail());
+		public Boolean execute() throws JSONException, IOException,
+				SpikaException {
+			
+			User loginUser = CouchDB.findUserByEmail(UsersManagement. getLoginUser().getEmail());
 			SpikaApp.getPreferences().setUserEmail(
 					UsersManagement.getLoginUser().getEmail());
 			// end:New code
 
 			UsersManagement.setLoginUser(loginUser);
-			currentUserData = UsersManagement.getLoginUser();
-
-			pushToken = params[0];
-			onlineStatus = params[1];
 
 			/* set new androidToken and onlineStatus */
 			UsersManagement.getLoginUser().setOnlineStatus(onlineStatus);
 			SpikaApp.getPreferences().setUserPushToken(pushToken);
 			return CouchDB.updateUser(UsersManagement.getLoginUser());
 		}
+	}
+	
+	private class SavePushTokenListener implements ResultListener<Boolean>{
 
+		User currentUserData;
+		String currentPushToken;
+		
+		public SavePushTokenListener (String currentPushToken) {
+			this.currentPushToken = currentPushToken;
+		}
+		
 		@Override
-		protected void onPostExecute(Boolean result) {
+		public void onResultsSucceded(Boolean result) {
 			if (result) {
-				/* update successful */
-
 			} else {
-				/*
-				 * something went wrong with update profile, returning logged in
-				 * user to state before update
-				 */
 				UsersManagement.setLoginUser(currentUserData);
 				SpikaApp.getPreferences().setUserPushToken(currentPushToken);
 			}
-
-			super.onPostExecute(result);
 		}
-	}
 
+		@Override
+		public void onResultsFail() {
+		}
+		
+	}
+	
 	private class RemovePushTokenAsync extends
 			SpikaAsync<String, Void, String> {
 

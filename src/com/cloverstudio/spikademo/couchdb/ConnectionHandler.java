@@ -591,10 +591,10 @@ public class ConnectionHandler {
 		HttpResponse response = HttpSingleton.getInstance().execute(httpget);
 		HttpEntity entity = response.getEntity();
 		
+		Log.e("STATUS", "" + response.getStatusLine().getStatusCode());
 		if (response.getStatusLine().getStatusCode() > 400)
 		{
-			Log.e("Koji k?", response.getStatusLine().getStatusCode() + "");
-			if (response.getStatusLine().getStatusCode() == 403) throw new SpikaException(getError(entity.getContent()));
+			if (response.getStatusLine().getStatusCode() == 500) throw new SpikaException(getError(entity.getContent()));
 			throw new IOException(response.getStatusLine().getReasonPhrase());
 		}
 
@@ -651,10 +651,9 @@ public class ConnectionHandler {
 		HttpEntity entity = response.getEntity();
 		
 		Log.e("STATUS", "" + response.getStatusLine().getStatusCode());
-		
 		if (response.getStatusLine().getStatusCode() > 400)
 		{
-			if (response.getStatusLine().getStatusCode() == 403) throw new SpikaException(getError(entity.getContent()));
+			if (response.getStatusLine().getStatusCode() == 500) throw new SpikaException(getError(entity.getContent()));
 			throw new IOException(response.getStatusLine().getReasonPhrase());
 		}
 		

@@ -106,7 +106,7 @@ public class RecentActivityActivity extends SideBarActivity {
 	@Override
 	protected void onResume() {
 
-        new GetActivitySummary(this).execute();
+        getActivitySummary();
 
 		if (!pushHandledOnNewIntent) {
 			if (getIntent().getBooleanExtra(Const.PUSH_INTENT, false)) {

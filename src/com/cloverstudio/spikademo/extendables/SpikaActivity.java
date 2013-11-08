@@ -47,6 +47,7 @@ import com.cloverstudio.spikademo.SpikaApp;
 import com.cloverstudio.spikademo.PasscodeActivity;
 import com.cloverstudio.spikademo.WallActivity;
 import com.cloverstudio.spikademo.couchdb.CouchDB;
+import com.cloverstudio.spikademo.couchdb.ResultListener;
 import com.cloverstudio.spikademo.couchdb.model.ActivitySummary;
 import com.cloverstudio.spikademo.couchdb.model.Group;
 import com.cloverstudio.spikademo.couchdb.model.User;
@@ -57,7 +58,6 @@ import com.cloverstudio.spikademo.management.ConnectionChangeReceiver;
 import com.cloverstudio.spikademo.management.LogoutReceiver;
 import com.cloverstudio.spikademo.management.UsersManagement;
 import com.cloverstudio.spikademo.utils.Const;
-import com.cloverstudio.spikademo.utils.Preferences;
 import com.cloverstudio.spikademo.utils.Utils;
 
 /**
@@ -208,8 +208,8 @@ public class SpikaActivity extends Activity {
 
 	private void handlePushNotification(Intent intent) {
 
-		new GetActivitySummary(SpikaActivity.this).execute();
-
+		getActivitySummary();
+		
 		String message = intent.getStringExtra(Const.PUSH_MESSAGE);
 		String fromUserId = intent.getStringExtra(Const.PUSH_FROM_USER_ID);
 		String fromType = intent.getStringExtra(Const.PUSH_FROM_TYPE);
@@ -261,9 +261,37 @@ public class SpikaActivity extends Activity {
 
 			PushNotification.show(this, mRlPushNotification, message, fromUser,
 					fromGroup, fromType);
+		}
+	}
+	
+	private void getUserByIdAsync (String userId) {
+		CouchDB.findUserById(userId, new GetUserByIdListener(), SpikaActivity.this, true);
+	}
+	
+	private class GetUserByIdListener implements ResultListener<User> {
 
+		@Override
+		public void onResultsSucceded(User result) {
 		}
 
+		@Override
+		public void onResultsFail() {
+		}
+	}
+	
+	private void getGroupByIdAsync (String groupId) {
+		CouchDB.findGroupById(groupId, new GetGroupByIdListener(), SpikaActivity.this, true);
+	}
+	
+	private class GetGroupByIdListener implements ResultListener<Group> {
+
+		@Override
+		public void onResultsSucceded(Group result) {
+		}
+
+		@Override
+		public void onResultsFail() {
+		}
 	}
 
 	private BroadcastReceiver mConnectionChangeReceiver = new BroadcastReceiver() {
@@ -371,35 +399,59 @@ public class SpikaActivity extends Activity {
 	protected void refreshWallMessages() {
 	}
 
-	protected class GetActivitySummary extends
-			SpikaAsync<Void, Void, ActivitySummary> {
-
-		public GetActivitySummary(Context context) {
-			super(context);
+	protected void getActivitySummary () {
+		if (UsersManagement.getLoginUser() != null) {
+			String id = UsersManagement.getLoginUser().getId();
+			CouchDB.findUserActivitySummary(id, new GetActivitySummaryListener(), SpikaActivity.this, false);
 		}
-
+	}
+	
+	private class GetActivitySummaryListener implements ResultListener<ActivitySummary> {
+		
 		@Override
-		protected ActivitySummary doInBackground(Void... params) {
-			if (UsersManagement.getLoginUser() != null) {
-				
-				return CouchDB.findUserActivitySummary(UsersManagement
-						.getLoginUser().getId());
-			} else
-				return null;
-		}
-
-		@Override
-		protected void onPostExecute(ActivitySummary activitySummary) {
+		public void onResultsSucceded(ActivitySummary activitySummary) {
 			if (activitySummary != null) {
 				UsersManagement.getLoginUser().setActivitySummary(
 						activitySummary);
 
 				SpikaActivity.this.refreshActivitySummaryViews();
-
 			}
+		}
 
+		@Override
+		public void onResultsFail() {
 		}
 	}
+	
+//	protected class GetActivitySummary extends
+//			SpikaAsync<Void, Void, ActivitySummary> {
+//
+//		public GetActivitySummary(Context context) {
+//			super(context);
+//		}
+//
+//		@Override
+//		protected ActivitySummary doInBackground(Void... params) {
+//			if (UsersManagement.getLoginUser() != null) {
+//				
+//				return CouchDB.findUserActivitySummary(UsersManagement
+//						.getLoginUser().getId());
+//			} else
+//				return null;
+//		}
+//
+//		@Override
+//		protected void onPostExecute(ActivitySummary activitySummary) {
+//			if (activitySummary != null) {
+//				UsersManagement.getLoginUser().setActivitySummary(
+//						activitySummary);
+//
+//				SpikaActivity.this.refreshActivitySummaryViews();
+//
+//			}
+//
+//		}
+//	}
 
 	protected void unbindDrawables(View view) {
 		if (view.getBackground() != null) {
@@ -426,25 +478,6 @@ public class SpikaActivity extends Activity {
 				.getSystemService(Activity.INPUT_METHOD_SERVICE);
 		inputMethodManager.hideSoftInputFromWindow(this.getCurrentFocus()
 				.getWindowToken(), 0);
-	}
-	
-	protected class GetLoginUserAsync extends SpikaAsync<Void, Void, User> {
-
-		public GetLoginUserAsync(Context context) {
-			super(context);
-		}
-
-		@Override
-		protected User doInBackground(Void... params) {
-			
-			Preferences prefs = SpikaApp.getPreferences();
-			return CouchDB.findUserByEmail(prefs.getUserEmail());
-		}
-
-		@Override
-		protected void onPostExecute(User loginUser) {
-			UsersManagement.setLoginUser(loginUser);
-		}
 	}
 	
     protected void showTutorial(String textTutorial) {

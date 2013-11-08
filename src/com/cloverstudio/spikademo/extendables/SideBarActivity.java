@@ -57,6 +57,7 @@ import com.cloverstudio.spikademo.dialog.HookUpDialog;
 import com.cloverstudio.spikademo.management.LogoutReceiver;
 import com.cloverstudio.spikademo.management.SettingsManager;
 import com.cloverstudio.spikademo.management.UsersManagement;
+import com.cloverstudio.spikademo.utils.Const;
 import com.google.android.gcm.GCMRegistrar;
 
 /**
@@ -95,40 +96,13 @@ public class SideBarActivity extends SpikaActivity {
 
 	public HookUpDialog mLogoutDialog;
    
-//    private class GetSupportUserAsync extends SpikaAsync<Void, Void, User> {
-//
-//        protected GetSupportUserAsync(Context context) {
-//            super(context);
-//        }
-//
-//        @Override
-//        protected void onPreExecute() {
-//            super.onPreExecute();
-//        }
-//
-//        @Override
-//        protected User doInBackground(Void... params) {
-//
-//            User supportUser = CouchDB.findUserById("7df093b56d11b8c5f961cf120d2ebc4c");
-//            return supportUser;
-//        }
-//
-//        @Override
-//        protected void onPostExecute(User supportUser) {
-//            UsersManagement.setSupportUser(supportUser);
-//        }
-//    }
-
-    
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		sInstance = this;
 		super.onCreate(savedInstanceState);
-		new GetActivitySummary(this).execute();
+		getActivitySummary();
 
 		if(UsersManagement.getSupportUser() == null) {
-			Log.e("support user", " WTF? ");
-//		    new GetSupportUserAsync(this).execute();
 		    ResultListener<User> resultListener = new ResultListener<User>() {
 
 				@Override
@@ -140,9 +114,8 @@ public class SideBarActivity extends SpikaActivity {
 				public void onResultsFail() {
 				}
 			};
-			CouchDB.findUserById("326948e7cf5c85db29bd114224000d16", resultListener, this, true);
+			CouchDB.findUserById(Const.SUPPORT_USER, resultListener, this, false);
 		}
-		
 	}
 
 	public void setSideBar(String Title) {
@@ -233,7 +206,7 @@ public class SideBarActivity extends SpikaActivity {
 
 	public void openSideBar() {
 
-		new GetActivitySummary(this).execute();
+		getActivitySummary();
 
 		mRlSideBarHolder.setVisibility(View.VISIBLE);
 		mRlSideBarHolder.bringToFront();
@@ -522,7 +495,5 @@ public class SideBarActivity extends SpikaActivity {
 			UsersManagement.getLoginUser().setOnlineStatus(params[0]);
 			return CouchDB.updateUser(UsersManagement.getLoginUser());
 		}
-
 	}
-
 }

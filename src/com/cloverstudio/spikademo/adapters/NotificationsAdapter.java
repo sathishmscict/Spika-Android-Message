@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  * 
- * Copyright © 2013 Clover Studio Ltd. All rights reserved.
+ * Copyright ï¿½ 2013 Clover Studio Ltd. All rights reserved.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,12 +26,10 @@ package com.cloverstudio.spikademo.adapters;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,18 +44,16 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cloverstudio.spikademo.R;
-import com.cloverstudio.spikademo.SpikaApp;
 import com.cloverstudio.spikademo.WallActivity;
 import com.cloverstudio.spikademo.couchdb.CouchDB;
+import com.cloverstudio.spikademo.couchdb.ResultListener;
 import com.cloverstudio.spikademo.couchdb.model.Group;
 import com.cloverstudio.spikademo.couchdb.model.Notification;
 import com.cloverstudio.spikademo.couchdb.model.NotificationMessage;
 import com.cloverstudio.spikademo.couchdb.model.User;
-import com.cloverstudio.spikademo.extendables.SpikaAsync;
 import com.cloverstudio.spikademo.lazy.ImageLoader;
 import com.cloverstudio.spikademo.management.SettingsManager;
 import com.cloverstudio.spikademo.management.UsersManagement;
-import com.cloverstudio.spikademo.messageshandling.FindAvatarFileIdAsync;
 import com.cloverstudio.spikademo.utils.Const;
 import com.cloverstudio.spikademo.utils.Utils;
 
@@ -224,74 +220,55 @@ public class NotificationsAdapter extends BaseAdapter implements
 		NotificationMessage message = getItem(holder.position);
 
 		if (mTargetType.equals(Const.USER)) {
-			try {
-				User fromUser = new GetUserByIdAsync(mActivity).execute(
-						message.getTargetId()).get();
-				UsersManagement.setToUser(fromUser);
-				UsersManagement.setToGroup(null);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			} catch (ExecutionException e) {
-				e.printStackTrace();
-			}
+			getUserByIdAsync(message.getTargetId());
 		}
 
 		if (mTargetType.equals(Const.GROUP)) {
-			try {
-				Group fromGroup = new GetGroupByIdAsync(mActivity).execute(
-						message.getTargetId()).get();
-				UsersManagement.setToUser(null);
-				UsersManagement.setToGroup(fromGroup);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			} catch (ExecutionException e) {
-				e.printStackTrace();
-			}
-
+			getGroupByIdAsync(message.getTargetId());
 		}
+	}
+
+	private void getUserByIdAsync (String userId) {
+		CouchDB.findUserById(userId, new GetUserByIdListener(), mActivity, true);
+	}
+	
+	private class GetUserByIdListener implements ResultListener<User> {
+
+		@Override
+		public void onResultsSucceded(User result) {
+			UsersManagement.setToUser(result);
+			UsersManagement.setToGroup(null);
+			startWallActivity();
+		}
+
+		@Override
+		public void onResultsFail() {
+		}
+	}
+	
+	private void getGroupByIdAsync (String groupId) {
+		CouchDB.findGroupById(groupId, new GetGroupByIdListener(), mActivity, true);
+	}
+	
+	private class GetGroupByIdListener implements ResultListener<Group> {
+
+		@Override
+		public void onResultsSucceded(Group result) {
+			UsersManagement.setToUser(null);
+			UsersManagement.setToGroup(result);
+			startWallActivity();
+		}
+
+		@Override
+		public void onResultsFail() {
+		}
+	}
+	
+	private void startWallActivity () {
 		SettingsManager.ResetSettings();
 		if (WallActivity.gCurrentMessages != null) {
 			WallActivity.gCurrentMessages.clear();
 		}
 		mActivity.startActivity(new Intent(mActivity, WallActivity.class));
-
 	}
-
-	private class GetUserByIdAsync extends SpikaAsync<String, Void, User> {
-
-		protected GetUserByIdAsync(Context context) {
-			super(context);
-		}
-
-		@Override
-		protected User doInBackground(String... params) {
-			String userId = params[0];
-			return CouchDB.findUserById(userId);
-		}
-
-		@Override
-		protected void onPostExecute(User user) {
-			super.onPostExecute(user);
-		}
-
-	}
-
-	private class GetGroupByIdAsync extends SpikaAsync<String, Void, Group> {
-
-		protected GetGroupByIdAsync(Context context) {
-			super(context);
-		}
-
-		@Override
-		protected Group doInBackground(String... params) {
-			String id = params[0];
-			return CouchDB.findGroupById(id);
-		}
-
-		@Override
-		protected void onPostExecute(Group group) {
-			super.onPostExecute(group);
-		}
-	}
-
 }
