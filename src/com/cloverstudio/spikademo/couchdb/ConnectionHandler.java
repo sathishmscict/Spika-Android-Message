@@ -142,7 +142,7 @@ public class ConnectionHandler {
 	 * @param url
 	 * @return
 	 */
-	public static String getString(String url, String userId) {
+	public static String getStringDeprecated(String url, String userId) {
 
 		String result = null;
 
@@ -161,6 +161,29 @@ public class ConnectionHandler {
 			return null;
 
 		}
+
+		Log.e("Response: ", result.toString());
+		return result;
+	}
+	
+	/**
+	 * Http GET
+	 * 
+	 * @param url
+	 * @return
+	 * @throws JSONException 
+	 * @throws SpikaException 
+	 * @throws IOException 
+	 * @throws IllegalStateException 
+	 * @throws ClientProtocolException 
+	 */
+	public static String getString(String url, String userId) throws ClientProtocolException, IllegalStateException, IOException, SpikaException, JSONException {
+
+		String result = null;
+
+		InputStream is = httpGetRequest(url, userId);
+		result = getString(is);
+		is.close();
 
 		Log.e("Response: ", result.toString());
 		return result;

@@ -89,7 +89,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 	protected void onUnregistered(Context context, String registrationId) {
 
 		if (!registrationId.equals(null)) {
-			new RemovePushTokenAsync(context).execute(Const.OFFLINE);
+			removePushTokenAsync(context);
 		}
 	}
 
@@ -226,36 +226,23 @@ public class GCMIntentService extends GCMBaseIntentService {
 		
 	}
 	
-	private class RemovePushTokenAsync extends
-			SpikaAsync<String, Void, String> {
-
-		protected RemovePushTokenAsync(Context context) {
-			super(context);
-		}
-
-		@Override
-		protected String doInBackground(String... params) {
-
-			SpikaApp.getPreferences().setUserPushToken("");
-
-			if (UsersManagement.getLoginUser() != null)
-				return CouchDB.unregisterPushToken(UsersManagement
-						.getLoginUser().getId());
-			else
-				return null;
-		}
-
-		@Override
-		protected void onPostExecute(String result) {
-			if (result != null && result.contains("OK")) {
-				/* update successful */
-				SpikaApp.getPreferences().setUserEmail("");
-				SpikaApp.getPreferences().setUserPassword("");
-
-			}
-
-			super.onPostExecute(result);
+	private void removePushTokenAsync (Context context) {
+		SpikaApp.getPreferences().setUserPushToken("");
+		if (UsersManagement.getLoginUser() != null) {
+			CouchDB.unregisterPushToken(UsersManagement.getLoginUser().getId(), new RemovePushTokenListener(), context, false);
 		}
 	}
-
+	
+	private class RemovePushTokenListener implements ResultListener<String> {
+		@Override
+		public void onResultsSucceded(String result) {
+			if (result != null && result.contains("OK")) {
+				SpikaApp.getPreferences().setUserEmail("");
+				SpikaApp.getPreferences().setUserPassword("");
+			}
+		}
+		@Override
+		public void onResultsFail() {
+		}
+	}
 }

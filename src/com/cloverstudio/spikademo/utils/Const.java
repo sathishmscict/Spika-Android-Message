@@ -37,22 +37,23 @@ public class Const {
 
 	/* CouchDB credentials */
 	//public static final String API_URL = "http://hookup.clover-studio.com/hookup/hookup-api2.php?";
-	public static final String BASE_URL                	= "http://192.168.1.126:8080/wwwroot/api/";
-	public static final String SUPPORT_USER				= "326948e7cf5c85db29bd114224000d16";
+	public static final String BASE_URL                	= "http://192.168.1.111:8080/wwwroot/api/";
+	public static final String SUPPORT_USER				= "2f3b9e495143a04238088937cf029267";
 //	public static final String BASE_URL                	= "http://spikademo2.clover-studio.com/api/";
 	public static final String API_URL                 	= BASE_URL;
 	public static final String AUTH_URL                	= BASE_URL + "auth?";
-	public static final String SEARCH_USERS_URL        	= BASE_URL + "searchusers?";
-	public static final String SEARCH_GROUPS_URL       	= BASE_URL + "searchgroup.php?";
-	public static final String FILE_UPLOADER_URL       	= BASE_URL + "fileuploader.php?";
-    public static final String FILE_DOWNLOADER_URL     	= BASE_URL + "filedownloader.php?";
+	public static final String SEARCH_USERS_URL        	= BASE_URL + "searchUsers?";
+	public static final String SEARCH_GROUPS_URL       	= BASE_URL + "searchGroups/name/";
+	public static final String FILE_UPLOADER_URL       	= BASE_URL + "fileuploader";
+    public static final String FILE_DOWNLOADER_URL     	= BASE_URL + "filedownloader?";
     public static final String CHECKUNIQUE_URL         	= BASE_URL + "checkUnique?";
     public static final String FIND_USER_BY_NAME       	= BASE_URL + "findUser/name/";
     public static final String FIND_USER_BY_EMAIL      	= BASE_URL + "findUser/email/";
     public static final String FIND_USER_BY_ID			= BASE_URL + "findUser/id/";
     public static final String FIND_USERACTIVITY_SUMMARY= BASE_URL + "activitySummary";
-    public static final String PASSWORDREMINDER_URL    	= BASE_URL + "sendpassword.php?";
-    public static final String UNREGISTER_PUSH_URL     	= BASE_URL + "unregistToken.php?";
+    
+    public static final String PASSWORDREMINDER_URL    	= BASE_URL + "resetPassword?";
+    public static final String UNREGISTER_PUSH_URL     	= BASE_URL + "unregistToken?";
     public static final String DATABASE                	= "spikademo";
     
 	/* User constants */
@@ -150,6 +151,7 @@ public class Const {
 	public static final String STUB = "stub";
 	public static final String LENGTH = "length";
 	public static final String CREATE_USER = "create_user";
+	public static final String UPDATE_USER = "updateUser";
 	
 	/* Recent activity constants */
 	public static final String ACTIVITY_SUMMARY = "activity_summary";
@@ -209,6 +211,7 @@ public class Const {
 	public static final String VOICE_FILE_ID = "voice_file_id";
 	public static final String VIDEO_FILE_ID = "video_file_id";
 	public static final String TMP_BITMAP_FILENAME = "hutmpfile.jpeg";
+	public static final String UPLOADS = "uploads";
 	
 	/* Recording constants */
 	public static final long MAX_RECORDING_TIME_VIDEO = 30; // seconds

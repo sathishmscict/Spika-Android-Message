@@ -202,10 +202,13 @@ public class CouchDB {
      * 
      * @param userId
      * @return
+     * @throws JSONException 
+     * @throws SpikaException 
+     * @throws IOException 
+     * @throws IllegalStateException 
+     * @throws ClientProtocolException 
      */
-    //TODO:
-    @Deprecated
-    public static String unregisterPushToken(String userId) {
+    private static String unregisterPushToken(String userId) throws ClientProtocolException, IllegalStateException, IOException, SpikaException, JSONException {
     	String result = ConnectionHandler.getString(Const.UNREGISTER_PUSH_URL + Const.USER_ID + "=" + userId,
                 UsersManagement.getLoginUser().getId());
         return result;
@@ -224,7 +227,7 @@ public class CouchDB {
 		}
 
 		@Override
-		public String execute() throws JSONException, IOException {
+		public String execute() throws JSONException, IOException, IllegalStateException, SpikaException {
 			return unregisterPushToken(userId);
 		}
     }
@@ -582,6 +585,10 @@ public class CouchDB {
      * 
      * @param user
      * @return user object
+     * @throws SpikaException 
+     * @throws JSONException 
+     * @throws IOException 
+     * @throws IllegalStateException 
      */
     @Deprecated
     public static boolean updateUser(User user) {
@@ -590,6 +597,8 @@ public class CouchDB {
         List<String> contactIds = new ArrayList<String>();
         List<String> groupIds = new ArrayList<String>();
 
+        JSONObject json = null;
+        
         try {
             /* General user info */
             userJson.put(Const._ID, user.getId());
@@ -636,13 +645,21 @@ public class CouchDB {
                 userJson.put(Const.FAVORITE_GROUPS, groupsArray);
             }
 
+//        JSONObject json = ConnectionHandler.putJsonObject(userJson, user.getId(), user.getId(),
+//                user.getToken());
+        
+        json = ConnectionHandler.postJsonObject(Const.UPDATE_USER, userJson, user.getId(), user.getToken());
+
         } catch (JSONException e) {
             e.printStackTrace();
-        }
-
-        JSONObject json = ConnectionHandler.putJsonObject(userJson, user.getId(), user.getId(),
-                user.getToken());
-
+        } catch (IllegalStateException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (SpikaException e) {
+			e.printStackTrace();
+		}
+        
         return CouchDBHelper.updateUser(json, contactIds, groupIds);
     }
     
@@ -775,7 +792,7 @@ public class CouchDB {
                 e.printStackTrace();
                 return null;
             }
-            searchParams = "n=" + groupSearch.getName();
+            searchParams = groupSearch.getName();
         }
 
         JSONArray json = ConnectionHandler.getJsonArrayDeprecated(Const.SEARCH_GROUPS_URL + searchParams,
@@ -808,7 +825,7 @@ public class CouchDB {
 	                e.printStackTrace();
 	                return null;
 	            }
-	            searchParams = "n=" + groupSearch.getName();
+	            searchParams = groupSearch.getName();
 	        }
 
 	        JSONArray json = ConnectionHandler.getJsonArray(Const.SEARCH_GROUPS_URL + searchParams, UsersManagement.getLoginUser().getId(), UsersManagement.getLoginUser().getToken());
@@ -2583,12 +2600,10 @@ public class CouchDB {
         CouchDB.sAuthUrl = authUrl;
     }
 
-    @Deprecated
-    public static void sendPassword(String email) {
+    private static void sendPassword(String email) throws ClientProtocolException, IllegalStateException, IOException, SpikaException, JSONException {
 
-        final String URL = Const.PASSWORDREMINDER_URL + "email=" + email;
-
-        ConnectionHandler.getJsonArrayDeprecated(URL, null, null); 
+    	final String URL = Const.PASSWORDREMINDER_URL + "email=" + email;
+        ConnectionHandler.getString(URL, null);
     }
     
     public static void sendPassword(String email, ResultListener<Void> resultListener, Context context, boolean showProgressBar) {
@@ -2607,9 +2622,7 @@ public class CouchDB {
 		@Override
 		public Void execute() throws JSONException, IOException, SpikaException {
 			
-			final String URL = Const.PASSWORDREMINDER_URL + "email=" + email;
-
-	        ConnectionHandler.getJsonArray(URL, null, null);
+			sendPassword(email);
 			return null;
 		}
     }

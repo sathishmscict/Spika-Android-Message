@@ -749,7 +749,6 @@ public class CouchDBHelper {
 	public static boolean updateUser(JSONObject json, List<String> contactsIds,
 			List<String> groupsIds) {
 
-		boolean ok = false;
 		String rev = "";
 
 		if (json != null) {
@@ -760,23 +759,20 @@ public class CouchDBHelper {
 			}
 
 			try {
-				ok = json.getBoolean(Const.OK);
-				rev = json.getString(Const.REV);
+				rev = json.getString(Const._REV);
 
-				if (ok) {
-					UsersManagement.getLoginUser().setRev(rev);
+				UsersManagement.getLoginUser().setRev(rev);
 
-					if (null != contactsIds) {
-						UsersManagement.getLoginUser().setContactIds(
-								contactsIds);
-					}
-
-					if (null != groupsIds) {
-						UsersManagement.getLoginUser().setGroupIds(groupsIds);
-					}
-
-					return true;
+				if (null != contactsIds) {
+					UsersManagement.getLoginUser().setContactIds(
+							contactsIds);
 				}
+
+				if (null != groupsIds) {
+					UsersManagement.getLoginUser().setGroupIds(groupsIds);
+				}
+
+				return true;
 			} catch (Exception e) {
 				Logger.error(TAG + "updateUser",
 						"Error while retrieving data from json", e);
