@@ -459,11 +459,12 @@ public class CouchDB {
      * 
      * @param id
      * @return
+     * @throws JSONException 
+     * @throws SpikaException 
+     * @throws IOException 
+     * @throws ClientProtocolException 
      */
-    @Deprecated
-    public static User findUserById(String id) {
-
-    	User user = null;
+    public static User findUserById(String id) throws JSONException, ClientProtocolException, IOException, SpikaException {
     	
         try {
             id = URLEncoder.encode(id, "UTF-8");
@@ -472,21 +473,10 @@ public class CouchDB {
             return null;
         }
 
-        try {
+        String url = Const.FIND_USER_BY_ID + id;
+        JSONObject json = ConnectionHandler.getJsonObject(url, UsersManagement.getLoginUser().getId());
+        User user = CouchDBHelper.parseSingleUserObjectWithoutRowParam(json);
         
-	        String url = Const.FIND_USER_BY_ID + id;
-	        JSONObject json = ConnectionHandler.getJsonObject(url, UsersManagement.getLoginUser().getId());
-	        user = CouchDBHelper.parseSingleUserObjectWithoutRowParam(json);
-        
-        } catch (JSONException e) {
-        	e.printStackTrace();
-        } catch (ClientProtocolException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (SpikaException e) {
-			e.printStackTrace();
-		}
         return user;
     }
     
@@ -861,8 +851,9 @@ public class CouchDB {
     /**
      * @param id
      * @return
+     * @throws SpikaException 
      */
-    public static List<User> findUserContacts(String id) throws JSONException, IOException {
+    public static List<User> findUserContacts(String id) throws JSONException, IOException, SpikaException {
     	
     	List<User> contacts = new ArrayList<User>();
     	
@@ -889,7 +880,7 @@ public class CouchDB {
     	}
 
 		@Override
-		public List<User> execute() throws JSONException, IOException {
+		public List<User> execute() throws JSONException, IOException, SpikaException {
 	        return findUserContacts(id);
 		}
     }
@@ -899,9 +890,12 @@ public class CouchDB {
      * 
      * @param userId
      * @return
+     * @throws SpikaException 
+     * @throws IOException 
+     * @throws JSONException 
+     * @throws ClientProtocolException 
      */
-    @Deprecated
-    public static boolean addUserContact(String userId) {
+    public static boolean addUserContact(String userId) throws ClientProtocolException, JSONException, IOException, SpikaException {
 
         User user = UsersManagement.getLoginUser();
         User userUpdated = CouchDB.findUserById(user.getId());
@@ -911,7 +905,7 @@ public class CouchDB {
         return CouchDB.updateUser(userUpdated);
     }
     
-    public static void addUserContact (final String userId, final ResultListener<Boolean> resultListener, final Context context, final boolean showProgressBar)
+    public static void addUserContactAsync (final String userId, final ResultListener<Boolean> resultListener, final Context context, final boolean showProgressBar)
     {
     	 new SpikaAsyncTask<Void, Void, Boolean>(new AddUserContact(userId), resultListener, context, showProgressBar).execute();
     }
@@ -926,7 +920,7 @@ public class CouchDB {
 		}
 
 		@Override
-		public Boolean execute() throws JSONException, IOException {
+		public Boolean execute() throws JSONException, IOException, SpikaException {
 			return addUserContact(userId);
 		}
     }
@@ -936,9 +930,12 @@ public class CouchDB {
      * 
      * @param userId
      * @return
+     * @throws SpikaException 
+     * @throws IOException 
+     * @throws JSONException 
+     * @throws ClientProtocolException 
      */
-    @Deprecated
-    public static boolean removeUserContact(String userId) {
+    public static boolean removeUserContact(String userId) throws ClientProtocolException, JSONException, IOException, SpikaException {
 
         User user = CouchDB.findUserById(UsersManagement.getLoginUser().getId());
 
@@ -962,7 +959,7 @@ public class CouchDB {
         return false;
     }
     
-    public static void removeUserContact (String userId, ResultListener<Boolean> resultListener, Context context, boolean showProgressBar) {
+    public static void removeUserContactAsync (String userId, ResultListener<Boolean> resultListener, Context context, boolean showProgressBar) {
     	new SpikaAsyncTask<Void, Void, Boolean>(new RemoveUserContact(userId), resultListener, context, showProgressBar).execute();
     }
     
@@ -975,7 +972,7 @@ public class CouchDB {
 		}
 
 		@Override
-		public Boolean execute() throws JSONException, IOException {
+		public Boolean execute() throws JSONException, IOException, SpikaException {
 			return removeUserContact(userId);
 		}
     }
@@ -1221,9 +1218,12 @@ public class CouchDB {
      * 
      * @param groupId
      * @return
+     * @throws SpikaException 
+     * @throws IOException 
+     * @throws JSONException 
+     * @throws ClientProtocolException 
      */
-    @Deprecated
-    public static boolean addFavoriteGroup(String groupId) {
+    public static boolean addFavoriteGroup(String groupId) throws ClientProtocolException, JSONException, IOException, SpikaException {
 
         User user = CouchDB.findUserById(UsersManagement.getLoginUser().getId());
         user.getGroupIds().add(groupId);
@@ -1238,7 +1238,7 @@ public class CouchDB {
         return CouchDB.updateUser(user);
     }
     
-    public static void addFavoriteGroup (final String groupId, final ResultListener<Boolean> resultListener, final Context context, final boolean showProgressBar) {
+    public static void addFavoriteGroupAsync (final String groupId, final ResultListener<Boolean> resultListener, final Context context, final boolean showProgressBar) {
     	new SpikaAsyncTask<Void, Void, Boolean>(new AddFavoriteGroup(groupId), resultListener, context, showProgressBar).execute();
     }
     
@@ -1251,7 +1251,7 @@ public class CouchDB {
 		}
 
 		@Override
-		public Boolean execute() throws JSONException, IOException {
+		public Boolean execute() throws JSONException, IOException, SpikaException {
 			return addFavoriteGroup(groupId);
 		}
     }
@@ -1261,9 +1261,12 @@ public class CouchDB {
      * 
      * @param groupId
      * @return
+     * @throws SpikaException 
+     * @throws IOException 
+     * @throws JSONException 
+     * @throws ClientProtocolException 
      */
-    @Deprecated
-    public static boolean removeFavoriteGroup(String groupId) {
+    public static boolean removeFavoriteGroup(String groupId) throws ClientProtocolException, JSONException, IOException, SpikaException {
 
         User user = CouchDB.findUserById(UsersManagement.getLoginUser().getId());
 
@@ -1295,7 +1298,7 @@ public class CouchDB {
         return false;
     }
     
-    public static void removeFavoriteGroup (String groupId, ResultListener<Boolean> resultListener, Context context, boolean showProgressBar) {
+    public static void removeFavoriteGroupAsync (String groupId, ResultListener<Boolean> resultListener, Context context, boolean showProgressBar) {
     	new SpikaAsyncTask<Void, Void, Boolean>(new RemoveFavoriteGroup(groupId), resultListener, context, showProgressBar).execute();
     }
     
@@ -1308,7 +1311,7 @@ public class CouchDB {
 		}
 
 		@Override
-		public Boolean execute() throws JSONException, IOException {
+		public Boolean execute() throws JSONException, IOException, SpikaException {
 			return removeFavoriteGroup(groupId);
 		}
     }

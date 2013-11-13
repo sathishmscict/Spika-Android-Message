@@ -146,7 +146,7 @@ public class GroupProfileActivity extends SpikaActivity {
 
 		showTutorial(getString(R.string.tutorial_groupprofile));
 
-		new GetOwnerAsync(this).execute();
+		getOwnerAsync();
 		new GetGroupCategoriesAsync(this).execute();
 		// new GetLoginUserAsync(this).execute();
 		// new GetGroupAsync(this).execute(mGroup.getId());
@@ -496,13 +496,11 @@ public class GroupProfileActivity extends SpikaActivity {
 			@Override
 			public void onClick(View v) {
 				if (mAddRemoveControl) {
-					new RemoveFromFavoritesAsync(GroupProfileActivity.this,
-							true).execute(mGroup.getId());
+					removeFromFavoritesAsync(mGroup.getId(), true);
 				} else {
 
 					if (UsersManagement.getLoginUser().canAddFavorite()) {
-						new AddToFavoritesAsync(GroupProfileActivity.this)
-								.execute(mGroup.getId());
+						addToFavoritesAsync(mGroup.getId());
 					} else {
 						alertDialog
 								.show(getString(R.string.max_favorites_alert));
@@ -605,24 +603,19 @@ public class GroupProfileActivity extends SpikaActivity {
 		super.onActivityResult(requestCode, resultCode, data);
 	}
 
-	private class GetOwnerAsync extends SpikaAsync<Void, Void, User> {
-
-		protected GetOwnerAsync(Context context) {
-			super(context);
-		}
-
+	private void getOwnerAsync () {
+		CouchDB.findUserByIdAsync(UsersManagement.getLoginUser().getId(), new GetOwnerFinish(), GroupProfileActivity.this, true);
+	}
+	
+	private class GetOwnerFinish implements ResultListener<User> {
 		@Override
-		protected User doInBackground(Void... params) {
-			mGroupOwner = CouchDB.findUserById(mGroup.getUserId());
-			return mGroupOwner;
-		}
-
-		@Override
-		protected void onPostExecute(User result) {
+		public void onResultsSucceded(User result) {
+			mGroupOwner = result;
 			setupProfile();
-			super.onPostExecute(result);
 		}
-
+		@Override
+		public void onResultsFail() {			
+		}
 	}
 
 	private void setButtonFavorites(int updateType) {
@@ -801,106 +794,44 @@ public class GroupProfileActivity extends SpikaActivity {
 		}
 	}
 
-	/**
-	 * Add group to user favorites
-	 * 
-	 * @author Matej Vida
-	 * 
-	 */
-	private class AddToFavoritesAsync extends
-			SpikaAsync<String, Void, Boolean> {
-
-		private HookUpProgressDialog progressDialog;
-
+	private void addToFavoritesAsync (String groupId) {
+		CouchDB.addFavoriteGroupAsync(groupId, new AddToFavoritesFinish(), GroupProfileActivity.this, true);
+	}
+	
+	private class AddToFavoritesFinish implements ResultListener<Boolean> {
 		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-			if (progressDialog == null) {
-				progressDialog = new HookUpProgressDialog(
-						GroupProfileActivity.this);
-			}
-			progressDialog.show();
-		}
-
-		protected AddToFavoritesAsync(Context context) {
-			super(context);
-		}
-
-		@Override
-		protected Boolean doInBackground(String... params) {
-
-			return CouchDB.addFavoriteGroup(params[0]);
-
-		}
-
-		@Override
-		protected void onPostExecute(Boolean result) {
-			super.onPostExecute(result);
+		public void onResultsSucceded(Boolean result) {
 			if (result == true) {
 				setButtonFavorites(REMOVE);
 				mAddRemoveControl = true;
 				GroupProfileActivity.this.setResult(RESULT_OK);
 			}
-			progressDialog.dismiss();
 		}
-
+		@Override
+		public void onResultsFail() {			
+		}
 	}
-
-	/**
-	 * Remove group from user favorites
-	 * 
-	 * @author Matej Vida
-	 * 
-	 */
-	private class RemoveFromFavoritesAsync extends
-			SpikaAsync<String, Void, Boolean> {
-
-		private HookUpProgressDialog progressDialog;
-		private boolean mShowProgress;
-
+	
+	private void removeFromFavoritesAsync (String groupId, boolean showProgressBar) {
+		CouchDB.removeFavoriteGroupAsync(groupId, new RemoveFromFavoritesFinish(), GroupProfileActivity.this, showProgressBar);
+	}
+	
+	private class RemoveFromFavoritesFinish implements ResultListener<Boolean>{
 		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-			if (mShowProgress) {
-				if (progressDialog == null) {
-					progressDialog = new HookUpProgressDialog(
-							GroupProfileActivity.this);
-				}
-				progressDialog.show();
-			}
-		}
-
-		protected RemoveFromFavoritesAsync(Context context, boolean showProgress) {
-			super(context);
-			mShowProgress = showProgress;
-		}
-
-		@Override
-		protected Boolean doInBackground(String... params) {
-
-			return CouchDB.removeFavoriteGroup(params[0]);
-
-		}
-
-		@Override
-		protected void onPostExecute(Boolean result) {
-			super.onPostExecute(result);
+		public void onResultsSucceded(Boolean result) {
 			if (result == true) {
 				setButtonFavorites(ADD);
 				mAddRemoveControl = false;
 				GroupProfileActivity.this.setResult(RESULT_OK);
 
 			}
-			if (mShowProgress) {
-				progressDialog.dismiss();
-			}
-
 			if (GroupProfileActivity.this.mIsDeletedDone) {
 				GroupProfileActivity.this.finish();
 			}
-
 		}
-
+		@Override
+		public void onResultsFail() {
+		}
 	}
 
 	private class DeleteGroupAsync extends SpikaAsync<String, Void, Boolean> {
@@ -941,9 +872,8 @@ public class GroupProfileActivity extends SpikaActivity {
 			if (result) {
 
 				GroupProfileActivity.this.mIsDeletedDone = true;
-
-				new RemoveFromFavoritesAsync(GroupProfileActivity.this, false)
-						.execute(mGroup.getId());
+				removeFromFavoritesAsync(mGroup.getId(), false);
+				
 			} else {
 				/*
 				 * something went wrong with delete group, returning logged in

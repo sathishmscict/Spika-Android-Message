@@ -24,7 +24,11 @@
 
 package com.cloverstudio.spikademo.extendables;
 
+import java.io.IOException;
 import java.util.concurrent.ExecutionException;
+
+import org.apache.http.client.ClientProtocolException;
+import org.json.JSONException;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -46,6 +50,7 @@ import com.cloverstudio.spikademo.SpikaApp;
 import com.cloverstudio.spikademo.WallActivity;
 import com.cloverstudio.spikademo.couchdb.CouchDB;
 import com.cloverstudio.spikademo.couchdb.ResultListener;
+import com.cloverstudio.spikademo.couchdb.SpikaException;
 import com.cloverstudio.spikademo.couchdb.model.ActivitySummary;
 import com.cloverstudio.spikademo.couchdb.model.Group;
 import com.cloverstudio.spikademo.couchdb.model.User;
@@ -240,7 +245,22 @@ public class SpikaFragmentActivity extends FragmentActivity {
 		@Override
 		protected User doInBackground(String... params) {
 			String userId = params[0];
-			return CouchDB.findUserById(userId);
+			try {
+				return CouchDB.findUserById(userId);
+			} catch (ClientProtocolException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SpikaException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return null;
 		}
 
 		@Override

@@ -24,7 +24,11 @@
 
 package com.cloverstudio.spikademo.extendables;
 
+import java.io.IOException;
 import java.util.concurrent.ExecutionException;
+
+import org.apache.http.client.ClientProtocolException;
+import org.json.JSONException;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -48,6 +52,7 @@ import com.cloverstudio.spikademo.PasscodeActivity;
 import com.cloverstudio.spikademo.WallActivity;
 import com.cloverstudio.spikademo.couchdb.CouchDB;
 import com.cloverstudio.spikademo.couchdb.ResultListener;
+import com.cloverstudio.spikademo.couchdb.SpikaException;
 import com.cloverstudio.spikademo.couchdb.model.ActivitySummary;
 import com.cloverstudio.spikademo.couchdb.model.Group;
 import com.cloverstudio.spikademo.couchdb.model.User;
@@ -263,36 +268,6 @@ public class SpikaActivity extends Activity {
 					fromGroup, fromType);
 		}
 	}
-	
-	private void getUserByIdAsync (String userId) {
-		CouchDB.findUserByIdAsync(userId, new GetUserByIdListener(), SpikaActivity.this, true);
-	}
-	
-	private class GetUserByIdListener implements ResultListener<User> {
-
-		@Override
-		public void onResultsSucceded(User result) {
-		}
-
-		@Override
-		public void onResultsFail() {
-		}
-	}
-	
-	private void getGroupByIdAsync (String groupId) {
-		CouchDB.findGroupById(groupId, new GetGroupByIdListener(), SpikaActivity.this, true);
-	}
-	
-	private class GetGroupByIdListener implements ResultListener<Group> {
-
-		@Override
-		public void onResultsSucceded(Group result) {
-		}
-
-		@Override
-		public void onResultsFail() {
-		}
-	}
 
 	private BroadcastReceiver mConnectionChangeReceiver = new BroadcastReceiver() {
 		public void onReceive(Context context, Intent intent) {
@@ -344,7 +319,22 @@ public class SpikaActivity extends Activity {
 		@Override
 		protected User doInBackground(String... params) {
 			String userId = params[0];
-			return CouchDB.findUserById(userId);
+			try {
+				return CouchDB.findUserById(userId);
+			} catch (ClientProtocolException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SpikaException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return null;
 		}
 
 		@Override

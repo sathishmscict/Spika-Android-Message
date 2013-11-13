@@ -309,14 +309,13 @@ public class CreateGroupActivity extends SpikaActivity {
     private class UserCreatedFinish implements ResultListener<String> {
 
 		@Override
-		public void onResultsSucceded(String result) {
-			if (result != null) {
+		public void onResultsSucceded(String groupId) {
+			if (groupId != null) {
 
 				Toast.makeText(getApplicationContext(), "Group created",
 						Toast.LENGTH_SHORT).show();
 
-				new AddToFavoritesAsync(CreateGroupActivity.this)
-						.execute(result);
+				CouchDB.addFavoriteGroupAsync(groupId, new AddToFavoritesFinish(), CreateGroupActivity.this, true);
 
 			} else {
 				Toast.makeText(getApplicationContext(),
@@ -328,32 +327,16 @@ public class CreateGroupActivity extends SpikaActivity {
 		public void onResultsFail() {
 		}
     }
-
-	private class AddToFavoritesAsync extends
-			SpikaAsync<String, Void, Boolean> {
-
-		protected AddToFavoritesAsync(final Context context) {
-			super(context);
-		}
-
+    
+    private class AddToFavoritesFinish implements ResultListener<Boolean> {
 		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-		}
-
-		@Override
-		protected Boolean doInBackground(String... params) {
-
-			return CouchDB.addFavoriteGroup(params[0]);
-
-		}
-
-		@Override
-		protected void onPostExecute(Boolean result) {
-			super.onPostExecute(result);
+		public void onResultsSucceded(Boolean result) {
 			finish();
 		}
-	}
+		@Override
+		public void onResultsFail() {			
+		}
+    }
 
 	@Override
 	protected Dialog onCreateDialog(int id) {

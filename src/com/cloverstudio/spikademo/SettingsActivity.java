@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  * 
- * Copyright © 2013 Clover Studio Ltd. All rights reserved.
+ * Copyright ï¿½ 2013 Clover Studio Ltd. All rights reserved.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -42,6 +42,7 @@ import android.widget.ToggleButton;
 
 import com.cloverstudio.spikademo.R;
 import com.cloverstudio.spikademo.couchdb.CouchDB;
+import com.cloverstudio.spikademo.couchdb.ResultListener;
 import com.cloverstudio.spikademo.couchdb.model.User;
 import com.cloverstudio.spikademo.dialog.HookUpDialog;
 import com.cloverstudio.spikademo.dialog.HookUpPasswordDialog;
@@ -83,7 +84,7 @@ public class SettingsActivity extends SideBarActivity {
 
 	private void initialization() {
 
-		new GetLoginUserAsync(this).execute();
+		getLoginUserAsync();
 		mPasswordDialog = new HookUpPasswordDialog(this, false);
 
 		mBtnChangePassword = (Button) findViewById(R.id.btnChangePassword);
@@ -286,7 +287,7 @@ public class SettingsActivity extends SideBarActivity {
 				mPassword = newPassword;
 				mEtPassword.setText(newPassword);
 
-				new GetLoginUserAsync(SettingsActivity.this).execute();
+				getLoginUserAsync();
 
 				Toast.makeText(SettingsActivity.this, "Saved",
 						Toast.LENGTH_SHORT).show();
@@ -308,22 +309,18 @@ public class SettingsActivity extends SideBarActivity {
 		}
 	}
 
-	private class GetLoginUserAsync extends SpikaAsync<Void, Void, User> {
-
-		protected GetLoginUserAsync(Context context) {
-			super(context);
-		}
-
+	private void getLoginUserAsync () {
+		CouchDB.findUserByIdAsync(UsersManagement.getLoginUser().getId(), new GetLoginUserFinish(), SettingsActivity.this, true);
+	}
+	
+	private class GetLoginUserFinish implements ResultListener<User> {
 		@Override
-		protected User doInBackground(Void... params) {
-			return CouchDB.findUserById(UsersManagement.getLoginUser().getId());
-		}
-
-		@Override
-		protected void onPostExecute(User loginUser) {
-			UsersManagement.setLoginUser(loginUser);
+		public void onResultsSucceded(User result) {
+			UsersManagement.setLoginUser(result);
 			mPassword = SpikaApp.getPreferences().getUserPassword();
 		}
+		@Override
+		public void onResultsFail() {			
+		}
 	}
-
 }

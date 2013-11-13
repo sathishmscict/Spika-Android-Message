@@ -284,13 +284,13 @@ public class UserProfileActivity extends SpikaActivity {
 			@Override
 			public void onClick(View v) {
 				if (UsersManagement.getLoginUser().isInContacts(mUser)) {
-
-					new UpdateContactsAsync().execute(REMOVE);
+					
+					updateContactAsync(REMOVE);
 
 				} else {
 
 					if (UsersManagement.getLoginUser().canAddContact()) {
-						new UpdateContactsAsync().execute(ADD);
+						updateContactAsync(ADD);
 					} else {
 						alertDialog
 								.show(getString(R.string.max_contacts_alert));
@@ -363,36 +363,25 @@ public class UserProfileActivity extends SpikaActivity {
 		}
 	}
 
-	private class UpdateContactsAsync extends AsyncTask<Integer, Void, Boolean> {
+	private void updateContactAsync (int updateType) {
+		if (updateType == ADD) {
+			CouchDB.addUserContactAsync(mUser.getId(), new UpdateContactFinish(updateType), UserProfileActivity.this, true);
+		} else if (updateType == REMOVE) {
+			CouchDB.removeUserContactAsync(mUser.getId(), new UpdateContactFinish(updateType), UserProfileActivity.this, true);
+		}
+	}
 
-		private HookUpProgressDialog progressDialog;
+	private class UpdateContactFinish implements ResultListener<Boolean> {
+
 		int updateType;
-
-		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-			if (progressDialog == null) {
-				progressDialog = new HookUpProgressDialog(
-						UserProfileActivity.this);
-			}
-			progressDialog.show();
+		
+		public UpdateContactFinish (int updateType) {
+			this.updateType = updateType;
 		}
-
+		
 		@Override
-		protected Boolean doInBackground(Integer... params) {
-
-			updateType = params[0];
-			if (updateType == ADD) {
-				return CouchDB.addUserContact(mUser.getId());
-			} else if (updateType == REMOVE) {
-				return CouchDB.removeUserContact(mUser.getId());
-			}
-			return false;
-		}
-
-		@Override
-		protected void onPostExecute(Boolean updated) {
-			if (updated) {
+		public void onResultsSucceded(Boolean result) {
+			if (result) {
 				if (updateType == ADD) {
 
 					setButtonContacts(REMOVE);
@@ -407,7 +396,10 @@ public class UserProfileActivity extends SpikaActivity {
 						getString(R.string.failed_to_update_contacts),
 						Toast.LENGTH_SHORT).show();
 			}
-			progressDialog.dismiss();
+		}
+
+		@Override
+		public void onResultsFail() {
 		}
 	}
 
