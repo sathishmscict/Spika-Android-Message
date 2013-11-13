@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  * 
- * Copyright © 2013 Clover Studio Ltd. All rights reserved.
+ * Copyright ï¿½ 2013 Clover Studio Ltd. All rights reserved.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -330,21 +330,4 @@ public class SpikaApp extends Application {
 			LocalBroadcastManager localBroadcastManager) {
 		sInstance.mLocalBroadcastManager = localBroadcastManager;
 	}
-
-	private class UpdateUserStatusAsync extends
-			SpikaAsync<String, Void, Boolean> {
-
-		public UpdateUserStatusAsync(Context context) {
-			super(context);
-		}
-
-		@Override
-		protected Boolean doInBackground(String... params) {
-
-			UsersManagement.getLoginUser().setOnlineStatus(params[0]);
-			return CouchDB.updateUser(UsersManagement.getLoginUser());
-		}
-
-	}
-
 }

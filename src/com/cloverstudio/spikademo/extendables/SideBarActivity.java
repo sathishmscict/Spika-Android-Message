@@ -481,19 +481,4 @@ public class SideBarActivity extends SpikaActivity {
 		else
 			return null;
 	}
-
-	protected static class UpdateUserStatusAsync extends
-			AsyncTask<String, Void, Boolean> {
-
-		public UpdateUserStatusAsync() {
-			super();
-		}
-
-		@Override
-		protected Boolean doInBackground(String... params) {
-
-			UsersManagement.getLoginUser().setOnlineStatus(params[0]);
-			return CouchDB.updateUser(UsersManagement.getLoginUser());
-		}
-	}
 }

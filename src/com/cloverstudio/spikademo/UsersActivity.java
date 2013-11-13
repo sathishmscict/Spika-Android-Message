@@ -202,8 +202,7 @@ public class UsersActivity extends SubMenuActivity {
 				userSearch.setName(etSearchName.getText().toString());
 
 				etSearchName.setText("");
-				new SearchUsersAsync(UsersActivity.this).execute(userSearch);
-
+				searchUsersAsync(userSearch);
 			}
 		});
 
@@ -221,8 +220,7 @@ public class UsersActivity extends SubMenuActivity {
 					etSearchName.setText("");
 
 					hideKeyboard();
-					new SearchUsersAsync(UsersActivity.this)
-							.execute(userSearch);
+					searchUsersAsync(userSearch);
 					return true;
 				}
 				return false;
@@ -304,8 +302,7 @@ public class UsersActivity extends SubMenuActivity {
 					userSearch.setOnlineStatus("");
 				}
 
-				new SearchUsersAsync(UsersActivity.this).execute(userSearch);
-
+				searchUsersAsync(userSearch);
 			}
 		});
 
@@ -464,90 +461,6 @@ public class UsersActivity extends SubMenuActivity {
 		public void onResultsFail() {
 		}
 	}
-	
-//	private class GetUsersAsync extends SpikaAsync<String, Void, List<User>> {
-//
-//		String searchType = "";
-//
-//		protected GetUsersAsync(Context context) {
-//			super(context);
-//		}
-//
-//		HookUpProgressDialog progressDialog = new HookUpProgressDialog(
-//				UsersActivity.this);
-//
-//		@Override
-//		protected void onPreExecute() {
-//			progressDialog.show();
-//			super.onPreExecute();
-//		}
-//
-//		@Override
-//		protected List<User> doInBackground(String... params) {
-//
-//			searchType = params[0];
-//
-//			if (params[0].equals(ALL_USERS)) {
-//				return CouchDB.findAllUsers();
-//			} else if (params[0].equals(SEARCH_USERS)) {
-//				return CouchDB.findUsersByName(params[1]);
-//			} else if (params[0].equals(CONTACTS)) {
-//				return CouchDB.findUserContacts(UsersManagement.getLoginUser()
-//						.getId());
-//			} else {
-//				return CouchDB.findAllUsers();
-//			}
-//		}
-//
-//		@Override
-//		protected void onPostExecute(List<User> result) {
-//
-//			if (searchType.equals(CONTACTS)
-//					&& (result == null || result.size() == 0)) {
-//				UsersActivity.this
-//						.showTutorialOnceAfterBoot(getString(R.string.tutorial_nocontact));
-//			}
-//
-//			if (UsersManagement.getLoginUser().getActivitySummary() != null) {
-//				for (RecentActivity recentActivity : UsersManagement
-//						.getLoginUser().getActivitySummary()
-//						.getRecentActivityList()) {
-//					if (recentActivity.getTargetType().equals(Const.USER)) {
-//						mUserNotifications = recentActivity.getNotifications();
-//					}
-//				}
-//			}
-//
-//			mUsers = (ArrayList<User>) result;
-//
-//			if (mUsers.size() == 0) {
-//				mTvNoUsers.setVisibility(View.VISIBLE);
-//				mTvNoUsers.setText(getString(R.string.no_users_in_contacts));
-//			} else {
-//				mTvNoUsers.setVisibility(View.GONE);
-//			}
-//
-//			// sorting users by name
-//			Collections.sort(mUsers, new Comparator<User>() {
-//				@Override
-//				public int compare(User lhs, User rhs) {
-//					return lhs.getName().compareToIgnoreCase(rhs.getName());
-//				}
-//			});
-//
-//			if (mUserListAdapter == null) {
-//				mUserListAdapter = new UsersAdapter(UsersActivity.this, mUsers,
-//						mUserNotifications);
-//				mLvUsers.setAdapter(mUserListAdapter);
-//				mLvUsers.setOnItemClickListener(mUserListAdapter);
-//			} else {
-//				mUserListAdapter.setItems(mUsers, mUserNotifications);
-//			}
-//
-//			progressDialog.dismiss();
-//
-//		}
-//	}
 
 	private void clearListView() {
 		mUserListAdapter = new UsersAdapter(UsersActivity.this,
@@ -555,30 +468,14 @@ public class UsersActivity extends SubMenuActivity {
 		mLvUsers.setAdapter(mUserListAdapter);
 	}
 
-	private class SearchUsersAsync extends
-			SpikaAsync<UserSearch, Void, List<User>> {
-
-		protected SearchUsersAsync(Context context) {
-			super(context);
-		}
-
-		HookUpProgressDialog progressDialog = new HookUpProgressDialog(
-				UsersActivity.this);
+	private void searchUsersAsync (UserSearch userSearch) {
+		CouchDB.searchUsersAsync(userSearch, new SearchUsersFinish(), UsersActivity.this, true);
+	}
+	
+	private class SearchUsersFinish implements ResultListener<List<User>> {
 
 		@Override
-		protected void onPreExecute() {
-			progressDialog.show();
-			super.onPreExecute();
-		}
-
-		@Override
-		protected List<User> doInBackground(UserSearch... params) {
-			return CouchDB.searchUsers(params[0]);
-		}
-
-		@Override
-		protected void onPostExecute(List<User> result) {
-
+		public void onResultsSucceded(List<User> result) {
 			if (result != null) {
 				if (UsersManagement.getLoginUser().getActivitySummary() != null) {
 					for (RecentActivity recentActivity : UsersManagement
@@ -616,10 +513,11 @@ public class UsersActivity extends SubMenuActivity {
 					mUserListAdapter.setItems(mUsers, mUserNotifications);
 				}
 			}
-
-			progressDialog.dismiss();
-
 		}
+
+		@Override
+		public void onResultsFail() {			
+		}	
 	}
 
 	@Override

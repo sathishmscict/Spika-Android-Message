@@ -131,9 +131,10 @@ public class CouchDBHelper {
      * @param json
      * @return
      * @throws JSONException
+	 * @throws SpikaException 
      */
     public static User parseSingleUserObjectWithoutRowParam(JSONObject userJson)
-            throws JSONException {
+            throws JSONException, SpikaException {
         User user = null;
         ArrayList<String> contactsIds = new ArrayList<String>();
 
@@ -146,7 +147,7 @@ public class CouchDBHelper {
         	
         	if (userJson.has(Const.ERROR)) {
 				appLogout(null, false, isInvalidToken(userJson));
-				return null;
+				throw new SpikaException(userJson.toString());
 			}
 
             user = sGsonExpose.fromJson(userJson.toString(), User.class);

@@ -241,46 +241,27 @@ public class SettingsActivity extends SideBarActivity {
 
 	public void setNewPassword(String newPassword) {
 		hideKeyboard();
-		new UpdateUserPasswordAsync(this).execute(newPassword);
+		updatePasswordAsync(newPassword);
 	}
 
-	private class UpdateUserPasswordAsync extends
-			SpikaAsync<String, Void, Boolean> {
-		private HookUpProgressDialog mProgressDialog;
-
-		protected UpdateUserPasswordAsync(Context context) {
-			super(context);
-		}
-
+	private void updatePasswordAsync (String newPassword) {
 		String currentPassword = SpikaApp.getPreferences().getUserPassword();
-		String newPassword = null;
-
-		@Override
-		protected void onPreExecute() {
-			// save data of current login user so if anything goes wrong with
-			// update, we can return to previous state
-
-			if (mProgressDialog == null) {
-				mProgressDialog = new HookUpProgressDialog(
-						SettingsActivity.this);
-			}
-			mProgressDialog.show();
-			super.onPreExecute();
+		SpikaApp.getPreferences().setUserPassword(newPassword);
+		CouchDB.updateUserAsync(UsersManagement.getLoginUser(), new UpdatePasswordFinish(currentPassword, newPassword), SettingsActivity.this, true);
+	}
+	
+	private class UpdatePasswordFinish implements ResultListener<Boolean> {
+		
+		String currentPassword;
+		String newPassword;
+		
+		public UpdatePasswordFinish(String currentPassword, String newPassword) {
+			this.currentPassword = currentPassword;
+			this.newPassword = newPassword;
 		}
-
+		
 		@Override
-		protected Boolean doInBackground(String... params) {
-
-			newPassword = params[0];
-
-			/* set new password */
-			SpikaApp.getPreferences().setUserPassword(newPassword);
-			return CouchDB.updateUser(UsersManagement.getLoginUser());
-		}
-
-		@Override
-		protected void onPostExecute(Boolean result) {
-			mProgressDialog.dismiss();
+		public void onResultsSucceded(Boolean result) {
 			if (result) {
 				/* update successful */
 
@@ -302,10 +283,14 @@ public class SettingsActivity extends SideBarActivity {
 						Toast.LENGTH_SHORT).show();
 
 				SpikaApp.getPreferences().setUserPassword(currentPassword);
-
 				mPassword = currentPassword;
 			}
-			super.onPostExecute(result);
+		}
+
+		@Override
+		public void onResultsFail() {
+			SpikaApp.getPreferences().setUserPassword(currentPassword);
+			mPassword = currentPassword;
 		}
 	}
 

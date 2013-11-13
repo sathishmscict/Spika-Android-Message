@@ -499,6 +499,167 @@ public class CouchDB {
 		}
     }
     
+//******* UPDATE USER ***************************
+    
+    /**
+     * Method used for updating user attributes
+     * 
+     * If you add some new attributes to user object you must also add code to
+     * add that data to userJson
+     * 
+     * @param user
+     * @return user object
+     * @throws SpikaException 
+     * @throws JSONException 
+     * @throws ClientProtocolException 
+     * @throws IOException 
+     * @throws IllegalStateException 
+     */
+    public static boolean updateUser(User user) throws JSONException, ClientProtocolException, IllegalStateException, IOException, SpikaException {
+
+        JSONObject userJson = new JSONObject();
+        List<String> contactIds = new ArrayList<String>();
+        List<String> groupIds = new ArrayList<String>();
+
+        JSONObject json = null;
+        
+        /* General user info */
+        userJson.put(Const._ID, user.getId());
+        userJson.put(Const._REV, user.getRev());
+        userJson.put(Const.EMAIL, user.getEmail());
+        userJson.put(Const.NAME, user.getName());
+        userJson.put(Const.TYPE, Const.USER);
+        userJson.put(Const.PASSWORD, SpikaApp.getPreferences().getUserPassword());
+        userJson.put(Const.LAST_LOGIN, user.getLastLogin());
+        userJson.put(Const.ABOUT, user.getAbout());
+        userJson.put(Const.BIRTHDAY, user.getBirthday());
+        userJson.put(Const.GENDER, user.getGender());
+        userJson.put(Const.TOKEN, SpikaApp.getPreferences().getUserToken());
+        userJson.put(Const.TOKEN_TIMESTAMP, user.getTokenTimestamp());
+        userJson.put(Const.ANDROID_PUSH_TOKEN, SpikaApp.getPreferences().getUserPushToken());
+        userJson.put(Const.ONLINE_STATUS, user.getOnlineStatus());
+        userJson.put(Const.AVATAR_FILE_ID, user.getAvatarFileId());
+        userJson.put(Const.MAX_CONTACT_COUNT, user.getMaxContactCount());
+        userJson.put(Const.AVATAR_THUMB_FILE_ID, user.getAvatarThumbFileId());
+
+        /* Set users favorite contacts */
+        JSONArray contactsArray = new JSONArray();
+        contactIds = user.getContactIds();
+        if (!contactIds.isEmpty()) {
+            for (String id : contactIds) {
+                contactsArray.put(id);
+            }
+        }
+        if (contactsArray.length() > 0) {
+            userJson.put(Const.CONTACTS, contactsArray);
+        }
+
+        /* Set users favorite groups */
+        JSONArray groupsArray = new JSONArray();
+        groupIds = user.getGroupIds();
+
+        if (!groupIds.isEmpty()) {
+            for (String id : groupIds) {
+                groupsArray.put(id);
+            }
+        }
+
+        if (groupsArray.length() > 0) {
+            userJson.put(Const.FAVORITE_GROUPS, groupsArray);
+        }
+        
+        json = ConnectionHandler.postJsonObject(Const.UPDATE_USER, userJson, user.getId(), user.getToken());
+        
+        return CouchDBHelper.updateUser(json, contactIds, groupIds);
+    }
+    
+    public static void updateUserAsync (User user, ResultListener<Boolean> resultListener, Context context, boolean showProgressBar) {
+    	new SpikaAsyncTask<Void, Void, Boolean>(new UpdateUser(user), resultListener, context, showProgressBar).execute();;
+    }
+    
+    private static class UpdateUser implements Command<Boolean>
+    {
+    	User user;
+    	
+    	public UpdateUser (User user)
+    	{
+    		this.user = user;
+    	}
+
+		@Override
+		public Boolean execute() throws JSONException, IOException, IllegalStateException, SpikaException {
+			return updateUser(user);
+		}
+    }
+
+//************ SEARCH USERS ***************  
+    
+    /**
+     * Finds users given the search criteria in userSearch
+     * 
+     * @param userSearch
+     * @return
+     * @throws SpikaException 
+     * @throws JSONException 
+     * @throws IOException 
+     * @throws ClientProtocolException 
+     */
+    public static List<User> searchUsers(UserSearch userSearch) throws ClientProtocolException, IOException, JSONException, SpikaException {
+
+        String searchParams = "";
+
+        if (userSearch.getName() != null) {
+            try {
+                userSearch.setName(URLEncoder.encode(userSearch.getName(), "UTF-8"));
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+                return null;
+            }
+            searchParams = "n=" + userSearch.getName();
+        }
+
+        if (userSearch.getFromAge() != null && !"".equals(userSearch.getFromAge())) {
+            searchParams += "&af=" + userSearch.getFromAge();
+        }
+        if (userSearch.getToAge() != null && !"".equals(userSearch.getToAge())) {
+            searchParams += "&at=" + userSearch.getToAge();
+        }
+        if (userSearch.getGender() != null
+                && (userSearch.getGender().equals(Const.FEMALE) || userSearch.getGender().equals(
+                        Const.MALE))) {
+            searchParams += "&g=" + userSearch.getGender();
+        }
+        if (userSearch.getOnlineStatus() != null && !userSearch.getOnlineStatus().equals("")) {
+        	searchParams += "&status=" + userSearch.getOnlineStatus();
+        }
+        
+        Logger.error("Search", Const.SEARCH_USERS_URL + searchParams);
+
+        JSONArray json = ConnectionHandler.getJsonArray(Const.SEARCH_USERS_URL + searchParams,
+                UsersManagement.getLoginUser().getId(), UsersManagement.getLoginUser().getToken());
+
+        return CouchDBHelper.parseSearchUsersResult(json);
+    }
+    
+    public static void searchUsersAsync(UserSearch userSearch, ResultListener<List<User>> resultListener, Context context, boolean showProgressBar) {
+    	new SpikaAsyncTask<Void, Void, List<User>>(new SearchUsers(userSearch), resultListener, context, showProgressBar).execute();
+    }
+    
+    private static class SearchUsers implements Command<List<User>>
+    {
+    	UserSearch userSearch;
+    	
+    	public SearchUsers (UserSearch userSearch)
+    	{
+    		this.userSearch = userSearch;
+    	}
+
+		@Override
+		public List<User> execute() throws JSONException, IOException, SpikaException {
+			return searchUsers(userSearch);
+		}
+    }
+    
     /**
      * Returns group by group name
      * 
@@ -550,196 +711,11 @@ public class CouchDB {
     	
 		@Override
 		public Group execute() throws JSONException, IOException, SpikaException {
-			String params = "";
-	    	try {
-				params = URLEncoder.encode(groupname, "UTF-8");
-			} catch (UnsupportedEncodingException e1) {
-				e1.printStackTrace();
-			}
-
-	        final String URL = Const.CHECKUNIQUE_URL + "groupname=" + params;
-
-	        JSONArray jsonArray = ConnectionHandler.getJsonArray(URL, null, null);
-
-	        if (jsonArray.length() == 0)
-	            return null;
-
-	        Group group = CouchDBHelper.parseSingleGroupObjectWithoutRowParam(jsonArray.getJSONObject(0));
-
-	        return group;
-		}
-    	
-    }
-
-//******* UPDATE USER ***************************
-    
-    /**
-     * Method used for updating user attributes
-     * 
-     * If you add some new attributes to user object you must also add code to
-     * add that data to userJson
-     * 
-     * @param user
-     * @return user object
-     * @throws SpikaException 
-     * @throws JSONException 
-     * @throws IOException 
-     * @throws IllegalStateException 
-     */
-    @Deprecated
-    public static boolean updateUser(User user) {
-
-        JSONObject userJson = new JSONObject();
-        List<String> contactIds = new ArrayList<String>();
-        List<String> groupIds = new ArrayList<String>();
-
-        JSONObject json = null;
-        
-        try {
-            /* General user info */
-            userJson.put(Const._ID, user.getId());
-            userJson.put(Const._REV, user.getRev());
-            userJson.put(Const.EMAIL, user.getEmail());
-            userJson.put(Const.NAME, user.getName());
-            userJson.put(Const.TYPE, Const.USER);
-            userJson.put(Const.PASSWORD, SpikaApp.getPreferences().getUserPassword());
-            userJson.put(Const.LAST_LOGIN, user.getLastLogin());
-            userJson.put(Const.ABOUT, user.getAbout());
-            userJson.put(Const.BIRTHDAY, user.getBirthday());
-            userJson.put(Const.GENDER, user.getGender());
-            userJson.put(Const.TOKEN, SpikaApp.getPreferences().getUserToken());
-            userJson.put(Const.TOKEN_TIMESTAMP, user.getTokenTimestamp());
-            userJson.put(Const.ANDROID_PUSH_TOKEN, SpikaApp.getPreferences().getUserPushToken());
-            userJson.put(Const.ONLINE_STATUS, user.getOnlineStatus());
-            userJson.put(Const.AVATAR_FILE_ID, user.getAvatarFileId());
-            userJson.put(Const.MAX_CONTACT_COUNT, user.getMaxContactCount());
-            userJson.put(Const.AVATAR_THUMB_FILE_ID, user.getAvatarThumbFileId());
-
-            /* Set users favorite contacts */
-            JSONArray contactsArray = new JSONArray();
-            contactIds = user.getContactIds();
-            if (!contactIds.isEmpty()) {
-                for (String id : contactIds) {
-                    contactsArray.put(id);
-                }
-            }
-            if (contactsArray.length() > 0) {
-                userJson.put(Const.CONTACTS, contactsArray);
-            }
-
-            /* Set users favorite groups */
-            JSONArray groupsArray = new JSONArray();
-            groupIds = user.getGroupIds();
-
-            if (!groupIds.isEmpty()) {
-                for (String id : groupIds) {
-                    groupsArray.put(id);
-                }
-            }
-
-            if (groupsArray.length() > 0) {
-                userJson.put(Const.FAVORITE_GROUPS, groupsArray);
-            }
-
-//        JSONObject json = ConnectionHandler.putJsonObject(userJson, user.getId(), user.getId(),
-//                user.getToken());
-        
-        json = ConnectionHandler.postJsonObject(Const.UPDATE_USER, userJson, user.getId(), user.getToken());
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (IllegalStateException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (SpikaException e) {
-			e.printStackTrace();
-		}
-        
-        return CouchDBHelper.updateUser(json, contactIds, groupIds);
-    }
-    
-    public static void updateUser (User user, ResultListener<Boolean> resultListener, Context context, boolean showProgressBar) {
-    	new SpikaAsyncTask<Void, Void, Boolean>(new UpdateUser(user), resultListener, context, showProgressBar).execute();;
-    }
-    
-    private static class UpdateUser implements Command<Boolean>
-    {
-    	User user;
-    	
-    	public UpdateUser (User user)
-    	{
-    		this.user = user;
-    	}
-
-		@Override
-		public Boolean execute() throws JSONException, IOException {
-			return updateUser(user);
+			return getGroupByName(groupname);
 		}
     }
 
-    /**
-     * Finds users given the search criteria in userSearch
-     * 
-     * @param userSearch
-     * @return
-     */
-    @Deprecated
-    public static List<User> searchUsers(UserSearch userSearch) {
 
-        String searchParams = "";
-
-        if (userSearch.getName() != null) {
-            try {
-                userSearch.setName(URLEncoder.encode(userSearch.getName(), "UTF-8"));
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-                return null;
-            }
-            searchParams = "n=" + userSearch.getName();
-        }
-
-        if (userSearch.getFromAge() != null && !"".equals(userSearch.getFromAge())) {
-            searchParams += "&af=" + userSearch.getFromAge();
-        }
-        if (userSearch.getToAge() != null && !"".equals(userSearch.getToAge())) {
-            searchParams += "&at=" + userSearch.getToAge();
-        }
-        if (userSearch.getGender() != null
-                && (userSearch.getGender().equals(Const.FEMALE) || userSearch.getGender().equals(
-                        Const.MALE))) {
-            searchParams += "&g=" + userSearch.getGender();
-        }
-        if (userSearch.getOnlineStatus() != null && !userSearch.getOnlineStatus().equals("")) {
-        	searchParams += "&status=" + userSearch.getOnlineStatus();
-        }
-        
-        Logger.error("Search", Const.SEARCH_USERS_URL + searchParams);
-
-        JSONArray json = ConnectionHandler.getJsonArrayDeprecated(Const.SEARCH_USERS_URL + searchParams,
-                UsersManagement.getLoginUser().getId(), UsersManagement.getLoginUser().getToken());
-
-        return CouchDBHelper.parseSearchUsersResult(json);
-    }
-    
-    public static void searchUsers(UserSearch userSearch, ResultListener<List<User>> resultListener, Context context, boolean showProgressBar) {
-    	new SpikaAsyncTask<Void, Void, List<User>>(new SearchUsers(userSearch), resultListener, context, showProgressBar).execute();
-    }
-    
-    private static class SearchUsers implements Command<List<User>>
-    {
-    	UserSearch userSearch;
-    	
-    	public SearchUsers (UserSearch userSearch)
-    	{
-    		this.userSearch = userSearch;
-    	}
-
-		@Override
-		public List<User> execute() throws JSONException, IOException, SpikaException {
-			return searchUsers(userSearch);
-		}
-    }
 
     /**
      * Finds groups given the search criteria in groupSearch
