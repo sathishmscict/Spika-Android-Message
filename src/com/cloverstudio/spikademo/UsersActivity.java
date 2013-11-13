@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  * 
- * Copyright © 2013 Clover Studio Ltd. All rights reserved.
+ * Copyright ï¿½ 2013 Clover Studio Ltd. All rights reserved.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -34,6 +34,7 @@ import android.content.Intent;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.UserManager;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -51,6 +52,7 @@ import android.widget.TextView.OnEditorActionListener;
 import com.cloverstudio.spikademo.R;
 import com.cloverstudio.spikademo.adapters.UsersAdapter;
 import com.cloverstudio.spikademo.couchdb.CouchDB;
+import com.cloverstudio.spikademo.couchdb.ResultListener;
 import com.cloverstudio.spikademo.couchdb.model.Notification;
 import com.cloverstudio.spikademo.couchdb.model.RecentActivity;
 import com.cloverstudio.spikademo.couchdb.model.User;
@@ -140,9 +142,7 @@ public class UsersActivity extends SubMenuActivity {
 				mTvNoUsers.setVisibility(View.GONE);
 				mTvTitle.setText(getString(R.string.MY_CONTACTS));
 				closeSubMenu();
-				if (SpikaApp.hasNetworkConnection()) {
-					new GetUsersAsync(UsersActivity.this).execute(CONTACTS);
-				}
+				getUserContactsAsync();
 				mLayoutUserSearch.setVisibility(View.GONE);
 				mLayoutUserExplore.setVisibility(View.GONE);
 
@@ -182,11 +182,7 @@ public class UsersActivity extends SubMenuActivity {
 
 		mTvTitle.setText(getString(R.string.MY_CONTACTS));
 		closeSubMenu();
-		if (SpikaApp.hasNetworkConnection()) {
-			// XXX Delete this if no error accures
-			//new GetLoginUserAsync(this).execute();
-			new GetUsersAsync(UsersActivity.this).execute(CONTACTS);
-		}
+		getUserContactsAsync();
 		mLayoutUserSearch.setVisibility(View.GONE);
 		mLayoutUserExplore.setVisibility(View.GONE);
 	}
@@ -416,47 +412,15 @@ public class UsersActivity extends SubMenuActivity {
 		}
 	}
 
-	private class GetUsersAsync extends SpikaAsync<String, Void, List<User>> {
-
-		String searchType = "";
-
-		protected GetUsersAsync(Context context) {
-			super(context);
-		}
-
-		HookUpProgressDialog progressDialog = new HookUpProgressDialog(
-				UsersActivity.this);
-
+	private void getUserContactsAsync () {
+		CouchDB.findUserContactsAsync(UsersManagement.getLoginUser().getId(), new GetUserContactsFinish(), UsersActivity.this, true);
+	}
+	
+	private class GetUserContactsFinish implements ResultListener<List<User>> {
 		@Override
-		protected void onPreExecute() {
-			progressDialog.show();
-			super.onPreExecute();
-		}
-
-		@Override
-		protected List<User> doInBackground(String... params) {
-
-			searchType = params[0];
-
-			if (params[0].equals(ALL_USERS)) {
-				return CouchDB.findAllUsers();
-			} else if (params[0].equals(SEARCH_USERS)) {
-				return CouchDB.findUsersByName(params[1]);
-			} else if (params[0].equals(CONTACTS)) {
-				return CouchDB.findUserContacts(UsersManagement.getLoginUser()
-						.getId());
-			} else {
-				return CouchDB.findAllUsers();
-			}
-		}
-
-		@Override
-		protected void onPostExecute(List<User> result) {
-
-			if (searchType.equals(CONTACTS)
-					&& (result == null || result.size() == 0)) {
-				UsersActivity.this
-						.showTutorialOnceAfterBoot(getString(R.string.tutorial_nocontact));
+		public void onResultsSucceded(List<User> result) {
+			if (result == null || result.size() == 0) {
+				UsersActivity.this.showTutorialOnceAfterBoot(getString(R.string.tutorial_nocontact));
 			}
 
 			if (UsersManagement.getLoginUser().getActivitySummary() != null) {
@@ -494,11 +458,96 @@ public class UsersActivity extends SubMenuActivity {
 			} else {
 				mUserListAdapter.setItems(mUsers, mUserNotifications);
 			}
+		}
 
-			progressDialog.dismiss();
-
+		@Override
+		public void onResultsFail() {
 		}
 	}
+	
+//	private class GetUsersAsync extends SpikaAsync<String, Void, List<User>> {
+//
+//		String searchType = "";
+//
+//		protected GetUsersAsync(Context context) {
+//			super(context);
+//		}
+//
+//		HookUpProgressDialog progressDialog = new HookUpProgressDialog(
+//				UsersActivity.this);
+//
+//		@Override
+//		protected void onPreExecute() {
+//			progressDialog.show();
+//			super.onPreExecute();
+//		}
+//
+//		@Override
+//		protected List<User> doInBackground(String... params) {
+//
+//			searchType = params[0];
+//
+//			if (params[0].equals(ALL_USERS)) {
+//				return CouchDB.findAllUsers();
+//			} else if (params[0].equals(SEARCH_USERS)) {
+//				return CouchDB.findUsersByName(params[1]);
+//			} else if (params[0].equals(CONTACTS)) {
+//				return CouchDB.findUserContacts(UsersManagement.getLoginUser()
+//						.getId());
+//			} else {
+//				return CouchDB.findAllUsers();
+//			}
+//		}
+//
+//		@Override
+//		protected void onPostExecute(List<User> result) {
+//
+//			if (searchType.equals(CONTACTS)
+//					&& (result == null || result.size() == 0)) {
+//				UsersActivity.this
+//						.showTutorialOnceAfterBoot(getString(R.string.tutorial_nocontact));
+//			}
+//
+//			if (UsersManagement.getLoginUser().getActivitySummary() != null) {
+//				for (RecentActivity recentActivity : UsersManagement
+//						.getLoginUser().getActivitySummary()
+//						.getRecentActivityList()) {
+//					if (recentActivity.getTargetType().equals(Const.USER)) {
+//						mUserNotifications = recentActivity.getNotifications();
+//					}
+//				}
+//			}
+//
+//			mUsers = (ArrayList<User>) result;
+//
+//			if (mUsers.size() == 0) {
+//				mTvNoUsers.setVisibility(View.VISIBLE);
+//				mTvNoUsers.setText(getString(R.string.no_users_in_contacts));
+//			} else {
+//				mTvNoUsers.setVisibility(View.GONE);
+//			}
+//
+//			// sorting users by name
+//			Collections.sort(mUsers, new Comparator<User>() {
+//				@Override
+//				public int compare(User lhs, User rhs) {
+//					return lhs.getName().compareToIgnoreCase(rhs.getName());
+//				}
+//			});
+//
+//			if (mUserListAdapter == null) {
+//				mUserListAdapter = new UsersAdapter(UsersActivity.this, mUsers,
+//						mUserNotifications);
+//				mLvUsers.setAdapter(mUserListAdapter);
+//				mLvUsers.setOnItemClickListener(mUserListAdapter);
+//			} else {
+//				mUserListAdapter.setItems(mUsers, mUserNotifications);
+//			}
+//
+//			progressDialog.dismiss();
+//
+//		}
+//	}
 
 	private void clearListView() {
 		mUserListAdapter = new UsersAdapter(UsersActivity.this,
@@ -577,14 +626,10 @@ public class UsersActivity extends SubMenuActivity {
 	public void onBackPressed() {
 		if (mLayoutUserSearch.getVisibility() == View.VISIBLE) {
 			mLayoutUserSearch.setVisibility(View.GONE);
-			if (SpikaApp.hasNetworkConnection()) {
-				new GetUsersAsync(UsersActivity.this).execute(CONTACTS);
-			}
+			getUserContactsAsync();
 		} else if (mLayoutUserExplore.getVisibility() == View.VISIBLE) {
 			mLayoutUserExplore.setVisibility(View.GONE);
-			if (SpikaApp.hasNetworkConnection()) {
-				new GetUsersAsync(UsersActivity.this).execute(CONTACTS);
-			}
+			getUserContactsAsync();
 		} else {
 			super.onBackPressed();
 		}
@@ -626,9 +671,7 @@ public class UsersActivity extends SubMenuActivity {
 			if (resultCode == RESULT_OK) {
 				mTvNoUsers.setVisibility(View.GONE);
 				mTvTitle.setText(getString(R.string.MY_CONTACTS));
-				if (SpikaApp.hasNetworkConnection()) {
-					new GetUsersAsync(UsersActivity.this).execute(CONTACTS);
-				}
+				getUserContactsAsync();
 				mLayoutUserSearch.setVisibility(View.GONE);
 				mLayoutUserExplore.setVisibility(View.GONE);
 			}

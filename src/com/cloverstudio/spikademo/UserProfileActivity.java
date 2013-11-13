@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  * 
- * Copyright © 2013 Clover Studio Ltd. All rights reserved.
+ * Copyright ï¿½ 2013 Clover Studio Ltd. All rights reserved.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -46,6 +46,7 @@ import android.widget.Toast;
 
 import com.cloverstudio.spikademo.R;
 import com.cloverstudio.spikademo.couchdb.CouchDB;
+import com.cloverstudio.spikademo.couchdb.ResultListener;
 import com.cloverstudio.spikademo.couchdb.model.User;
 import com.cloverstudio.spikademo.dialog.HookUpAlertDialog;
 import com.cloverstudio.spikademo.dialog.HookUpProgressDialog;
@@ -143,7 +144,7 @@ public class UserProfileActivity extends SpikaActivity {
 		// If opened from link
 		if (getIntent().getBooleanExtra(Const.USER_URI_INTENT, false)) {
 			String userName = getIntent().getStringExtra(Const.USER_URI_NAME);
-			new FindUserByNameAsync(this).execute(userName);
+			findUserByName(userName);
 
 			// If opened from another activity
 		} else {
@@ -153,7 +154,7 @@ public class UserProfileActivity extends SpikaActivity {
 			} else {
 				userId = UsersManagement.getToUser().getId();
 			}
-			new FindUserByIdAsync(this).execute(userId);
+			findUserByIdAsync(userId);
 		}
 
 		final ArrayAdapter<String> onlineStatusAdapter = new ArrayAdapter<String>(
@@ -327,50 +328,39 @@ public class UserProfileActivity extends SpikaActivity {
 		}
 	}
 
-	// TODO need to check if success
-	private class FindUserByIdAsync extends SpikaAsync<String, Void, User> {
-
-		protected FindUserByIdAsync(Context context) {
-			super(context);
-		}
-
+	private void findUserByIdAsync (String id) {
+		CouchDB.findUserByIdAsync(id, new FindUserByIdFinish(), UserProfileActivity.this, true);
+	}
+	
+	private class FindUserByIdFinish implements ResultListener<User> {
 		@Override
-		protected User doInBackground(String... params) {
-			return CouchDB.findUserById(params[0]);
-		}
-
-		@Override
-		protected void onPostExecute(User user) {
-			super.onPostExecute(user);
-			if (user != null) {
-				mUser = user;
+		public void onResultsSucceded(User result) {
+			if (result != null) {
+				mUser = result;
 			}
 			setUserProfile();
 		}
-
+		@Override
+		public void onResultsFail() {
+		}
 	}
 
-	// TODO need to check if success
-	private class FindUserByNameAsync extends SpikaAsync<String, Void, User> {
-
-		protected FindUserByNameAsync(Context context) {
-			super(context);
-		}
-
+	private void findUserByName (String username) {
+		CouchDB.findUserByNameAsync(username, new FindUserByNameFinish(), UserProfileActivity.this, true);
+	}
+	
+	private class FindUserByNameFinish implements ResultListener<User> {
 		@Override
-		protected User doInBackground(String... params) {
-			return CouchDB.findUsersByName(params[0]).get(0);
-		}
-
-		@Override
-		protected void onPostExecute(User user) {
-			super.onPostExecute(user);
-			if (user != null) {
-				mUser = user;
+		public void onResultsSucceded(User result) {
+			if (result != null) {
+				mUser = result;
 			}
 			setUserProfile();
 		}
 
+		@Override
+		public void onResultsFail() {			
+		}
 	}
 
 	private class UpdateContactsAsync extends AsyncTask<Integer, Void, Boolean> {

@@ -76,7 +76,7 @@ public class SplashScreenActivity extends Activity {
 
 				mUser = new User();
 				
-				CouchDB.auth(mSavedEmail, mSavedPassword, new AuthListener(), SplashScreenActivity.this, false);
+				CouchDB.authAsync(mSavedEmail, mSavedPassword, new AuthListener(), SplashScreenActivity.this, false);
 			} else {
 				new Handler().postDelayed(new Runnable() {
 
@@ -203,7 +203,7 @@ public class SplashScreenActivity extends Activity {
 		}
 		@Override
 		public void onResultsFail() {
-			SideBarActivity.appLogout(false, false, true);
+			SideBarActivity.appLogout(false, true, false);
 		}
 	}
 }

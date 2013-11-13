@@ -395,7 +395,7 @@ public class MyProfileActivity extends SideBarActivity {
 	private void getLoginUserAsync ()
 	{
 		Preferences prefs = SpikaApp.getPreferences();
-		CouchDB.findUserByEmail(prefs.getUserEmail(), new GetLoginUserListener(), MyProfileActivity.this, true);
+		CouchDB.findUserByEmailAsync(prefs.getUserEmail(), new GetLoginUserListener(), MyProfileActivity.this, true);
 	}
 	
 	private class GetLoginUserListener implements ResultListener<User> {
@@ -750,7 +750,7 @@ public class MyProfileActivity extends SideBarActivity {
 	}
 
 	private void checkUnique (String username) {
-		CouchDB.findUserByName(username, new CheckUniqueFinish(), MyProfileActivity.this, true);
+		CouchDB.findUserByNameAsync(username, new CheckUniqueFinish(), MyProfileActivity.this, true);
 	}
 	
 	private class CheckUniqueFinish implements ResultListener<User>{

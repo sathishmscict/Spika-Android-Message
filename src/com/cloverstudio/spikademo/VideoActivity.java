@@ -378,7 +378,7 @@ public class VideoActivity extends SpikaActivity {
 	}
 
 	private void fileDownloadAsync (String fileId, File file) {
-		CouchDB.downloadFile(fileId, file, new FileDownloadFinish(), VideoActivity.this, true);
+		CouchDB.downloadFileAsync(fileId, file, new FileDownloadFinish(), VideoActivity.this, true);
 	}
 	
 	private class FileDownloadFinish implements ResultListener<File> {

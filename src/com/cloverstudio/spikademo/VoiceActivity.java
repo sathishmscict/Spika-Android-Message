@@ -338,7 +338,7 @@ public class VoiceActivity extends SpikaActivity {
 	}
 
 	private void fileDownloadAsync (String fileId, File file) {
-		CouchDB.downloadFile(fileId, file, new FileDownloadFinish(), VoiceActivity.this, true);
+		CouchDB.downloadFileAsync(fileId, file, new FileDownloadFinish(), VoiceActivity.this, true);
 	}
 	
 	private class FileDownloadFinish implements ResultListener<File> {

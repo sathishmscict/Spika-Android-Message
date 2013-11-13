@@ -446,7 +446,7 @@ public class RecordingVideoActivity extends SpikaActivity {
 	}
 
 	private void fileUploadAsync(String filePath) {
-		CouchDB.uploadFile(filePath, new FileUploadFinish(), RecordingVideoActivity.this, true);
+		CouchDB.uploadFileAsync(filePath, new FileUploadFinish(), RecordingVideoActivity.this, true);
 	}
 	
 	private class FileUploadFinish implements ResultListener<String> {

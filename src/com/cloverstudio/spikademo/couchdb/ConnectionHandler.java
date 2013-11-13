@@ -33,11 +33,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.net.SocketTimeoutException;
+import java.nio.charset.Charset;
+import java.util.List;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
@@ -52,11 +56,17 @@ import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.CoreProtocolPNames;
+import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
+import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.ByteArrayBuffer;
 import org.json.JSONArray;
@@ -644,6 +654,14 @@ public class ConnectionHandler {
 
 		httppost.getParams().setBooleanParameter(
 				CoreProtocolPNames.USE_EXPECT_CONTINUE, false);
+		
+		HttpConnectionParams.setConnectionTimeout(httppost.getParams(), 5000);
+		HttpConnectionParams.setSoTimeout(httppost.getParams(), 5000);
+		
+		
+		Log.e("TIMEOUTS", 
+				HttpConnectionParams.getConnectionTimeout(httppost.getParams()) + " " +
+						HttpConnectionParams.getSoTimeout(httppost.getParams()));
 
 		httppost.setHeader("Content-Type", "application/json");
         httppost.setHeader("Encoding", "utf-8");
@@ -683,6 +701,71 @@ public class ConnectionHandler {
 		return entity.getContent();
 	}
 
+	public static String getIdFromFileUploader(String url,
+			List<NameValuePair> params) throws ClientProtocolException, IOException, UnsupportedOperationException, SpikaException, JSONException {
+		// Making HTTP request
+		
+		// defaultHttpClient
+		HttpParams httpParams = new BasicHttpParams();
+		HttpProtocolParams.setVersion(httpParams, HttpVersion.HTTP_1_1);
+		HttpProtocolParams.setContentCharset(httpParams, "UTF-8");
+		HttpClient httpClient = new DefaultHttpClient(httpParams);
+		HttpPost httpPost = new HttpPost(url);
+
+		httpPost.setHeader("database", Const.DATABASE);
+	     
+		Charset charSet = Charset.forName("UTF-8"); // Setting up the
+													// encoding
+
+		MultipartEntity entity = new MultipartEntity(
+				HttpMultipartMode.BROWSER_COMPATIBLE);
+		for (int index = 0; index < params.size(); index++) {
+			if (params.get(index).getName()
+					.equalsIgnoreCase(Const.FILE)) {
+				// If the key equals to "file", we use FileBody to
+				// transfer the data
+				entity.addPart(params.get(index).getName(),
+						new FileBody(new File(params.get(index)
+								.getValue())));
+			} else {
+				// Normal string data
+				entity.addPart(params.get(index).getName(),
+						new StringBody(params.get(index).getValue(),
+								charSet));
+			}
+		}
+
+		httpPost.setEntity(entity);
+
+		print (httpPost);
+		
+		HttpResponse httpResponse = httpClient.execute(httpPost);
+		HttpEntity httpEntity = httpResponse.getEntity();
+		InputStream is = httpEntity.getContent();
+
+		if (httpResponse.getStatusLine().getStatusCode() > 400)
+		{
+			if (httpResponse.getStatusLine().getStatusCode() == 403) throw new SpikaException(ConnectionHandler.getError(entity.getContent()));
+			throw new IOException(httpResponse.getStatusLine().getReasonPhrase());
+		}
+		
+		// BufferedReader reader = new BufferedReader(new
+		// InputStreamReader(is, "iso-8859-1"), 8);
+		BufferedReader reader = new BufferedReader(new InputStreamReader(
+				is, Charset.forName("UTF-8")), 8);
+		StringBuilder sb = new StringBuilder();
+		String line = null;
+		while ((line = reader.readLine()) != null) {
+			sb.append(line);
+		}
+		is.close();
+		String json = sb.toString();
+
+		Log.e("RESPONSE", json);
+		
+		return json;
+	}
+	
 	/**
 	 * Forming a PUT request
 	 * 

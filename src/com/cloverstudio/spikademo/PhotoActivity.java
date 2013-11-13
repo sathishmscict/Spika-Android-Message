@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  * 
- * Copyright © 2013 Clover Studio Ltd. All rights reserved.
+ * Copyright ï¿½ 2013 Clover Studio Ltd. All rights reserved.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -48,6 +48,7 @@ import android.widget.Toast;
 import com.cloverstudio.spikademo.R;
 import com.cloverstudio.spikademo.adapters.CommentsAdapter;
 import com.cloverstudio.spikademo.couchdb.CouchDB;
+import com.cloverstudio.spikademo.couchdb.ResultListener;
 import com.cloverstudio.spikademo.couchdb.model.Comment;
 import com.cloverstudio.spikademo.couchdb.model.Message;
 import com.cloverstudio.spikademo.extendables.SpikaActivity;
@@ -164,8 +165,25 @@ public class PhotoActivity extends SpikaActivity {
 			
 			Utils.displayImage(avatarFileId,
 						mBtnAvatarUser, ImageLoader.SMALL, R.drawable.user_stub, false);
+			
+//			getAvatarAsync();
 
 			mTvPostedBy.setText(getSubTextDateAndUser(mMessage));
+		}
+	}
+	
+	void getAvatarAsync () {
+		CouchDB.findAvatarByIdAsync(mMessage.getFromUserId(), new FindAvatarCompleted(), this, true);
+	}
+	
+	private class FindAvatarCompleted implements ResultListener<String>{
+		@Override
+		public void onResultsSucceded(String result) {
+			Utils.displayImage(result, mBtnAvatarUser, ImageLoader.SMALL, R.drawable.user_stub, false);
+		}
+
+		@Override
+		public void onResultsFail() {			
 		}
 	}
 

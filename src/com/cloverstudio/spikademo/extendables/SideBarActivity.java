@@ -114,7 +114,7 @@ public class SideBarActivity extends SpikaActivity {
 				public void onResultsFail() {
 				}
 			};
-			CouchDB.findUserById(Const.SUPPORT_USER, resultListener, this, false);
+			CouchDB.findUserByIdAsync(Const.SUPPORT_USER, resultListener, this, false);
 		}
 	}
 

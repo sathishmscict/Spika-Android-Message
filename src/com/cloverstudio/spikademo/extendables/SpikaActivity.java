@@ -265,7 +265,7 @@ public class SpikaActivity extends Activity {
 	}
 	
 	private void getUserByIdAsync (String userId) {
-		CouchDB.findUserById(userId, new GetUserByIdListener(), SpikaActivity.this, true);
+		CouchDB.findUserByIdAsync(userId, new GetUserByIdListener(), SpikaActivity.this, true);
 	}
 	
 	private class GetUserByIdListener implements ResultListener<User> {

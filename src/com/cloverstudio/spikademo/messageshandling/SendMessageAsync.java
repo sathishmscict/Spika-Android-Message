@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  * 
- * Copyright © 2013 Clover Studio Ltd. All rights reserved.
+ * Copyright ï¿½ 2013 Clover Studio Ltd. All rights reserved.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -99,6 +99,7 @@ public class SendMessageAsync extends SpikaAsync<Object, Void, Boolean> {
         String fileThumbId = null;
 
 		if (isComment) {
+			Log.e("********SKIP********", "********SKIP********");
 			try {
 				message = (Message) obj;
 				message.setModified(System.currentTimeMillis() / 1000);
@@ -119,15 +120,13 @@ public class SendMessageAsync extends SpikaAsync<Object, Void, Boolean> {
 						message = MessageManagement.createMessage(Const.IMAGE,
 								Const.USER, body, latitude, longtitude, fileId,
 								"", "", "",fileThumbId,"");
-						isSuccess = CouchDB.sendMessageToUser(message,
-								isComment);
+						isSuccess = CouchDB.sendMessageToUser(message);
 					}
 					if (UsersManagement.getToGroup() != null) {
 						message = MessageManagement.createMessage(Const.IMAGE,
 								Const.GROUP, body, latitude, longtitude,
 								fileId, "", "", "",fileThumbId,"");
-						isSuccess = CouchDB.sendMessageToGroup(message,
-								isComment);
+						isSuccess = CouchDB.sendMessageToGroup(message);
 					}
 
 				} catch (Exception e) {
@@ -143,15 +142,13 @@ public class SendMessageAsync extends SpikaAsync<Object, Void, Boolean> {
 						message = MessageManagement.createMessage(Const.TEXT,
 								Const.USER, body, latitude, longtitude, "", "",
 								"", "","","");
-						isSuccess = CouchDB.sendMessageToUser(message,
-								isComment);
+						isSuccess = CouchDB.sendMessageToUser(message);
 					}
 					if (UsersManagement.getToGroup() != null) {
 						message = MessageManagement.createMessage(Const.TEXT,
 								Const.GROUP, body, latitude, longtitude, "",
 								"", "", "","","");
-						isSuccess = CouchDB.sendMessageToGroup(message,
-								isComment);
+						isSuccess = CouchDB.sendMessageToGroup(message);
 					}
 
 				} catch (Exception e) {
@@ -168,16 +165,14 @@ public class SendMessageAsync extends SpikaAsync<Object, Void, Boolean> {
 								Const.EMOTICON, Const.USER,
 								emoticon.getIdentifier(), latitude, longtitude,
 								"", "", "", emoticon.getImageUrl(),"","");
-						isSuccess = CouchDB.sendMessageToUser(message,
-								isComment);
+						isSuccess = CouchDB.sendMessageToUser(message);
 					}
 					if (UsersManagement.getToGroup() != null) {
 						message = MessageManagement.createMessage(
 								Const.EMOTICON, Const.GROUP,
 								emoticon.getIdentifier(), latitude, longtitude,
 								"", "", "", emoticon.getImageUrl(),"","");
-						isSuccess = CouchDB.sendMessageToGroup(message,
-								isComment);
+						isSuccess = CouchDB.sendMessageToGroup(message);
 					}
 
 				} catch (Exception e) {
@@ -195,15 +190,13 @@ public class SendMessageAsync extends SpikaAsync<Object, Void, Boolean> {
 						message = MessageManagement.createMessage(
 								Const.LOCATION, Const.USER, body, latitude,
 								longtitude, "", "", "", "","","");
-						isSuccess = CouchDB.sendMessageToUser(message,
-								isComment);
+						isSuccess = CouchDB.sendMessageToUser(message);
 					}
 					if (UsersManagement.getToGroup() != null) {
 						message = MessageManagement.createMessage(
 								Const.LOCATION, Const.GROUP, body, latitude,
 								longtitude, "", "", "", "","","");
-						isSuccess = CouchDB.sendMessageToGroup(message,
-								isComment);
+						isSuccess = CouchDB.sendMessageToGroup(message);
 					}
 
 				} catch (Exception e) {
@@ -220,15 +213,13 @@ public class SendMessageAsync extends SpikaAsync<Object, Void, Boolean> {
 						message = MessageManagement.createMessage(Const.VOICE,
 								Const.USER, body, latitude, longtitude, "",
 								fileId, "", "","","");
-						isSuccess = CouchDB.sendMessageToUser(message,
-								isComment);
+						isSuccess = CouchDB.sendMessageToUser(message);
 					}
 					if (UsersManagement.getToGroup() != null) {
 						message = MessageManagement.createMessage(Const.VOICE,
 								Const.GROUP, body, latitude, longtitude, "",
 								fileId, "", "","","");
-						isSuccess = CouchDB.sendMessageToGroup(message,
-								isComment);
+						isSuccess = CouchDB.sendMessageToGroup(message);
 					}
 
 				} catch (Exception e) {
@@ -245,15 +236,13 @@ public class SendMessageAsync extends SpikaAsync<Object, Void, Boolean> {
 						message = MessageManagement.createMessage(Const.VIDEO,
 								Const.USER, body, latitude, longtitude, "", "",
 								fileId, "","","");
-						isSuccess = CouchDB.sendMessageToUser(message,
-								isComment);
+						isSuccess = CouchDB.sendMessageToUser(message);
 					}
 					if (UsersManagement.getToGroup() != null) {
 						message = MessageManagement.createMessage(Const.VIDEO,
 								Const.GROUP, body, latitude, longtitude, "",
 								"", fileId, "","","");
-						isSuccess = CouchDB.sendMessageToGroup(message,
-								isComment);
+						isSuccess = CouchDB.sendMessageToGroup(message);
 					}
 
 				} catch (Exception e) {

@@ -38,7 +38,7 @@ public class Const {
 	/* CouchDB credentials */
 	//public static final String API_URL = "http://hookup.clover-studio.com/hookup/hookup-api2.php?";
 	public static final String BASE_URL                	= "http://192.168.1.111:8080/wwwroot/api/";
-	public static final String SUPPORT_USER				= "2f3b9e495143a04238088937cf029267";
+	public static final String SUPPORT_USER				= "0e5004f0c60b0f04569ee7d5c4000a37";
 //	public static final String BASE_URL                	= "http://spikademo2.clover-studio.com/api/";
 	public static final String API_URL                 	= BASE_URL;
 	public static final String AUTH_URL                	= BASE_URL + "auth?";
@@ -51,10 +51,20 @@ public class Const {
     public static final String FIND_USER_BY_EMAIL      	= BASE_URL + "findUser/email/";
     public static final String FIND_USER_BY_ID			= BASE_URL + "findUser/id/";
     public static final String FIND_USERACTIVITY_SUMMARY= BASE_URL + "activitySummary";
+    public static final String GET_AVATAR_FILE_ID		= BASE_URL + "GetAvatarFileId/";
+    public static final String FIND_MESSAGE_BY_ID		= BASE_URL + "findMessageById/";
+    public static final String FIND_COMMENTS_BY_MESSAGE_ID	= BASE_URL + "comments/";
     
     public static final String PASSWORDREMINDER_URL    	= BASE_URL + "resetPassword?";
     public static final String UNREGISTER_PUSH_URL     	= BASE_URL + "unregistToken?";
     public static final String DATABASE                	= "spikademo";
+    
+    public static final String CREATE_USER 				= "create_user";
+	public static final String UPDATE_USER 				= "updateUser";
+	public static final String SEND_MESSAGE_TO_USER		= "sendMessageToUser";
+    public static final String SEND_MESSAGE_TO_GROUP	= "sendMessageToGroup";
+    public static final String SEND_COMMENT 			= "sendComment";
+    
     
 	/* User constants */
 	public static final String FAVORITE_GROUPS = "favorite_groups";
@@ -150,8 +160,7 @@ public class Const {
 	public static final String REVPOS = "revpos";
 	public static final String STUB = "stub";
 	public static final String LENGTH = "length";
-	public static final String CREATE_USER = "create_user";
-	public static final String UPDATE_USER = "updateUser";
+	
 	
 	/* Recent activity constants */
 	public static final String ACTIVITY_SUMMARY = "activity_summary";

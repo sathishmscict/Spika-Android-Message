@@ -197,7 +197,7 @@ public class SignInActivity extends Activity {
 
 				if (isEmailValid(mEtSendPasswordEmail.getText().toString())) 
 				{
-					CouchDB.findUserByEmail(mEtSendPasswordEmail.getText().toString(), new GetUserByEmailListener(), SignInActivity.this, true);
+					CouchDB.findUserByEmailAsync(mEtSendPasswordEmail.getText().toString(), new GetUserByEmailListener(), SignInActivity.this, true);
 				} else {
 
 					final HookUpDialog dialog = new HookUpDialog(
@@ -277,7 +277,7 @@ public class SignInActivity extends Activity {
 					mSignInPassword = mEtSignInPassword.getText().toString();
 
 					if (!mSignInPassword.equals("") && !mSignInEmail.equals("")) {
-						CouchDB.auth(mSignInEmail, mSignInPassword, new AuthListener(), SignInActivity.this, true);
+						CouchDB.authAsync(mSignInEmail, mSignInPassword, new AuthListener(), SignInActivity.this, true);
 					}
 				}
 			});
@@ -315,7 +315,7 @@ public class SignInActivity extends Activity {
 					mSignUpPassword = mEtSignUpPassword.getText().toString();
 
 					if (isNameValid(mSignUpName) && isEmailValid(mSignUpEmail) && isPasswordValid(mSignUpPassword)) {
-						CouchDB.createUser(mSignUpName, mSignUpEmail, mSignUpPassword, new CreateUserListener(), SignInActivity.this, true);
+						CouchDB.createUserAsync(mSignUpName, mSignUpEmail, mSignUpPassword, new CreateUserListener(), SignInActivity.this, true);
 //						checkAvailability(mSignUpName, mSignUpEmail);
 					}
 
@@ -459,7 +459,7 @@ public class SignInActivity extends Activity {
 		public void onResultsSucceded(String result) {
 			if (result != null)
 			{
-				CouchDB.auth(mSignUpEmail, mSignUpPassword, new AuthListener(), SignInActivity.this, true);
+				CouchDB.authAsync(mSignUpEmail, mSignUpPassword, new AuthListener(), SignInActivity.this, true);
 			}
 			else
 			{

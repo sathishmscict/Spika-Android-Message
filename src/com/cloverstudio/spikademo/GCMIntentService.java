@@ -229,7 +229,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 	private void removePushTokenAsync (Context context) {
 		SpikaApp.getPreferences().setUserPushToken("");
 		if (UsersManagement.getLoginUser() != null) {
-			CouchDB.unregisterPushToken(UsersManagement.getLoginUser().getId(), new RemovePushTokenListener(), context, false);
+			CouchDB.unregisterPushTokenAsync(UsersManagement.getLoginUser().getId(), new RemovePushTokenListener(), context, false);
 		}
 	}
 	

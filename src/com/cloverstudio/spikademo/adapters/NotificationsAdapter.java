@@ -229,7 +229,7 @@ public class NotificationsAdapter extends BaseAdapter implements
 	}
 
 	private void getUserByIdAsync (String userId) {
-		CouchDB.findUserById(userId, new GetUserByIdListener(), mActivity, true);
+		CouchDB.findUserByIdAsync(userId, new GetUserByIdListener(), mActivity, true);
 	}
 	
 	private class GetUserByIdListener implements ResultListener<User> {

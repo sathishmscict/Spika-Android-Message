@@ -845,7 +845,7 @@ public class CouchDBHelper {
 		return ok;
 	}
 
-	public static String findAvatarFileId(JSONObject json) {
+	public static String findAvatarFileId(JSONObject json) throws JSONException {
 		String avatarFileId = null;
 
 		if (json != null) {
@@ -855,20 +855,12 @@ public class CouchDBHelper {
 				return null;
 			}
 
-			try {
+			JSONArray rows = json.getJSONArray(Const.ROWS);
 
-				JSONArray rows = json.getJSONArray(Const.ROWS);
-
-				for (int i = 0; i < rows.length(); i++) {
-
-					JSONObject row = rows.getJSONObject(i);
-					avatarFileId = row.getString(Const.VALUE);
-
-				}
-
-			} catch (Exception e) {
-				Logger.error(TAG + "findAvatarFileId",
-						"Error while retrieving data from json", e);
+			for (int i = 0; i < rows.length(); i++) 
+			{
+				JSONObject row = rows.getJSONObject(i);
+				avatarFileId = row.getString(Const.VALUE);
 			}
 		}
 
