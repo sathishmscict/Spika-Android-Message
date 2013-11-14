@@ -266,7 +266,7 @@ public class CreateGroupActivity extends SpikaActivity {
     }
 
     private void createGroupAsync (Group group) {
-    	new SpikaAsyncTask<Void, Void, String>(new CreateGroup(group), new UserCreatedFinish(), CreateGroupActivity.this, true).execute();
+    	new SpikaAsyncTask<Void, Void, String>(new CreateGroup(group), new GroupCreatedFinish(), CreateGroupActivity.this, true).execute();
     }
     
     private class CreateGroup implements Command<String> {
@@ -306,7 +306,7 @@ public class CreateGroupActivity extends SpikaActivity {
 		}
     }
     
-    private class UserCreatedFinish implements ResultListener<String> {
+    private class GroupCreatedFinish implements ResultListener<String> {
 
 		@Override
 		public void onResultsSucceded(String groupId) {
@@ -315,8 +315,10 @@ public class CreateGroupActivity extends SpikaActivity {
 				Toast.makeText(getApplicationContext(), "Group created",
 						Toast.LENGTH_SHORT).show();
 
-				CouchDB.addFavoriteGroupAsync(groupId, new AddToFavoritesFinish(), CreateGroupActivity.this, true);
+//				CouchDB.addFavoriteGroupAsync(groupId, new AddToFavoritesFinish(), CreateGroupActivity.this, true);
 
+				finish();
+				
 			} else {
 				Toast.makeText(getApplicationContext(),
 						"Error while creating group", Toast.LENGTH_LONG).show();

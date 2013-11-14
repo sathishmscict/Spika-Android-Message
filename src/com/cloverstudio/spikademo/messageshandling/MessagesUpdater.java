@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  * 
- * Copyright © 2013 Clover Studio Ltd. All rights reserved.
+ * Copyright ï¿½ 2013 Clover Studio Ltd. All rights reserved.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,13 +24,21 @@
 
 package com.cloverstudio.spikademo.messageshandling;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONException;
 
 import android.content.Context;
 import android.util.Log;
 
 import com.cloverstudio.spikademo.WallActivity;
+import com.cloverstudio.spikademo.couchdb.Command;
 import com.cloverstudio.spikademo.couchdb.CouchDB;
+import com.cloverstudio.spikademo.couchdb.ResultListener;
+import com.cloverstudio.spikademo.couchdb.SpikaAsyncTask;
+import com.cloverstudio.spikademo.couchdb.SpikaException;
 import com.cloverstudio.spikademo.couchdb.model.Message;
 import com.cloverstudio.spikademo.dialog.HookUpProgressDialog;
 import com.cloverstudio.spikademo.extendables.SpikaAsync;
@@ -47,42 +55,25 @@ import com.cloverstudio.spikademo.management.UsersManagement;
 public class MessagesUpdater {
 
 	public static boolean gRegularRefresh = true;
-	public static ArrayList<Message> gNewMessages = null;
 	public static boolean gIsLoading = false;
 
-	public MessagesUpdater() {
-	}
-
-	public void update() {
+	public static void update(boolean regularRefresh) {
+		gRegularRefresh = regularRefresh;
 		if (WallActivity.getInstance() != null) {
-			new GetMessagesAsync(WallActivity.getInstance()).execute();
+			getMessagesAsync(regularRefresh);
 		}
 	}
 
-	public static class GetMessagesAsync extends
-			SpikaAsync<Void, Void, ArrayList<Message>> {
-
-		private HookUpProgressDialog mProgressDialog;
-
-		public GetMessagesAsync(Context context) {
-			super(context);
-			//if (mProgressDialog == null) {
-			//	mProgressDialog = new HookUpProgressDialog(context);
-			//}
-		}
+	private static void getMessagesAsync (boolean reguralRefresh) {
+		gIsLoading = true;
+		new SpikaAsyncTask<Void, Void, ArrayList<Message>>(new GetMessages(), new GetMessagesFinish(), WallActivity.getInstance(), reguralRefresh).execute();
+	}
+	
+	private static class GetMessages implements Command<ArrayList<Message>> {
 
 		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-			gIsLoading = true;
-			// if(gRegularRefresh){
-			//mProgressDialog.show();
-			// }
-		}
-
-		@Override
-		protected ArrayList<Message> doInBackground(Void... params) {
-
+		public ArrayList<Message> execute() throws JSONException, IOException,
+				SpikaException {
 			ArrayList<Message> newMessages = new ArrayList<Message>();
 
             TimeMeasurer.dumpInterval("Before request");
@@ -99,11 +90,13 @@ public class MessagesUpdater {
 			}
 			return newMessages;
 		}
+	}
+	
+	private static class GetMessagesFinish implements ResultListener<ArrayList<Message>> {
 
 		@Override
-		protected void onPostExecute(ArrayList<Message> result) {
-
-            TimeMeasurer.dumpInterval("After request");
+		public void onResultsSucceded(ArrayList<Message> result) {
+			TimeMeasurer.dumpInterval("After request");
 
 			if (gIsLoading) {
 				UpdateMessagesInListView.updateListView(result);
@@ -111,16 +104,13 @@ public class MessagesUpdater {
 
 			gIsLoading = false;
 			gRegularRefresh = true;
-			
-			//if (mProgressDialog != null) {
-			//		mProgressDialog.dismiss();
-			//}
 
 			if (WallActivity.getInstance() != null)
 				WallActivity.getInstance().checkMessagesCount();
+		}
 
-			super.onPostExecute(result);
+		@Override
+		public void onResultsFail() {			
 		}
 	}
-
 }

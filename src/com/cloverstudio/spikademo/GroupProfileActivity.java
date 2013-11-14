@@ -390,8 +390,7 @@ public class GroupProfileActivity extends SpikaActivity {
 
 					@Override
 					public void onClick(View v) {
-						new DeleteGroupAsync(GroupProfileActivity.this)
-								.execute(mGroup.getId(), mGroup.getRev());
+						deleteGroupAsync(mGroup.getId());
 						mDeleteAlertDialog.dismiss();
 
 					}
@@ -604,7 +603,7 @@ public class GroupProfileActivity extends SpikaActivity {
 	}
 
 	private void getOwnerAsync () {
-		CouchDB.findUserByIdAsync(UsersManagement.getLoginUser().getId(), new GetOwnerFinish(), GroupProfileActivity.this, true);
+		CouchDB.findUserByIdAsync(mGroup.getUserId(), new GetOwnerFinish(), GroupProfileActivity.this, true);
 	}
 	
 	private class GetOwnerFinish implements ResultListener<User> {
@@ -834,59 +833,24 @@ public class GroupProfileActivity extends SpikaActivity {
 		}
 	}
 
-	private class DeleteGroupAsync extends SpikaAsync<String, Void, Boolean> {
-
-		private HookUpProgressDialog progressDialog;
-
-		Group currentGroupData = null;
-
-		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-			if (progressDialog == null) {
-				progressDialog = new HookUpProgressDialog(
-						GroupProfileActivity.this);
-			}
-			progressDialog.show();
-			// save data of current group so if anything goes wrong with
-			// update, we can return to previous state
-			currentGroupData = mGroup;
-		}
-
-		protected DeleteGroupAsync(Context context) {
-			super(context);
-		}
+	private void deleteGroupAsync (String id) {
+		CouchDB.deleteGroupAsync(id, new DeleteGroupFinish(), GroupProfileActivity.this, true);
+	}
+	
+	private class DeleteGroupFinish implements ResultListener<Boolean> {
 
 		@Override
-		protected Boolean doInBackground(String... params) {
-
-			mGroup.setDeleted(true);
-
-			return CouchDB.updateGroup(mGroup);
-
-		}
-
-		@Override
-		protected void onPostExecute(Boolean result) {
-			super.onPostExecute(result);
+		public void onResultsSucceded(Boolean result) {	
 			if (result) {
-
 				GroupProfileActivity.this.mIsDeletedDone = true;
 				removeFromFavoritesAsync(mGroup.getId(), false);
-				
-			} else {
-				/*
-				 * something went wrong with delete group, returning logged in
-				 * user to state before update
-				 */
-				Toast.makeText(GroupProfileActivity.this,
-						getString(R.string.failed_to_delete_group),
-						Toast.LENGTH_SHORT).show();
-				UsersManagement.setToGroup(currentGroupData);
 			}
-			progressDialog.dismiss();
-
 		}
+
+		@Override
+		public void onResultsFail() {			
+		}
+		
 	}
 
 	public void setNewPassword(String newPassword) {

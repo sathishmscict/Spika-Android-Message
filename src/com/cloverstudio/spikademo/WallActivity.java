@@ -51,6 +51,7 @@ import android.widget.TextView;
 import com.cloverstudio.spikademo.R;
 import com.cloverstudio.spikademo.adapters.WallMessagesAdapter;
 import com.cloverstudio.spikademo.couchdb.CouchDB;
+import com.cloverstudio.spikademo.couchdb.ResultListener;
 import com.cloverstudio.spikademo.couchdb.model.Emoticon;
 import com.cloverstudio.spikademo.couchdb.model.Group;
 import com.cloverstudio.spikademo.couchdb.model.Message;
@@ -321,9 +322,8 @@ public class WallActivity extends SideBarActivity {
 
 		if (gUpdater == null || gMessagesUpdater == null) {
 			gUpdater = new UpdateMessagesInListView(this);
-			gMessagesUpdater = new MessagesUpdater();
 		}
-		gMessagesUpdater.update();
+		MessagesUpdater.update(true);
 		if (gMessagesAdapter != null) {
 			gMessagesAdapter.notifyDataSetChanged();
 		}
@@ -517,7 +517,7 @@ public class WallActivity extends SideBarActivity {
 		mProfileIntent = new Intent(WallActivity.this, MyProfileActivity.class);
 		mProfileIntent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
 
-		new GetEmoticonsAsync(this).execute();
+		CouchDB.findAllEmoticonsAsync(new FindAllEmoticonsFinish(), WallActivity.this, true);
 
 		mChooseDialog = new TempVideoChooseDialog(this);
 		mChooseDialog.setOnButtonClickListener(
@@ -587,30 +587,18 @@ public class WallActivity extends SideBarActivity {
 		}
 	}
 
-	private class GetEmoticonsAsync extends
-			SpikaAsync<Void, Void, List<Emoticon>> {
-
-		protected GetEmoticonsAsync(Context context) {
-			super(context);
-		}
+	private class FindAllEmoticonsFinish implements ResultListener<List<Emoticon>> {
 
 		@Override
-		protected List<Emoticon> doInBackground(Void... params) {
-			if (Emoticons.getInstance().getEmoticons() == null) {
-				return CouchDB.findAllEmoticons();
-			} else {
-				return Emoticons.getInstance().getEmoticons();
-			}
-		}
-
-		@Override
-		protected void onPostExecute(List<Emoticon> emoticons) {
+		public void onResultsSucceded(List<Emoticon> emoticons) {
 			if (emoticons != null) {
 				Emoticons.getInstance().setEmoticons(emoticons);
 			}
 			fillEmoticonsGallery(emoticons);
 		}
-
+		@Override
+		public void onResultsFail() {			
+		}
 	}
 
 	private class CreateWatchingLogAsync extends

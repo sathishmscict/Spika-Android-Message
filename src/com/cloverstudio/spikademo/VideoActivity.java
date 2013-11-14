@@ -26,9 +26,9 @@ package com.cloverstudio.spikademo;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.media.MediaPlayer;
@@ -36,7 +36,6 @@ import android.media.MediaPlayer.OnPreparedListener;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -56,9 +55,7 @@ import com.cloverstudio.spikademo.couchdb.CouchDB;
 import com.cloverstudio.spikademo.couchdb.ResultListener;
 import com.cloverstudio.spikademo.couchdb.model.Comment;
 import com.cloverstudio.spikademo.couchdb.model.Message;
-import com.cloverstudio.spikademo.dialog.HookUpProgressDialog;
 import com.cloverstudio.spikademo.extendables.SpikaActivity;
-import com.cloverstudio.spikademo.extendables.SpikaAsync;
 import com.cloverstudio.spikademo.lazy.ImageLoader;
 import com.cloverstudio.spikademo.management.CommentManagement;
 import com.cloverstudio.spikademo.management.UsersManagement;
@@ -67,7 +64,6 @@ import com.cloverstudio.spikademo.messageshandling.GetCommentsAsync;
 import com.cloverstudio.spikademo.messageshandling.RefreshCommentHandler;
 import com.cloverstudio.spikademo.messageshandling.SendMessageAsync;
 import com.cloverstudio.spikademo.utils.LayoutHelper;
-import com.cloverstudio.spikademo.utils.Logger;
 import com.cloverstudio.spikademo.utils.Utils;
 
 /**
@@ -166,7 +162,7 @@ public class VideoActivity extends SpikaActivity {
 				R.drawable.user_stub, false);
 
 		if (mMessage.getBody().equals(null) || mMessage.getBody().equals("")) {
-			tvNameOfUserVideo.setText(nameOfUser.toUpperCase() + "'S VIDEO");
+			tvNameOfUserVideo.setText(nameOfUser.toUpperCase(Locale.getDefault()) + "'S VIDEO");
 		} else {
 			tvNameOfUserVideo.setText(mMessage.getBody());
 		}
@@ -277,7 +273,8 @@ public class VideoActivity extends SpikaActivity {
 					Comment comment = CommentManagement.createComment(
 							commentText, mMessage.getId());
 					scrollListViewToBottom();
-					new CreateCommentAsync(VideoActivity.this).execute(comment);
+					
+					CouchDB.createCommentAsync(comment, new CreateCommentFinish(), VideoActivity.this, true);
 
 					etComment.setText("");
 					Utils.hideKeyboard(VideoActivity.this);
@@ -414,34 +411,10 @@ public class VideoActivity extends SpikaActivity {
 		super.onDestroy();
 	}
 
-	private class CreateCommentAsync extends SpikaAsync<Comment, Void, String> {
-
-		public CreateCommentAsync(Context context) {
-			super(context);
-		}
+	private class CreateCommentFinish implements ResultListener<String> {
 
 		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-		}
-
-		@Override
-		protected String doInBackground(Comment... params) {
-
-			String commentId = CouchDB.createComment(params[0]);
-
-			if (commentId != null) {
-				if (WallActivity.gCurrentMessages != null) {
-					WallActivity.gCurrentMessages.clear();
-				}
-				WallActivity.gIsRefreshUserProfile = true;
-			}
-
-			return commentId;
-		}
-
-		@Override
-		protected void onPostExecute(String commentId) {
+		public void onResultsSucceded(String commentId) {
 			if (commentId != null) {
 				new SendMessageAsync(VideoActivity.this, SendMessageAsync.TYPE_VIDEO).execute(mMessage, false, true);
 				new GetCommentsAsync(VideoActivity.this, mMessage, mComments,
@@ -449,6 +422,9 @@ public class VideoActivity extends SpikaActivity {
 						true).execute(mMessage.getId());
 			}
 		}
-	}
 
+		@Override
+		public void onResultsFail() {			
+		}
+	}
 }

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  * 
- * Copyright © 2013 Clover Studio Ltd. All rights reserved.
+ * Copyright ï¿½ 2013 Clover Studio Ltd. All rights reserved.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,7 +29,6 @@ import android.widget.AbsListView.OnScrollListener;
 
 import com.cloverstudio.spikademo.WallActivity;
 import com.cloverstudio.spikademo.management.SettingsManager;
-import com.cloverstudio.spikademo.messageshandling.MessagesUpdater.GetMessagesAsync;
 
 /**
  * WallScrollListener
@@ -58,8 +57,7 @@ public class WallScrollListener implements OnScrollListener {
 				// adapter.count += visibleCount; // or any other amount
 				SettingsManager.sVisibleMessageCount += SettingsManager.sMessageCount;
 				SettingsManager.sPage += 1;
-				MessagesUpdater.gRegularRefresh = false;
-				new GetMessagesAsync(WallActivity.getInstance()).execute();
+				MessagesUpdater.update(false);
 			} else {
 
 			}

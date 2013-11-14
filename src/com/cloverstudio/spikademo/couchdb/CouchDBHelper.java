@@ -24,11 +24,13 @@
 
 package com.cloverstudio.spikademo.couchdb;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.http.client.ClientProtocolException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -873,8 +875,9 @@ public class CouchDBHelper {
 	 * 
 	 * @param json
 	 * @return
+	 * @throws JSONException 
 	 */
-	public static boolean deleteUserGroup(JSONObject json) {
+	public static boolean deleteUserGroup(JSONObject json) throws JSONException {
 
 		boolean ok = false;
 
@@ -885,12 +888,7 @@ public class CouchDBHelper {
 				return false;
 			}
 
-			try {
-				ok = json.getBoolean(Const.OK);
-			} catch (Exception e) {
-				Logger.error(TAG + "deleteUserGroup",
-						"Error while retrieving data from json", e);
-			}
+			ok = json.getBoolean(Const.OK);
 		}
 
 		return ok;
@@ -971,8 +969,9 @@ public class CouchDBHelper {
 	 * 
 	 * @param json
 	 * @return
+	 * @throws JSONException 
 	 */
-	public static boolean updateGroup(JSONObject json) {
+	public static boolean updateGroup(JSONObject json) throws JSONException {
 
 		boolean ok = false;
 
@@ -983,16 +982,11 @@ public class CouchDBHelper {
 				return false;
 			}
 
-			try {
-				ok = json.getBoolean(Const.OK);
+			
+			ok = json.getBoolean(Const.OK);
 
-				/* Important */
-				UsersManagement.getToGroup().setRev(json.getString(Const.REV));
-
-			} catch (Exception e) {
-				Logger.error(TAG + "updateGroup",
-						"Error while retrieving data from json", e);
-			}
+			/* Important */
+			UsersManagement.getToGroup().setRev(json.getString(Const.REV));
 		}
 
 		if (!ok) {
@@ -1402,8 +1396,12 @@ public class CouchDBHelper {
 	 * 
 	 * @param json
 	 * @return
+	 * @throws SpikaException 
+	 * @throws JSONException 
+	 * @throws IOException 
+	 * @throws ClientProtocolException 
 	 */
-	public static Message findMessage(JSONObject json) {
+	public static Message findMessage(JSONObject json) throws ClientProtocolException, IOException, JSONException, SpikaException {
 		
 		if (json.has(Const.ERROR)) {
 			appLogout(null, false, isInvalidToken(json));
@@ -1418,8 +1416,12 @@ public class CouchDBHelper {
 	 * 
 	 * @param json
 	 * @return
+	 * @throws JSONException 
+	 * @throws SpikaException 
+	 * @throws IOException 
+	 * @throws ClientProtocolException 
 	 */
-	public static ArrayList<Message> findMessagesForUser(JSONObject json) {
+	public static ArrayList<Message> findMessagesForUser(JSONObject json) throws JSONException, ClientProtocolException, IOException, SpikaException {
 		ArrayList<Message> messages = null;
 
 		if (json != null) {
@@ -1429,80 +1431,68 @@ public class CouchDBHelper {
 				return null;
 			}
 
-			try {
-				messages = new ArrayList<Message>();
+			messages = new ArrayList<Message>();
 
-				JSONArray rows = json.getJSONArray(Const.ROWS);
+			JSONArray rows = json.getJSONArray(Const.ROWS);
 
-				for (int i = 0; i < rows.length(); i++) {
+			for (int i = 0; i < rows.length(); i++) {
 
-					JSONObject row = rows.getJSONObject(i);
-					JSONObject msgJson = row.getJSONObject(Const.VALUE);
+				JSONObject row = rows.getJSONObject(i);
+				JSONObject msgJson = row.getJSONObject(Const.VALUE);
 
-					Message message = null;
+				Message message = null;
 
-					try {
+				String messageType = msgJson
+						.getString(Const.MESSAGE_TYPE);
 
-						String messageType = msgJson
-								.getString(Const.MESSAGE_TYPE);
+				if (messageType.equals(Const.TEXT)) {
 
-						if (messageType.equals(Const.TEXT)) {
+					message = new Gson().fromJson(msgJson.toString(),
+							Message.class);
 
-							message = new Gson().fromJson(msgJson.toString(),
-									Message.class);
+				} else if (messageType.equals(Const.IMAGE)) {
 
-						} else if (messageType.equals(Const.IMAGE)) {
+					message = parseMessageObject(msgJson, true, false,
+							false);
 
-							message = parseMessageObject(msgJson, true, false,
-									false);
+				} else if (messageType.equals(Const.VOICE)) {
 
-						} else if (messageType.equals(Const.VOICE)) {
+					message = parseMessageObject(msgJson, false, true,
+							false);
 
-							message = parseMessageObject(msgJson, false, true,
-									false);
+				} else if (messageType.equals(Const.VIDEO)) {
 
-						} else if (messageType.equals(Const.VIDEO)) {
+					message = parseMessageObject(msgJson, false, false,
+							true);
+				}
+				else if (messageType.equals(Const.EMOTICON)) {
 
-							message = parseMessageObject(msgJson, false, false,
-									true);
-						}
-						else if (messageType.equals(Const.EMOTICON)) {
+					message = parseMessageObject(msgJson, false, false,
+							false);
+				} else {
 
-							message = parseMessageObject(msgJson, false, false,
-									false);
-						} else {
-
-							message = new Gson().fromJson(msgJson.toString(),
-									Message.class);
-
-						}
-
-					} catch (Exception e) {
-						continue;
-					}
-
-					if (null == message) {
-						continue;
-					} else {
-					    
-					    String avatarFileId = CouchDB.getFromMemCache(message.getFromUserId());
-					    
-					    if(avatarFileId == null){
-	                        avatarFileId = CouchDB.findAvatarFileId(message.getFromUserId());
-	                        CouchDB.saveToMemCache(message.getFromUserId(),avatarFileId);
-					    }else{
-					        Log.d("test",avatarFileId);
-					    }
-
-						message.setUserAvatarFileId(avatarFileId);
-						messages.add(message);
-					}
+					message = new Gson().fromJson(msgJson.toString(),
+							Message.class);
 
 				}
 
-			} catch (Exception e) {
-				Logger.error(TAG + "findMessagesForUser",
-						"Error while retrieving data from json", e);
+				if (message == null) {
+					continue;
+					
+				} else {
+				    
+				    String avatarFileId = CouchDB.getFromMemCache(message.getFromUserId());
+				    
+				    if(avatarFileId == null){
+                        avatarFileId = CouchDB.findAvatarFileId(message.getFromUserId());
+                        CouchDB.saveToMemCache(message.getFromUserId(),avatarFileId);
+				    }else{
+				        Log.d("test",avatarFileId);
+				    }
+
+					message.setUserAvatarFileId(avatarFileId);
+					messages.add(message);
+				}
 			}
 		}
 
@@ -1520,9 +1510,13 @@ public class CouchDBHelper {
 	 * @param image
 	 * @param voice
 	 * @return
+	 * @throws SpikaException 
+	 * @throws JSONException 
+	 * @throws IOException 
+	 * @throws ClientProtocolException 
 	 */
 	private static Message parseMessageObject(JSONObject json, boolean image,
-			boolean voice, boolean video) {
+			boolean voice, boolean video) throws ClientProtocolException, IOException, JSONException, SpikaException {
 
 		Message message = new Message();
 

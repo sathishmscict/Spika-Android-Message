@@ -54,6 +54,10 @@ public class Const {
     public static final String GET_AVATAR_FILE_ID		= BASE_URL + "GetAvatarFileId/";
     public static final String FIND_MESSAGE_BY_ID		= BASE_URL + "findMessageById/";
     public static final String FIND_COMMENTS_BY_MESSAGE_ID	= BASE_URL + "comments/";
+    public static final String COMMENTS_COUNT			= BASE_URL + "commentsCount/";
+    public static final String FIND_USER_MESSAGES		= BASE_URL + "userMessages/";
+    public static final String FIND_GROUP_MESSAGES		= BASE_URL + "groupMessages/";
+    public static final String FIND_ALL_EMOTICONS		= BASE_URL + "Emoticons";
     
     public static final String PASSWORDREMINDER_URL    	= BASE_URL + "resetPassword?";
     public static final String UNREGISTER_PUSH_URL     	= BASE_URL + "unregistToken?";
@@ -64,6 +68,10 @@ public class Const {
 	public static final String SEND_MESSAGE_TO_USER		= "sendMessageToUser";
     public static final String SEND_MESSAGE_TO_GROUP	= "sendMessageToGroup";
     public static final String SEND_COMMENT 			= "sendComment";
+    public static final String CREATE_GROUP				= "createGroup";
+    public static final String SUBSCRIBE_GROUP 			= "subscribeGroup";
+    public static final String UNSUBSCRIBE_GROUP 		= "unSubscribeGroup";
+    public static final String DELETE_GROUP 			= "deleteGroup";
     
     
 	/* User constants */

@@ -35,7 +35,6 @@ import com.cloverstudio.spikademo.couchdb.model.Message;
 import com.cloverstudio.spikademo.extendables.SpikaAsync;
 import com.cloverstudio.spikademo.management.MessageManagement;
 import com.cloverstudio.spikademo.management.UsersManagement;
-import com.cloverstudio.spikademo.messageshandling.MessagesUpdater.GetMessagesAsync;
 import com.cloverstudio.spikademo.utils.Const;
 
 /**
@@ -99,7 +98,6 @@ public class SendMessageAsync extends SpikaAsync<Object, Void, Boolean> {
         String fileThumbId = null;
 
 		if (isComment) {
-			Log.e("********SKIP********", "********SKIP********");
 			try {
 				message = (Message) obj;
 				message.setModified(System.currentTimeMillis() / 1000);
@@ -276,9 +274,7 @@ public class SendMessageAsync extends SpikaAsync<Object, Void, Boolean> {
 
 	@Override
 	protected void onPostExecute(Boolean result) {
-		if (WallActivity.getInstance() != null) {
-			new GetMessagesAsync(WallActivity.getInstance()).execute();
-		}
+		MessagesUpdater.update(true);
 		if (!isComment) {
 			if (result) {
 				//Toast.makeText(mContext, "Success", Toast.LENGTH_SHORT).show();

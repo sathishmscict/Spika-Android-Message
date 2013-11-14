@@ -28,14 +28,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -52,14 +50,12 @@ import com.cloverstudio.spikademo.couchdb.ResultListener;
 import com.cloverstudio.spikademo.couchdb.model.Comment;
 import com.cloverstudio.spikademo.couchdb.model.Message;
 import com.cloverstudio.spikademo.extendables.SpikaActivity;
-import com.cloverstudio.spikademo.extendables.SpikaAsync;
 import com.cloverstudio.spikademo.lazy.ImageLoader;
 import com.cloverstudio.spikademo.management.CommentManagement;
 import com.cloverstudio.spikademo.messageshandling.FindAvatarFileIdAsync;
 import com.cloverstudio.spikademo.messageshandling.GetCommentsAsync;
 import com.cloverstudio.spikademo.messageshandling.RefreshCommentHandler;
 import com.cloverstudio.spikademo.messageshandling.SendMessageAsync;
-import com.cloverstudio.spikademo.utils.Const;
 import com.cloverstudio.spikademo.utils.LayoutHelper;
 import com.cloverstudio.spikademo.utils.Utils;
 
@@ -197,7 +193,8 @@ public class PhotoActivity extends SpikaActivity {
 					Comment comment = CommentManagement
 							.createComment(commentText, mMessage.getId());
 					scrollListViewToBottom();
-					new CreateCommentAsync(PhotoActivity.this).execute(comment);
+					
+					CouchDB.createCommentAsync(comment, new CreateCommentFinish(), PhotoActivity.this, true);
 					
 					mEtComment.setText("");
 					Utils.hideKeyboard(PhotoActivity.this);
@@ -232,34 +229,10 @@ public class PhotoActivity extends SpikaActivity {
 		super.onDestroy();
 	}
 	
-	private class CreateCommentAsync extends SpikaAsync<Comment, Void, String> {
-
-		public CreateCommentAsync(Context context) {
-			super(context);
-		}
+	private class CreateCommentFinish implements ResultListener<String> {
 
 		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-		}
-
-		@Override
-		protected String doInBackground(Comment... params) {
-
-			String commentId = CouchDB.createComment(params[0]);
-
-			if (commentId != null) {
-				if (WallActivity.gCurrentMessages != null) {
-					WallActivity.gCurrentMessages.clear();
-				}
-				WallActivity.gIsRefreshUserProfile = true;
-			}
-
-			return commentId;
-		}
-
-		@Override
-		protected void onPostExecute(String commentId) {
+		public void onResultsSucceded(String commentId) {
 			if (commentId != null) {
 				new SendMessageAsync(PhotoActivity.this, SendMessageAsync.TYPE_PHOTO).execute(mMessage, false, true);
 				new GetCommentsAsync(PhotoActivity.this, mMessage, mComments,
@@ -268,7 +241,9 @@ public class PhotoActivity extends SpikaActivity {
 				Toast.makeText(PhotoActivity.this, "Error with creating comment", Toast.LENGTH_SHORT).show();
 			}
 		}
+
+		@Override
+		public void onResultsFail() {			
+		}
 	}
-
-
 }
