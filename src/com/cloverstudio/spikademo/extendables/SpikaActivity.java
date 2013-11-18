@@ -372,8 +372,8 @@ public class SpikaActivity extends Activity {
 
 		@Override
 		protected Group doInBackground(String... params) {
-			String id = params[0];
-			return CouchDB.findGroupsByName(id).get(0);
+			String name = params[0];
+			return CouchDB.findGroupsByName(name).get(0);
 		}
 
 		@Override

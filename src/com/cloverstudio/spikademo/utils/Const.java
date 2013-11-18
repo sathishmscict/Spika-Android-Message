@@ -37,7 +37,7 @@ public class Const {
 
 	/* CouchDB credentials */
 	//public static final String API_URL = "http://hookup.clover-studio.com/hookup/hookup-api2.php?";
-	public static final String BASE_URL                	= "http://192.168.1.111:8080/wwwroot/api/";
+	public static final String BASE_URL                	= "http://192.168.1.117:8080/wwwroot/api/";
 	public static final String SUPPORT_USER				= "0e5004f0c60b0f04569ee7d5c4000a37";
 //	public static final String BASE_URL                	= "http://spikademo2.clover-studio.com/api/";
 	public static final String API_URL                 	= BASE_URL;
@@ -58,6 +58,10 @@ public class Const {
     public static final String FIND_USER_MESSAGES		= BASE_URL + "userMessages/";
     public static final String FIND_GROUP_MESSAGES		= BASE_URL + "groupMessages/";
     public static final String FIND_ALL_EMOTICONS		= BASE_URL + "Emoticons";
+    public static final String FIND_GROUP_BY_ID			= BASE_URL + "findGroup/id/";
+    public static final String FIND_GROUP_BY_NAME		= BASE_URL + "findGroup/name/";
+    public static final String FIND_GROUP_BY_CATEGORY_ID= BASE_URL + "findGroup/categoryId/";
+    public static final String FIND_GROUP_CATEGORIES	= BASE_URL + "findAllGroupCategory";
     
     public static final String PASSWORDREMINDER_URL    	= BASE_URL + "resetPassword?";
     public static final String UNREGISTER_PUSH_URL     	= BASE_URL + "unregistToken?";
@@ -72,7 +76,9 @@ public class Const {
     public static final String SUBSCRIBE_GROUP 			= "subscribeGroup";
     public static final String UNSUBSCRIBE_GROUP 		= "unSubscribeGroup";
     public static final String DELETE_GROUP 			= "deleteGroup";
-    
+    public static final String UPDATE_GROUP				= "updateGroup";
+    public static final String WATCH_GROUP				= "watchGroup";
+    public static final String UNWATCH_GROUP			= "unWatchGroup";
     
 	/* User constants */
 	public static final String FAVORITE_GROUPS = "favorite_groups";

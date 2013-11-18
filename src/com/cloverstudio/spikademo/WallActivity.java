@@ -199,9 +199,9 @@ public class WallActivity extends SideBarActivity {
 		boolean alreadyHasWatchingGroup = !watchingGroupId.equals("");
 
 		if (alreadyHasWatchingGroup) {
-			new DeleteWatchingLogAsync(this).execute(SpikaApp.getPreferences()
+			CouchDB.deleteWatchingGroupLogAsync(SpikaApp.getPreferences()
 					.getWatchingGroupId(), SpikaApp.getPreferences()
-					.getWatchingGroupRev());
+					.getWatchingGroupRev(), new DeleteWatchingLogFinish(), WallActivity.this, false);
 			SpikaApp.getPreferences().setWatchingGroupId("");
 			SpikaApp.getPreferences().setWatchingGroupRev("");
 		}
@@ -214,7 +214,7 @@ public class WallActivity extends SideBarActivity {
 						.getId());
 				watchingGroupLog.setUserId(UsersManagement.getLoginUser()
 						.getId());
-				new CreateWatchingLogAsync(this).execute(watchingGroupLog);
+				CouchDB.createWatchingGroupLogAsync(watchingGroupLog, new CreateWatchingLogFinish(), WallActivity.this, false);
 			}
 		}
 	}
@@ -601,78 +601,30 @@ public class WallActivity extends SideBarActivity {
 		}
 	}
 
-	private class CreateWatchingLogAsync extends
-			SpikaAsync<WatchingGroupLog, Void, String> {
+	private class CreateWatchingLogFinish implements ResultListener<String> {
 
-		protected CreateWatchingLogAsync(Context context) {
-			super(context);
+		@Override
+		public void onResultsSucceded(String result) {
+			// TODO Auto-generated method stub
 		}
 
 		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
+		public void onResultsFail() {
+			// TODO Auto-generated method stub
 		}
-
-		@Override
-		protected String doInBackground(WatchingGroupLog... params) {
-			return CouchDB.createWatchingGroupLog(params[0]);
-		}
-
-		@Override
-		protected void onPostExecute(String result) {
-			super.onPostExecute(result);
-			if (result != null) {
-				// Toast.makeText(WallActivity.this, "log created",
-				// Toast.LENGTH_LONG).show();
-			} else {
-				// Toast.makeText(WallActivity.this, "log error",
-				// Toast.LENGTH_LONG).show();
-			}
-		}
-
 	}
+	
+	private class DeleteWatchingLogFinish implements ResultListener<Boolean> {
 
-	private class DeleteWatchingLogAsync extends
-			SpikaAsync<String, Void, Boolean> {
-
-		private WatchingGroupLog watchingGroupLog;
-
-		protected DeleteWatchingLogAsync(Context context) {
-			super(context);
+		@Override
+		public void onResultsSucceded(Boolean result) {
+			// TODO Auto-generated method stub
 		}
 
 		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-
-			watchingGroupLog = new WatchingGroupLog();
-
-			watchingGroupLog.setId(SpikaApp.getPreferences()
-					.getWatchingGroupId());
-			watchingGroupLog.setRev(SpikaApp.getPreferences()
-					.getWatchingGroupRev());
+		public void onResultsFail() {
+			// TODO Auto-generated method stub
 		}
-
-		@Override
-		protected Boolean doInBackground(String... params) {
-
-			String id = params[0];
-			String rev = params[1];
-			return CouchDB.deleteWatchingGroupLog(id, rev);
-		}
-
-		@Override
-		protected void onPostExecute(Boolean result) {
-			super.onPostExecute(result);
-			if (result == true) {
-				// Toast.makeText(WallActivity.this, "log deleted",
-				// Toast.LENGTH_LONG).show();
-			} else {
-				// Toast.makeText(WallActivity.this, "log error",
-				// Toast.LENGTH_LONG).show();
-			}
-		}
-
 	}
 
 	private void fillEmoticonsGallery(final List<Emoticon> emoticons) {

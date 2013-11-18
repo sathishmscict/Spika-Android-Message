@@ -247,7 +247,7 @@ public class NotificationsAdapter extends BaseAdapter implements
 	}
 	
 	private void getGroupByIdAsync (String groupId) {
-		CouchDB.findGroupById(groupId, new GetGroupByIdListener(), mActivity, true);
+		CouchDB.findGroupByIdAsync(groupId, new GetGroupByIdListener(), mActivity, true);
 	}
 	
 	private class GetGroupByIdListener implements ResultListener<Group> {

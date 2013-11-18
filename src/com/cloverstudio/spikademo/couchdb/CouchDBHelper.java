@@ -1823,8 +1823,9 @@ public class CouchDBHelper {
 	 * 
 	 * @param json
 	 * @return
+	 * @throws JSONException 
 	 */
-	public static String createWatchingGroupLog(JSONObject json) {
+	public static String createWatchingGroupLog(JSONObject json) throws JSONException {
 
 		boolean ok = false;
 		String id = null;
@@ -1837,17 +1838,13 @@ public class CouchDBHelper {
 				return null;
 			}
 
-			try {
-				ok = json.getBoolean(Const.OK);
-				id = json.getString(Const.ID);
-				rev = json.getString(Const.REV);
-				
-				SpikaApp.getPreferences().setWatchingGroupId(id);
-				SpikaApp.getPreferences().setWatchingGroupRev(rev);
-			} catch (Exception e) {
-				Logger.error(TAG + "createWatchingGroupLog",
-						"Error while retrieving data from json", e);
-			}
+			ok = json.getBoolean(Const.OK);
+			id = json.getString(Const.ID);
+			rev = json.getString(Const.REV);
+			
+			SpikaApp.getPreferences().setWatchingGroupId(id);
+			SpikaApp.getPreferences().setWatchingGroupRev(rev);
+			
 		}
 
 		if (!ok) {
@@ -1863,8 +1860,9 @@ public class CouchDBHelper {
 	 * 
 	 * @param json
 	 * @return
+	 * @throws JSONException 
 	 */
-	public static boolean deleteWatchingGroupLog(JSONObject json) {
+	public static boolean deleteWatchingGroupLog(JSONObject json) throws JSONException {
 
 		boolean ok = false;
 
@@ -1875,13 +1873,8 @@ public class CouchDBHelper {
 				return false;
 			}
 
-			try {
-				ok = json.getBoolean(Const.OK);
-				
-			} catch (Exception e) {
-				Logger.error(TAG + "deleteWatchingGroupLog",
-						"Error while retrieving data from json", e);
-			}
+			ok = json.getBoolean(Const.OK);	
+			
 		}
 
 		return ok;

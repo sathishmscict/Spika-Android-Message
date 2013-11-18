@@ -276,6 +276,29 @@ public class ConnectionHandler {
         return retVal;
     }
     
+    /**
+     * Http POST
+     * 
+     * @param create
+     * @return
+     * @throws IOException 
+     * @throws ClientProtocolException 
+     * @throws JSONException 
+     * @throws SpikaException 
+     * @throws IllegalStateException 
+     */
+    public static String postJsonObjectForString(String apiName,JSONObject create, String userId,
+            String token) throws ClientProtocolException, IOException, JSONException, IllegalStateException, SpikaException {
+
+        InputStream is = httpPostRequest(CouchDB.getUrl() + apiName, create, userId);
+        String result = getString(is);
+
+        is.close();
+
+        Log.e("Response: ", result.toString());
+        return result;
+    }
+    
 	/**
 	 * Http POST
 	 * 

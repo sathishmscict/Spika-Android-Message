@@ -676,14 +676,13 @@ public class CouchDB {
     @Deprecated
     public static Group getGroupByName(String groupname) {
     	
-    	String params = "";
     	try {
-			params = URLEncoder.encode(groupname, "UTF-8");
+    		groupname = URLEncoder.encode(groupname, "UTF-8");
 		} catch (UnsupportedEncodingException e1) {
 			e1.printStackTrace();
 		}
 
-        final String URL = Const.CHECKUNIQUE_URL + "groupname=" + params;
+        final String URL = Const.FIND_GROUP_BY_NAME + groupname;
 
         JSONArray jsonArray = ConnectionHandler.getJsonArrayDeprecated(URL, null, null);
 
@@ -749,7 +748,7 @@ public class CouchDB {
         return CouchDBHelper.parseSearchGroupsResult(json);
     }
     
-    public static void searchGroups (GroupSearch groupSearch, ResultListener<List<Group>> resultListener, Context context, boolean showProgressBar) {
+    public static void searchGroupsAsync (GroupSearch groupSearch, ResultListener<List<Group>> resultListener, Context context, boolean showProgressBar) {
     	new SpikaAsyncTask<Void, Void, List<Group>>(new SearchGroups(groupSearch), resultListener, context, showProgressBar).execute();
     }
     
@@ -975,13 +974,27 @@ public class CouchDB {
     @Deprecated
     public static List<Group> findAllGroups() {
 
-        JSONObject json = ConnectionHandler.getJsonObjectDeprecated(sUrl
-                + "_design/app/_view/find_group_by_name", UsersManagement.getLoginUser().getId());
+        JSONObject json = null;
+		try {
+			json = ConnectionHandler.getJsonObject(Const.FIND_GROUP_BY_NAME, UsersManagement.getLoginUser().getId());
+		} catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SpikaException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
         return CouchDBHelper.parseMultiGroupObjects(json);
     }
     
-    public static void findAllGroups (ResultListener<List<Group>> resultListener, Context context, boolean showProgressBar)
+    public static void findAllGroupsAsync (ResultListener<List<Group>> resultListener, Context context, boolean showProgressBar)
     {
     	new SpikaAsyncTask<Void, Void, List<Group>>(new FindAllGroups(), resultListener, context, showProgressBar).execute();
     }
@@ -990,10 +1003,7 @@ public class CouchDB {
     {
 		@Override
 		public List<Group> execute() throws JSONException, IOException {
-			JSONObject json = ConnectionHandler.getJsonObjectDeprecated(sUrl
-	                + "_design/app/_view/find_group_by_name", UsersManagement.getLoginUser().getId());
-
-	        return CouchDBHelper.parseMultiGroupObjects(json);
+			return findAllGroups();
 		}	
     }
 
@@ -1005,8 +1015,6 @@ public class CouchDB {
     @Deprecated
     public static Group findGroupById(String id) {
 
-        id = "\"" + id + "\"";
-
         try {
             id = URLEncoder.encode(id, "UTF-8");
         } catch (UnsupportedEncodingException e) {
@@ -1015,14 +1023,27 @@ public class CouchDB {
             return null;
         }
 
-        JSONObject json = ConnectionHandler.getJsonObjectDeprecated(sUrl
-                + "_design/app/_view/find_group_by_id?key=" + id, UsersManagement.getLoginUser()
-                .getId());
+        JSONObject json = null;
+		try {
+			json = ConnectionHandler.getJsonObject(Const.FIND_GROUP_BY_ID + id, UsersManagement.getLoginUser().getId());
+		} catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SpikaException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
         return CouchDBHelper.parseSingleGroupObject(json);
     }
     
-    public static void findGroupById(String id, ResultListener<Group> resultListener, Context context, boolean showProgressBar)
+    public static void findGroupByIdAsync(String id, ResultListener<Group> resultListener, Context context, boolean showProgressBar)
     {
     	new SpikaAsyncTask<Void, Void, Group>(new FindGroupById(id), resultListener, context, showProgressBar).execute();
     }
@@ -1051,28 +1072,38 @@ public class CouchDB {
     @Deprecated
     public static List<Group> findGroupsByName(String name) {
 
-        String endKey = "\"" + name + "\u9999\"";
-        name = "\"" + name + "\"";
-
         try {
             name = URLEncoder.encode(name, "UTF-8");
-            endKey = URLEncoder.encode(endKey, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
 
             return null;
         }
 
-        String url = sUrl + "_design/app/_view/find_group_by_name?startkey=" + name + "&endkey="
-                + endKey;
+//        String url = Const.FIND_GROUP_BY_NAME + name;
+        String url = sUrl + "_design/app/_view/find_group_by_name?startkey=" + name; 
 
-        JSONObject json = ConnectionHandler.getJsonObjectDeprecated(url, UsersManagement.getLoginUser()
-                .getId());
+        JSONObject json = null;
+		try {
+			json = ConnectionHandler.getJsonObject(url, UsersManagement.getLoginUser().getId());
+		} catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SpikaException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
         return CouchDBHelper.parseMultiGroupObjects(json);
     }
     
-    public static void findGroupsByName (String name, ResultListener<List<Group>> resultListener, Context context, boolean showProgressBar) {
+    public static void findGroupsByNameAsync (String name, ResultListener<List<Group>> resultListener, Context context, boolean showProgressBar) {
     	new SpikaAsyncTask<Void, Void, List<Group>>(new FindGroupsByName(name), resultListener, context, showProgressBar).execute();
     }
     
@@ -1243,18 +1274,19 @@ public class CouchDB {
         groupJson.put(Const.CATEGORY_NAME, group.getCategoryName());
         groupJson.put(Const.DELETED, group.isDeleted());
         
-        if (group.isDeleted()) {
-        	List<UserGroup> usersGroup = new ArrayList<UserGroup>(findUserGroupByIds(group.getId(),
-                    UsersManagement.getLoginUser().getId()));
-            if (usersGroup != null) {
-                for (UserGroup userGroup : usersGroup) {
-                    CouchDB.deleteGroup(userGroup.getId(), userGroup.getRev());
-                }
-            }
-        }
-
-        return CouchDBHelper.updateGroup(ConnectionHandler.putJsonObject(groupJson, group.getId(),
-                UsersManagement.getLoginUser().getId(), UsersManagement.getLoginUser().getToken()));
+        //TODO: Check if this works automagiclly
+//        if (group.isDeleted()) {
+//        	List<UserGroup> usersGroup = new ArrayList<UserGroup>(findUserGroupByIds(group.getId(),
+//                    UsersManagement.getLoginUser().getId()));
+//            if (usersGroup != null) {
+//                for (UserGroup userGroup : usersGroup) {
+//                    CouchDB.deleteGroup(userGroup.getId(), userGroup.getRev());
+//                }
+//            }
+//        }
+        
+        JSONObject newGroupJson = ConnectionHandler.postJsonObject(Const.UPDATE_GROUP, groupJson, UsersManagement.getLoginUser().getId(), UsersManagement.getLoginUser().getToken());
+        return CouchDBHelper.updateGroup(newGroupJson);
     }
 
     public static void updateGroup(Group group, ResultListener<Boolean> resultListener, Context context, boolean showProgressBar) {
@@ -1458,40 +1490,8 @@ public class CouchDB {
 		}	
     }
 
- 
-
-//************** FIND ALL EMOTICONS ***************************
+//************** FING GROUP CATEGORIES *********************
     
-    /**
-     * Get a list of emoticons from database
-     * 
-     * @return
-     * @throws SpikaException 
-     * @throws JSONException 
-     * @throws IOException 
-     * @throws ClientProtocolException 
-     */
-    public static List<Emoticon> findAllEmoticons() throws ClientProtocolException, IOException, JSONException, SpikaException {
-        JSONObject json = ConnectionHandler.getJsonObject(Const.FIND_ALL_EMOTICONS, UsersManagement.getLoginUser().getId());
-        return CouchDBHelper.parseMultiEmoticonObjects(json);
-    }
-    
-    public static void findAllEmoticonsAsync(ResultListener<List<Emoticon>> resultListener, Context context, boolean showProgressBar) {
-    	new SpikaAsyncTask<Void, Void, List<Emoticon>>(new FindAllEmoticons(), resultListener, context, showProgressBar).execute();
-    }
-    
-    public static class FindAllEmoticons implements Command<List<Emoticon>>
-    {
-		@Override
-		public List<Emoticon> execute() throws JSONException, IOException, SpikaException {
-			if (Emoticons.getInstance().getEmoticons() == null) {
-				return CouchDB.findAllEmoticons();
-			} else {
-				return Emoticons.getInstance().getEmoticons();
-			}
-		}
-    }
-
     /**
      * Get a list of group categories from database
      * 
@@ -1503,11 +1503,24 @@ public class CouchDB {
         String cachedJSON = CouchDB.getFromMemCache(groupCategoryCacheKey);
         
         if(cachedJSON == null){
-            
-            JSONObject json = ConnectionHandler.getJsonObjectDeprecated(sUrl
-                    + "_design/app/_view/find_group_categories",
-                    UsersManagement.getLoginUser().getId());
-            
+
+        	JSONObject json = null;
+			try {
+				json = ConnectionHandler.getJsonObject(Const.FIND_GROUP_CATEGORIES, UsersManagement.getLoginUser().getId());
+			} catch (ClientProtocolException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SpikaException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        	
             CouchDB.saveToMemCache(groupCategoryCacheKey, json.toString());
             
             return CouchDBHelper.parseMultiGroupCategoryObjects(json);
@@ -1530,7 +1543,7 @@ public class CouchDB {
         }        
     }
     
-    public static void findGroupCategories(ResultListener<List<GroupCategory>> resultListener, Context context, boolean showProgressBar) {
+    public static void findGroupCategoriesAsync(ResultListener<List<GroupCategory>> resultListener, Context context, boolean showProgressBar) {
     	new SpikaAsyncTask<Void, Void, List<GroupCategory>>(new FindGroupCategories(), resultListener, context, showProgressBar).execute();
     }
     
@@ -1546,11 +1559,13 @@ public class CouchDB {
      * Find group by category id
      * 
      * @return
+     * @throws SpikaException 
+     * @throws JSONException 
+     * @throws IOException 
+     * @throws ClientProtocolException 
      */
     @Deprecated
     public static List<Group> findGroupByCategoryId(String id) {
-
-        id = "\"" + id + "\"";
 
         try {
             id = URLEncoder.encode(id, "UTF-8");
@@ -1560,14 +1575,27 @@ public class CouchDB {
             return null;
         }
 
-        JSONObject json = ConnectionHandler.getJsonObjectDeprecated(sUrl
-                + "_design/app/_view/find_group_by_category_id?key=" + id, UsersManagement
-                .getLoginUser().getId());
-
+        JSONObject json = null;
+		try {
+			json = ConnectionHandler.getJsonObject(Const.FIND_GROUP_BY_CATEGORY_ID + id, UsersManagement.getLoginUser().getId());
+		} catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SpikaException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
         return CouchDBHelper.parseMultiGroupObjects(json);
     }
     
-    public static void findGroupByCategoryId(String id, ResultListener<List<Group>> resultListener, Context context, boolean showProgressBar) {
+    public static void findGroupByCategoryIdAsync(String id, ResultListener<List<Group>> resultListener, Context context, boolean showProgressBar) {
     	new SpikaAsyncTask<Void, Void, List<Group>>(new FindGroupByCategoryId(id), resultListener, context, showProgressBar).execute();
     }
     
@@ -1585,37 +1613,7 @@ public class CouchDB {
 		}
     }
 
-    /**
-     * Get a bitmap object
-     * 
-     * @param url
-     * @return
-     */
-    @Deprecated
-    public static Bitmap getBitmapObject(String url) {
 
-        return ConnectionHandler.getBitmapObject(url, UsersManagement.getLoginUser().getId(),
-                UsersManagement.getLoginUser().getToken());
-    }
-    
-    public static void getBitmapObject(String url, ResultListener<Bitmap> resultListener, Context context, boolean showProgressBar) {
-    	new SpikaAsyncTask<Void, Void, Bitmap>(new GetBitmapObject(url), resultListener, context, showProgressBar).execute();
-    }
-    
-    public static class GetBitmapObject implements Command<Bitmap>{
-    	
-    	String url;
-    	
-    	public GetBitmapObject (String url)
-    	{
-    		this.url = url;
-    	}
-
-		@Override
-		public Bitmap execute() throws JSONException, IOException {
-			return getBitmapObject(url);
-		}
-    }
 
   //************** FIND MESSAGES BY ID **************************
     
@@ -2237,31 +2235,32 @@ public class CouchDB {
 			return null;
 		}
     }
-    
+ 
+//*************** CREATE WACHING GROUP LOG ***************************
     /**
      * Create watching group log
+     * @throws SpikaException 
+     * @throws JSONException 
+     * @throws IOException 
+     * @throws IllegalStateException 
+     * @throws ClientProtocolException 
      * 
      */
-    @Deprecated
-    public static String createWatchingGroupLog(WatchingGroupLog watchingGroupLog) {
+    public static String createWatchingGroupLog(WatchingGroupLog watchingGroupLog) throws ClientProtocolException, IllegalStateException, IOException, JSONException, SpikaException {
 
         JSONObject jsonObj = new JSONObject();
 
-        try {
-            jsonObj.put(Const.TYPE, Const.WATCHING_GROUP_LOG);
-            jsonObj.put(Const.USER_ID, watchingGroupLog.getUserId());
-            jsonObj.put(Const.GROUP_ID, watchingGroupLog.getGroupId());
-            jsonObj.put(Const.CREATED, Utils.getCurrentDateTime());
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return null;
-        }
-
-        return CouchDBHelper.createWatchingGroupLog(ConnectionHandler.deprecatedPostJsonObject(jsonObj,
-        		UsersManagement.getLoginUser().getId(), ""));
+        jsonObj.put(Const.TYPE, Const.WATCHING_GROUP_LOG);
+        jsonObj.put(Const.USER_ID, watchingGroupLog.getUserId());
+        jsonObj.put(Const.GROUP_ID, watchingGroupLog.getGroupId());
+        jsonObj.put(Const.CREATED, Utils.getCurrentDateTime());
+        
+        JSONObject json = ConnectionHandler.postJsonObject(Const.WATCH_GROUP, jsonObj, UsersManagement.getLoginUser().getId(), UsersManagement.getLoginUser().getToken());
+        
+        return CouchDBHelper.createWatchingGroupLog(json);
     }
     
-    public static void CreateWatchingGroupLog (WatchingGroupLog watchingGroupLog, ResultListener<String> resultListener, Context context, boolean showProgressBar) {
+    public static void createWatchingGroupLogAsync (WatchingGroupLog watchingGroupLog, ResultListener<String> resultListener, Context context, boolean showProgressBar) {
     	new SpikaAsyncTask<Void, Void, String>(new CreateWatchingGroupLog (watchingGroupLog), resultListener, context, showProgressBar).execute();
     }
     
@@ -2280,19 +2279,28 @@ public class CouchDB {
 			return createWatchingGroupLog(watchingGroupLog);
 		}
     }
+
     
+//*************** DELETE WACHING GROUP LOG ***************************
     /**
      * Delete watching group log
+     * @throws JSONException 
+     * @throws SpikaException 
+     * @throws IOException 
+     * @throws IllegalStateException 
+     * @throws ClientProtocolException 
      * 
      */
-    @Deprecated
-    public static boolean deleteWatchingGroupLog(String id, String rev) {
+    public static boolean deleteWatchingGroupLog(String id, String rev) throws JSONException, ClientProtocolException, IllegalStateException, IOException, SpikaException {
 
-        return CouchDBHelper.deleteWatchingGroupLog((ConnectionHandler.deleteJsonObject(id, rev,
-                UsersManagement.getLoginUser().getId(), "")));
+    	JSONObject create = new JSONObject();
+    	create.put(Const.GROUP_ID, id);
+    	create.put(Const.REV, rev);
+    	
+    	return CouchDBHelper.deleteWatchingGroupLog(ConnectionHandler.postJsonObject(Const.UNWATCH_GROUP, create, UsersManagement.getLoginUser().getId(), UsersManagement.getLoginUser().getToken()));
     }
     
-    public static void DeleteWatchingGroupLog(String id, String rev, ResultListener<Boolean> resultListener, Context context, boolean showProgressBar) {
+    public static void deleteWatchingGroupLogAsync(String id, String rev, ResultListener<Boolean> resultListener, Context context, boolean showProgressBar) {
     	new SpikaAsyncTask<Void, Void, Boolean>(new DeleteWatchingGroupLog(id, rev), resultListener, context, showProgressBar).execute();
     }
     
@@ -2314,4 +2322,70 @@ public class CouchDB {
 		}
     }
 
+    
+// *********** GET BITMAP OBJECT ********************
+    
+    /**
+     * Get a bitmap object
+     * 
+     * @param url
+     * @return
+     */
+    @Deprecated
+    public static Bitmap getBitmapObject(String url) {
+
+        return ConnectionHandler.getBitmapObject(url, UsersManagement.getLoginUser().getId(),
+                UsersManagement.getLoginUser().getToken());
+    }
+    
+    public static void getBitmapObjectAsync(String url, ResultListener<Bitmap> resultListener, Context context, boolean showProgressBar) {
+    	new SpikaAsyncTask<Void, Void, Bitmap>(new GetBitmapObject(url), resultListener, context, showProgressBar).execute();
+    }
+    
+    public static class GetBitmapObject implements Command<Bitmap>{
+    	
+    	String url;
+    	
+    	public GetBitmapObject (String url)
+    	{
+    		this.url = url;
+    	}
+
+		@Override
+		public Bitmap execute() throws JSONException, IOException {
+			return getBitmapObject(url);
+		}
+    }
+    
+//************** FIND ALL EMOTICONS ***************************
+    
+    /**
+     * Get a list of emoticons from database
+     * 
+     * @return
+     * @throws SpikaException 
+     * @throws JSONException 
+     * @throws IOException 
+     * @throws ClientProtocolException 
+     */
+    public static List<Emoticon> findAllEmoticons() throws ClientProtocolException, IOException, JSONException, SpikaException {
+        JSONObject json = ConnectionHandler.getJsonObject(Const.FIND_ALL_EMOTICONS, UsersManagement.getLoginUser().getId());
+        return CouchDBHelper.parseMultiEmoticonObjects(json);
+    }
+    
+    public static void findAllEmoticonsAsync(ResultListener<List<Emoticon>> resultListener, Context context, boolean showProgressBar) {
+    	new SpikaAsyncTask<Void, Void, List<Emoticon>>(new FindAllEmoticons(), resultListener, context, showProgressBar).execute();
+    }
+    
+    public static class FindAllEmoticons implements Command<List<Emoticon>>
+    {
+		@Override
+		public List<Emoticon> execute() throws JSONException, IOException, SpikaException {
+			if (Emoticons.getInstance().getEmoticons() == null) {
+				return CouchDB.findAllEmoticons();
+			} else {
+				return Emoticons.getInstance().getEmoticons();
+			}
+		}
+    }
 }
