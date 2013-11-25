@@ -388,7 +388,7 @@ public class SpikaActivity extends Activity {
 		}
 		
 		@Override
-		protected Group backgroundWork(String... params) {
+		protected Group backgroundWork(String... params) throws ClientProtocolException, IOException, JSONException, SpikaException {
 			String id = params[0];
 			return CouchDB.findGroupById(id);
 		}
@@ -414,7 +414,7 @@ public class SpikaActivity extends Activity {
 		}
 		
 		@Override
-		protected Group backgroundWork(String... params) {
+		protected Group backgroundWork(String... params) throws ClientProtocolException, IOException, JSONException, SpikaException {
 			String name = params[0];
 			return CouchDB.findGroupsByName(name).get(0);
 		}

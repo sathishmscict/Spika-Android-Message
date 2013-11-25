@@ -24,9 +24,15 @@
 
 package com.cloverstudio.spikademo.messageshandling;
 
+import java.io.IOException;
+
+import org.apache.http.client.ClientProtocolException;
+import org.json.JSONException;
+
 import android.content.Context;
 
 import com.cloverstudio.spikademo.couchdb.CouchDB;
+import com.cloverstudio.spikademo.couchdb.SpikaException;
 import com.cloverstudio.spikademo.extendables.SpikaAsync;
 
 /**
@@ -47,7 +53,7 @@ public class FindAvatarFileIdAsync extends SpikaAsync<String, Void, String> {
 	}
 	
 	@Override
-	protected String backgroundWork(String... params) {
+	protected String backgroundWork(String... params) throws ClientProtocolException, IOException, JSONException, SpikaException {
 		String userId = params[0];
 		return CouchDB.findAvatarFileId(userId);
 	}

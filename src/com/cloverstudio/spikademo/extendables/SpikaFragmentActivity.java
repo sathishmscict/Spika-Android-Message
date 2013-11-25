@@ -272,7 +272,7 @@ public class SpikaFragmentActivity extends FragmentActivity {
 		}
 
 		@Override
-		protected Group backgroundWork(String... params) {
+		protected Group backgroundWork(String... params) throws ClientProtocolException, IOException, JSONException, SpikaException {
 			String id = params[0];
 			return CouchDB.findGroupById(id);
 		}

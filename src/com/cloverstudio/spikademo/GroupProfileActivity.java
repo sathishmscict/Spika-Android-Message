@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import org.apache.http.client.ClientProtocolException;
 import org.json.JSONException;
 
 import android.app.Dialog;
@@ -647,7 +648,7 @@ public class GroupProfileActivity extends SpikaActivity {
 		}
 		
 		@Override
-		protected Group backgroundWork(String... params) {
+		protected Group backgroundWork(String... params) throws ClientProtocolException, IOException, JSONException, SpikaException {
 			String id = params[0];
 			return CouchDB.findGroupById(id);
 		}
@@ -681,7 +682,7 @@ public class GroupProfileActivity extends SpikaActivity {
 		}
 
 		@Override
-		protected Group backgroundWork(Group... params) {
+		protected Group backgroundWork(Group... params) throws ClientProtocolException, IOException, JSONException, SpikaException {
 
 			mGroupFound = CouchDB.getGroupByName(mGroupName);
 
@@ -880,7 +881,7 @@ public class GroupProfileActivity extends SpikaActivity {
 		}
 
 		@Override
-		protected List<GroupCategory> backgroundWork(GroupSearch... params) {
+		protected List<GroupCategory> backgroundWork(GroupSearch... params) throws ClientProtocolException, IOException, JSONException, SpikaException {
 
 			return CouchDB.findGroupCategories();
 		}

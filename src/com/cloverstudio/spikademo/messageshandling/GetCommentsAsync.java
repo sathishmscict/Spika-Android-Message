@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  * 
- * Copyright © 2013 Clover Studio Ltd. All rights reserved.
+ * Copyright ï¿½ 2013 Clover Studio Ltd. All rights reserved.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,10 +24,13 @@
 
 package com.cloverstudio.spikademo.messageshandling;
 
+import java.io.IOException;
 import java.util.List;
 
+import org.apache.http.client.ClientProtocolException;
+import org.json.JSONException;
+
 import android.content.Context;
-import android.os.AsyncTask;
 import android.widget.ListView;
 
 import com.cloverstudio.spikademo.R;
@@ -36,8 +39,10 @@ import com.cloverstudio.spikademo.VideoActivity;
 import com.cloverstudio.spikademo.VoiceActivity;
 import com.cloverstudio.spikademo.adapters.CommentsAdapter;
 import com.cloverstudio.spikademo.couchdb.CouchDB;
+import com.cloverstudio.spikademo.couchdb.SpikaException;
 import com.cloverstudio.spikademo.couchdb.model.Comment;
 import com.cloverstudio.spikademo.couchdb.model.Message;
+import com.cloverstudio.spikademo.extendables.SpikaAsync;
 
 /**
  * GetCommentsAsync
@@ -45,7 +50,7 @@ import com.cloverstudio.spikademo.couchdb.model.Message;
  * AsyncTask for fetching comments from CouchDB.
  */
 
-public class GetCommentsAsync extends AsyncTask<String, Void, List<Comment>> {
+public class GetCommentsAsync extends SpikaAsync<String, Void, List<Comment>> {
 
 	private Context mContext;
 	private Message mMessage;
@@ -58,7 +63,7 @@ public class GetCommentsAsync extends AsyncTask<String, Void, List<Comment>> {
 	public GetCommentsAsync(Context context, Message message,
 			List<Comment> comments, CommentsAdapter commentsAdapter,
 			ListView commentListView) {
-		mContext = context;
+		super(context);
 		mMessage = message;
 		mComments = comments;
 		mCommentsAdapter = commentsAdapter;
@@ -69,7 +74,7 @@ public class GetCommentsAsync extends AsyncTask<String, Void, List<Comment>> {
 			List<Comment> comments, CommentsAdapter commentsAdapter,
 			ListView commentListView,
 			RefreshCommentHandler refreshCommentHandler, boolean firstTime) {
-		mContext = context;
+		super(context);
 		mMessage = message;
 		mComments = comments;
 		mCommentsAdapter = commentsAdapter;
@@ -80,17 +85,19 @@ public class GetCommentsAsync extends AsyncTask<String, Void, List<Comment>> {
 
 	@Override
 	protected void onPreExecute() {
+		super.onPreExecute();
 	}
 
 	@Override
-	protected List<Comment> doInBackground(String... params) {
+	protected List<Comment> backgroundWork(String... params) throws ClientProtocolException, IOException, JSONException, SpikaException {
 
 		return CouchDB.findCommentsByMessageId(params[0]);
 	}
 
 	@Override
 	protected void onPostExecute(List<Comment> result) {
-
+		super.onPostExecute(result);
+		
 		if (mRefreshCommentHandler != null)
 			mRefreshCommentHandler.setComments(result);
 

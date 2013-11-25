@@ -417,7 +417,7 @@ public class GroupsActivity extends SubMenuActivity {
 		}
 
 		@Override
-		protected List<Group> backgroundWork(GroupSearch... params) {
+		protected List<Group> backgroundWork(GroupSearch... params) throws ClientProtocolException, IOException, JSONException, SpikaException {
 			return CouchDB.searchGroups(params[0]);
 		}
 
@@ -473,7 +473,7 @@ public class GroupsActivity extends SubMenuActivity {
 		}
 
 		@Override
-		protected List<GroupCategory> backgroundWork(GroupSearch... params) {
+		protected List<GroupCategory> backgroundWork(GroupSearch... params) throws ClientProtocolException, IOException, JSONException, SpikaException {
 
 			return CouchDB.findGroupCategories();
 		}

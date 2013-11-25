@@ -454,9 +454,12 @@ public class CouchDBHelper {
 	 * 
 	 * @param recentActivityListJson
 	 * @return
+	 * @throws SpikaException 
+	 * @throws IOException 
+	 * @throws ClientProtocolException 
 	 */
 	public static List<RecentActivity> parseMultiRecentActivityObjects(
-			JSONObject recentActivityListJson) {
+			JSONObject recentActivityListJson) throws ClientProtocolException, IOException, SpikaException {
 
 		List<RecentActivity> recentActivityList = new ArrayList<RecentActivity>();
 
@@ -492,9 +495,12 @@ public class CouchDBHelper {
 	 * 
 	 * @param notificationsJson
 	 * @return
+	 * @throws SpikaException 
+	 * @throws IOException 
+	 * @throws ClientProtocolException 
 	 */
 	public static List<Notification> parseMultiNotificationObjects(
-			JSONArray notificationsAry) {
+			JSONArray notificationsAry) throws ClientProtocolException, IOException, SpikaException {
 
 		List<Notification> notifications = new ArrayList<Notification>();
 
@@ -527,9 +533,12 @@ public class CouchDBHelper {
 	 * 
 	 * @param messagesJson
 	 * @return
+	 * @throws SpikaException 
+	 * @throws IOException 
+	 * @throws ClientProtocolException 
 	 */
 	public static List<NotificationMessage> parseMultiNotificationMessageObjects(
-			JSONArray messagesArray, String targetId) {
+			JSONArray messagesArray, String targetId) throws ClientProtocolException, IOException, SpikaException {
 
 		List<NotificationMessage> messages = new ArrayList<NotificationMessage>();
 
