@@ -24,10 +24,20 @@
 
 package com.cloverstudio.spikademo.extendables;
 
+import java.io.IOException;
+
+import org.json.JSONException;
+
+import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 
+import com.cloverstudio.spikademo.R;
 import com.cloverstudio.spikademo.SpikaApp;
+import com.cloverstudio.spikademo.couchdb.SpikaException;
+import com.cloverstudio.spikademo.dialog.HookUpDialog;
+import com.cloverstudio.spikademo.utils.Const;
 
 /**
  * SpikaAsync
@@ -39,6 +49,7 @@ public abstract class SpikaAsync<Params, Progress, Result> extends
 		AsyncTask<Params, Progress, Result> {
 
 	protected Context mContext;
+	private Exception exception;
 
 	protected SpikaAsync(final Context context) {
 		this.mContext = context;
@@ -52,16 +63,62 @@ public abstract class SpikaAsync<Params, Progress, Result> extends
 			this.cancel(true);
 		}
 	}
+	
+	@Override
+	protected Result doInBackground(Params... params) {
+		Result result = null;
+		try {
+			result = (Result) backgroundWork(params);
+		} catch (JSONException e) {
+			exception = e;
+			e.printStackTrace();
+		} catch (IOException e) {
+			exception = e;
+			e.printStackTrace();
+		} catch (SpikaException e) {
+			exception = e;
+			e.printStackTrace();
+		} catch (NullPointerException e) {
+			exception = e;
+			e.printStackTrace();
+		}
+		return result;
+	}
 
-	
-	
-//	@Override
-//	protected Result doInBackground(Params... params) {
-//		return protectedMethod(params);
-//	}
-//
-//	protected Result protectedMethod(Params... params) {
-//		return null;
-//	}
+	@Override
+	protected void onPostExecute(Result result) {
+		super.onPostExecute(result);
+		if (exception != null)
+		{
+			String error = (exception.getMessage() != null) ? exception.getMessage() : mContext.getString(R.string.an_internal_error_has_occurred);
+			
+			Log.e(Const.ERROR, error);
+			
+			final HookUpDialog dialog = new HookUpDialog(mContext);
+			String errorMessage = null;
+			if (exception instanceof IOException){
+			    errorMessage = mContext.getString(R.string.can_not_connect_to_server) + "\n" + exception.getClass().getName() + " " + error;
+			}else if(exception instanceof JSONException){
+			    errorMessage = mContext.getString(R.string.an_internal_error_has_occurred) + "\n" + exception.getClass().getName() + " " + error;
+			}else if(exception instanceof NullPointerException){
+			    errorMessage = mContext.getString(R.string.an_internal_error_has_occurred) + "\n" + exception.getClass().getName() + " " + error;
+			}else if(exception instanceof SpikaException){
+				errorMessage = mContext.getString(R.string.an_internal_error_has_occurred) + "\n" + error;
+			}else{
+			    errorMessage = mContext.getString(R.string.an_internal_error_has_occurred) + "\n" + exception.getClass().getName() + " " + error;
+			}	
+			
+			if (mContext instanceof Activity) {
+				if (!((Activity)mContext).isFinishing())
+				{
+					dialog.showOnlyOK(errorMessage);
+				}
+			}
+		}
+	}
+
+	protected Result backgroundWork(Params... params) throws JSONException, IOException, SpikaException, NullPointerException {
+		return null;
+	}
 	
 }

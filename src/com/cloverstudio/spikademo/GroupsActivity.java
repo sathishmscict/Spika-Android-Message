@@ -320,51 +320,44 @@ public class GroupsActivity extends SubMenuActivity {
 
 		@Override
 		protected void onPreExecute() {
-			mProgressDialog.show();
 			super.onPreExecute();
+			mProgressDialog.show();
 		}
 
 		@Override
-		protected List<Group> doInBackground(String... params) {
+		protected List<Group> backgroundWork(String... params) throws ClientProtocolException, JSONException, IOException, SpikaException {
 
-			try {
-			
-				searchType = params[0];
-	
-				if (UsersManagement.getLoginUser().getActivitySummary() != null) {
-	
-					for (RecentActivity recentActivity : UsersManagement
-							.getLoginUser().getActivitySummary()
-							.getRecentActivityList()) {
-						if (recentActivity.getTargetType().equals(Const.GROUP)) {
-							mGroupNotifications = recentActivity.getNotifications();
-						}
+			searchType = params[0];
+
+			if (UsersManagement.getLoginUser().getActivitySummary() != null) {
+
+				for (RecentActivity recentActivity : UsersManagement
+						.getLoginUser().getActivitySummary()
+						.getRecentActivityList()) {
+					if (recentActivity.getTargetType().equals(Const.GROUP)) {
+						mGroupNotifications = recentActivity.getNotifications();
 					}
-	
 				}
-	
-				if (params[0].equals(ALL_GROUPS)) {
-					return CouchDB.findAllGroups();
-				} else if (params[0].equals(FAVORITES)) {
-					
-						return CouchDB.findUserFavoriteGroups(UsersManagement
-								.getLoginUser().getId());
-					
-					
-				} else if (params[0].equals(CATEGORY)) {
-					return CouchDB.findGroupByCategoryId(params[1]);
-				}
-				return CouchDB.findAllGroups();
-				
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+
 			}
-			return null;
+
+			if (params[0].equals(ALL_GROUPS)) {
+				return CouchDB.findAllGroups();
+			} else if (params[0].equals(FAVORITES)) {
+				
+					return CouchDB.findUserFavoriteGroups(UsersManagement
+							.getLoginUser().getId());
+				
+				
+			} else if (params[0].equals(CATEGORY)) {
+				return CouchDB.findGroupByCategoryId(params[1]);
+			}
+			return CouchDB.findAllGroups();	
 		}
 
 		@Override
 		protected void onPostExecute(List<Group> result) {
+			super.onPostExecute(result);
 
 			if (result != null) {
 				mGroups = (ArrayList<Group>) result;
@@ -419,18 +412,18 @@ public class GroupsActivity extends SubMenuActivity {
 
 		@Override
 		protected void onPreExecute() {
-			mProgressDialog.show();
 			super.onPreExecute();
+			mProgressDialog.show();
 		}
 
 		@Override
-		protected List<Group> doInBackground(GroupSearch... params) {
-
+		protected List<Group> backgroundWork(GroupSearch... params) {
 			return CouchDB.searchGroups(params[0]);
 		}
 
 		@Override
 		protected void onPostExecute(List<Group> result) {
+			super.onPostExecute(result);
 			mGroups = (ArrayList<Group>) result;
 
 			mLvGroupCategories.setVisibility(View.GONE);
@@ -475,18 +468,19 @@ public class GroupsActivity extends SubMenuActivity {
 
 		@Override
 		protected void onPreExecute() {
-			mProgressDialog.show();
 			super.onPreExecute();
+			mProgressDialog.show();
 		}
 
 		@Override
-		protected List<GroupCategory> doInBackground(GroupSearch... params) {
+		protected List<GroupCategory> backgroundWork(GroupSearch... params) {
 
 			return CouchDB.findGroupCategories();
 		}
 
 		@Override
 		protected void onPostExecute(List<GroupCategory> result) {
+			super.onPostExecute(result);
 			mGroupCategories = (ArrayList<GroupCategory>) result;
 
 			mLvGroupCategories.setVisibility(View.VISIBLE);

@@ -642,13 +642,19 @@ public class GroupProfileActivity extends SpikaActivity {
 		}
 
 		@Override
-		protected Group doInBackground(String... params) {
+		protected void onPreExecute() {
+			super.onPreExecute();
+		}
+		
+		@Override
+		protected Group backgroundWork(String... params) {
 			String id = params[0];
 			return CouchDB.findGroupById(id);
 		}
 
 		@Override
 		protected void onPostExecute(Group group) {
+			super.onPostExecute(group);
 			mGroup = group;
 
 			mGroupDescription = group.getDescription();
@@ -675,7 +681,7 @@ public class GroupProfileActivity extends SpikaActivity {
 		}
 
 		@Override
-		protected Group doInBackground(Group... params) {
+		protected Group backgroundWork(Group... params) {
 
 			mGroupFound = CouchDB.getGroupByName(mGroupName);
 
@@ -874,13 +880,14 @@ public class GroupProfileActivity extends SpikaActivity {
 		}
 
 		@Override
-		protected List<GroupCategory> doInBackground(GroupSearch... params) {
+		protected List<GroupCategory> backgroundWork(GroupSearch... params) {
 
 			return CouchDB.findGroupCategories();
 		}
 
 		@Override
 		protected void onPostExecute(List<GroupCategory> result) {
+			super.onPostExecute(result);
 			mGroupCategories = (ArrayList<GroupCategory>) result;
 			final ArrayAdapter<GroupCategory> categoryAdapter = new ArrayAdapter<GroupCategory>(
 					GroupProfileActivity.this,

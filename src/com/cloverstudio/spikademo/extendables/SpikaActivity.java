@@ -359,24 +359,15 @@ public class SpikaActivity extends Activity {
 		}
 
 		@Override
-		protected User doInBackground(String... params) {
+		protected void onPreExecute() {
+			super.onPreExecute();
+		}
+
+		@Override
+		protected User backgroundWork(String... params) throws ClientProtocolException, JSONException, IOException, SpikaException {
 			String userId = params[0];
-			try {
-				return CouchDB.findUserById(userId);
-			} catch (ClientProtocolException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (SpikaException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			return null;
+			
+			return CouchDB.findUserById(userId);
 		}
 
 		@Override
@@ -392,7 +383,12 @@ public class SpikaActivity extends Activity {
 		}
 
 		@Override
-		protected Group doInBackground(String... params) {
+		protected void onPreExecute() {
+			super.onPreExecute();
+		}
+		
+		@Override
+		protected Group backgroundWork(String... params) {
 			String id = params[0];
 			return CouchDB.findGroupById(id);
 		}
@@ -405,7 +401,7 @@ public class SpikaActivity extends Activity {
 	
 	protected class GetGroupByNameAsync extends SpikaAsync<String, Void, Group> {
 
-	    	private HookUpProgressDialog mProgressDialog;
+	    private HookUpProgressDialog mProgressDialog;
 	    
 		public GetGroupByNameAsync(Context context) {
 			super(context);
@@ -413,7 +409,12 @@ public class SpikaActivity extends Activity {
 		}
 
 		@Override
-		protected Group doInBackground(String... params) {
+		protected void onPreExecute() {
+			super.onPreExecute();
+		}
+		
+		@Override
+		protected Group backgroundWork(String... params) {
 			String name = params[0];
 			return CouchDB.findGroupsByName(name).get(0);
 		}

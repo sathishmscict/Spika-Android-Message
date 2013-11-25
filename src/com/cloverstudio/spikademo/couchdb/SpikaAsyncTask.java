@@ -75,6 +75,9 @@ public class SpikaAsyncTask<Params, Progress, Result> extends AsyncTask<Params, 
 		} catch (SpikaException e) {
 			exception = e;
 			e.printStackTrace();
+		} catch (NullPointerException e) {
+			exception = e;
+			e.printStackTrace();
 		}
 		return result;
 	}
@@ -82,6 +85,9 @@ public class SpikaAsyncTask<Params, Progress, Result> extends AsyncTask<Params, 
 	@Override
 	protected void onPostExecute(Result result) {
 		super.onPostExecute(result);
+		
+//		final HookUpDialog _dialog = new HookUpDialog(context);
+//		Log.e("is this the way", "active:" + _dialog.getWindow().isActive());
 		
 		if (showProgressBar)
 		{
@@ -103,13 +109,20 @@ public class SpikaAsyncTask<Params, Progress, Result> extends AsyncTask<Params, 
 			    errorMessage = context.getString(R.string.can_not_connect_to_server) + "\n" + exception.getClass().getName() + " " + error;
 			}else if(exception instanceof JSONException){
 			    errorMessage = context.getString(R.string.an_internal_error_has_occurred) + "\n" + exception.getClass().getName() + " " + error;
+			}else if(exception instanceof NullPointerException){
+			    errorMessage = context.getString(R.string.an_internal_error_has_occurred) + "\n" + exception.getClass().getName() + " " + error;
 			}else if(exception instanceof SpikaException){
 				errorMessage = context.getString(R.string.an_internal_error_has_occurred) + "\n" + error;
 			}else{
 			    errorMessage = context.getString(R.string.an_internal_error_has_occurred) + "\n" + exception.getClass().getName() + " " + error;
-			}			
+			}	
 			
-			dialog.showOnlyOK(errorMessage);
+			if (context instanceof Activity) {
+				if (!((Activity)context).isFinishing())
+				{
+					dialog.showOnlyOK(errorMessage);
+				}
+			}
 			
 			if (resultListener != null) resultListener.onResultsFail();
 		}

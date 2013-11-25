@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  * 
- * Copyright © 2013 Clover Studio Ltd. All rights reserved.
+ * Copyright ï¿½ 2013 Clover Studio Ltd. All rights reserved.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -280,7 +280,7 @@ public class LocationActivity extends SpikaFragmentActivity {
 		}
 
 		@Override
-		protected Void doInBackground(Double... params) {
+		protected Void backgroundWork(Double... params) {
 			Geocoder geocoder = new Geocoder(LocationActivity.this,
 					Locale.getDefault());
 			List<Address> addresses = null;
@@ -345,7 +345,7 @@ public class LocationActivity extends SpikaFragmentActivity {
 		}
 
 		@Override
-		protected Void doInBackground(Void... params) {
+		protected Void backgroundWork(Void... params) {
 			Geocoder geocoder = new Geocoder(LocationActivity.this,
 					Locale.getDefault());
 			List<Address> addresses = null;
@@ -384,6 +384,7 @@ public class LocationActivity extends SpikaFragmentActivity {
 
 		@Override
 		protected void onPostExecute(Void result) {
+			super.onPostExecute(result);
 			if (!mLoaded) {
 				mAddressText = "";
 			}
@@ -406,10 +407,6 @@ public class LocationActivity extends SpikaFragmentActivity {
 				Toast.makeText(LocationActivity.this,
 						"Getting location failed", Toast.LENGTH_SHORT).show();
 			}
-
-			super.onPostExecute(result);
 		}
-
 	}
-
 }

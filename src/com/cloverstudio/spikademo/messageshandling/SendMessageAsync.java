@@ -67,7 +67,7 @@ public class SendMessageAsync extends SpikaAsync<Object, Void, Boolean> {
 	}
 
 	@Override
-	protected Boolean doInBackground(Object... params) {
+	protected Boolean backgroundWork(Object... params) {
 
 		boolean isRedirection = false;
 		boolean isSuccess = false;
@@ -273,6 +273,7 @@ public class SendMessageAsync extends SpikaAsync<Object, Void, Boolean> {
 
 	@Override
 	protected void onPostExecute(Boolean result) {
+		super.onPostExecute(result);
 		MessagesUpdater.update(true);
 		if (!isComment) {
 			if (result) {
@@ -281,13 +282,5 @@ public class SendMessageAsync extends SpikaAsync<Object, Void, Boolean> {
 				Toast.makeText(mContext, "Failed", Toast.LENGTH_SHORT).show();
 			}
 		}
-	}
-
-	@Override
-	protected Boolean protectedMethod(Object... params) {
-		// TODO Auto-generated method stub
-		return true;
-	}
-	
-	
+	}	
 }

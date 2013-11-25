@@ -462,13 +462,14 @@ public class CreateGroupActivity extends SpikaActivity {
 		}
 
 		@Override
-		protected List<GroupCategory> doInBackground(GroupSearch... params) {
+		protected List<GroupCategory> backgroundWork(GroupSearch... params) {
 
 			return CouchDB.findGroupCategories();
 		}
 
 		@Override
 		protected void onPostExecute(List<GroupCategory> result) {
+			super.onPostExecute(result);
 			mGroupCategories = (ArrayList<GroupCategory>) result;
 			final ArrayAdapter<GroupCategory> categoryAdapter = new ArrayAdapter<GroupCategory>(
 					CreateGroupActivity.this,
