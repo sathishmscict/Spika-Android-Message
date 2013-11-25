@@ -91,38 +91,6 @@ public class ConnectionHandler {
 
 	public ConnectionHandler() {
 	}
-
-	/**
-	 * Http GET
-	 * 
-	 * @param url
-	 * @return
-	 */
-	@Deprecated
-	public static JSONObject getJsonObjectDeprecated(String url, String userId) {
-
-		JSONObject retVal = null;
-
-		try {
-
-			InputStream is = httpGetRequest(url, userId);
-			String result = getString(is);
-
-			is.close();
-
-			retVal = jObjectFromString(result);
-			
-		} catch (Exception e) {
-
-			Logger.error(TAG + "getJsonObject", e);
-
-			return null;
-
-		}
-
-		Log.e("Response: ", retVal.toString());
-		return retVal;
-	}
 	
 	public static JSONObject getJsonObject(String url, String userId) throws ClientProtocolException, IOException, JSONException, SpikaException {
 
@@ -137,36 +105,6 @@ public class ConnectionHandler {
 			
 		Log.e("Response: ", retVal.toString());
 		return retVal;
-	}
-	
-	/**
-	 * Http GET
-	 * 
-	 * @param url
-	 * @return
-	 */
-	public static String getStringDeprecated(String url, String userId) {
-
-		String result = null;
-
-		try {
-
-			InputStream is = httpGetRequest(url, userId);
-			result = getString(is);
-
-			is.close();
-
-
-		} catch (Exception e) {
-
-			Logger.error(TAG + "getJsonObject", e);
-
-			return null;
-
-		}
-
-		Log.e("Response: ", result.toString());
-		return result;
 	}
 	
 	/**
@@ -190,39 +128,6 @@ public class ConnectionHandler {
 
 		Log.e("Response: ", result.toString());
 		return result;
-	}
-	
-	/**
-	 * Http GET
-	 * 
-	 * @param url
-	 * @return
-	 */
-	@Deprecated
-	public static JSONArray getJsonArrayDeprecated(String url, String userId,
-			String token) {
-
-		JSONArray retVal = null;
-
-		try {
-
-			InputStream is = httpGetRequest(url, userId);
-			String result = getString(is);
-
-			is.close();
-
-			retVal = jArrayFromString(result);
-
-		} catch (Exception e) {
-
-			Logger.error(TAG + "getJsonObject", e);
-
-			return null;
-
-		}
-
-		Log.e("Response: ", retVal.toString());
-		return retVal;
 	}
 	
 	public static JSONArray getJsonArray(String url, String userId,
@@ -296,39 +201,6 @@ public class ConnectionHandler {
 	 * Http POST
 	 * 
 	 * @param create
-	 * @deprecated Because the exception is not used.
-	 * @return
-	 */
-    @Deprecated public static JSONObject deprecatedPostJsonObject(JSONObject create, String userId,
-			String token) {
-
-		JSONObject retVal = null;
-
-		try {
-
-			InputStream is = httpPostRequest(CouchDB.getUrl(), create, userId);
-			String result = getString(is);
-
-			is.close();
-
-			retVal = jObjectFromString(result);
-
-		} catch (Exception e) {
-
-			Logger.error(TAG + "postJsonObject", e);
-
-			return null;
-
-		}
-		
-		Log.e("Response: ", retVal.toString());
-		return retVal;
-	}
-    
-	/**
-	 * Http POST
-	 * 
-	 * @param create
 	 * @return
 	 * @throws IOException 
 	 * @throws JSONException 
@@ -346,38 +218,6 @@ public class ConnectionHandler {
 		is.close();
 
 		retVal = jObjectFromString(result);
-
-		Log.e("Response: ", retVal.toString());
-		return retVal;
-	}
-
-	/**
-	 * Http Auth POST
-	 * 
-	 * @param create
-	 * @deprecated Because the exception is not used.
-	 * @return
-	 */
-    @Deprecated public static JSONObject deprecatedPostAuth(JSONObject jPost) {
-
-		JSONObject retVal = null;
-
-		try {
-
-			InputStream is = httpPostRequest(CouchDB.getAuthUrl(), jPost, "");
-			String result = getString(is);
-
-			is.close();
-
-			retVal = jObjectFromString(result);
-
-		} catch (Exception e) {
-
-			Logger.error(TAG + "postAuth", e);
-
-			return null;
-
-		}
 
 		Log.e("Response: ", retVal.toString());
 		return retVal;
