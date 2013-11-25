@@ -27,7 +27,6 @@ package com.cloverstudio.spikademo.messageshandling;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 
-import com.cloverstudio.spikademo.WallActivity;
 import com.cloverstudio.spikademo.management.SettingsManager;
 
 /**

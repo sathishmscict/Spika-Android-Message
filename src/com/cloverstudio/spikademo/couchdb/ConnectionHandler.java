@@ -32,8 +32,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.StringReader;
-import java.net.SocketTimeoutException;
 import java.nio.charset.Charset;
 import java.util.List;
 
@@ -73,13 +71,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.R.string;
-import android.app.Application;
 import android.graphics.Bitmap;
 import android.util.Log;
-import android.widget.Toast;
-
-import com.cloverstudio.spikademo.R;
 import com.cloverstudio.spikademo.SpikaApp;
 import com.cloverstudio.spikademo.management.BitmapManagement;
 import com.cloverstudio.spikademo.management.FileManagement;

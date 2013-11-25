@@ -32,7 +32,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
@@ -50,8 +49,11 @@ import android.widget.TextView;
 
 import com.cloverstudio.spikademo.R;
 import com.cloverstudio.spikademo.adapters.WallMessagesAdapter;
+import com.cloverstudio.spikademo.couchdb.Command;
 import com.cloverstudio.spikademo.couchdb.CouchDB;
+import com.cloverstudio.spikademo.couchdb.CouchDB.FindGroupById;
 import com.cloverstudio.spikademo.couchdb.ResultListener;
+import com.cloverstudio.spikademo.couchdb.SpikaAsyncTask;
 import com.cloverstudio.spikademo.couchdb.model.Emoticon;
 import com.cloverstudio.spikademo.couchdb.model.Group;
 import com.cloverstudio.spikademo.couchdb.model.Message;
@@ -60,7 +62,6 @@ import com.cloverstudio.spikademo.couchdb.model.WatchingGroupLog;
 import com.cloverstudio.spikademo.dialog.HookUpAlertDialog;
 import com.cloverstudio.spikademo.dialog.TempVideoChooseDialog;
 import com.cloverstudio.spikademo.dialog.HookUpAlertDialog.ButtonType;
-import com.cloverstudio.spikademo.extendables.SpikaAsync;
 import com.cloverstudio.spikademo.extendables.SideBarActivity;
 import com.cloverstudio.spikademo.lazy.Emoticons;
 import com.cloverstudio.spikademo.management.SettingsManager;
@@ -249,12 +250,18 @@ public class WallActivity extends SideBarActivity {
 		Group fromGroup = null;
 
 		try {
-			fromUser = new GetUserByIdAsync(this).execute(fromUserId).get();
+//			fromUser = new GetUserByIdAsync(this).execute(fromUserId).get();
+			 
+			fromUser = new SpikaAsyncTask<Void, Void, User>(new CouchDB.FindUserById(fromUserId), null, WallActivity.this, true).execute().get();
 			if (fromType.equals(Const.PUSH_TYPE_GROUP)) {
 				String fromGroupId = intent
 						.getStringExtra(Const.PUSH_FROM_GROUP_ID);
-				fromGroup = new GetGroupByIdAsync(this).execute(fromGroupId)
-						.get();
+				
+//				fromGroup = new GetGroupByIdAsync(this).execute(fromGroupId)
+//						.get();
+				
+				fromGroup = new SpikaAsyncTask<Void, Void, Group>(new CouchDB.FindGroupById(fromGroupId), null, WallActivity.this, true).execute().get();
+				
 				UsersManagement.setToGroup(fromGroup);
 				UsersManagement.setToUser(null);
 				SettingsManager.ResetSettings();
@@ -280,6 +287,8 @@ public class WallActivity extends SideBarActivity {
 			e.printStackTrace();
 		}
 	}
+	
+//	private class OpenWallFromNotification implements Command<>
 
 	@Override
 	public void onWindowFocusChanged(boolean hasFocus) {

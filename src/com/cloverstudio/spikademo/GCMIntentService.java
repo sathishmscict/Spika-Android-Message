@@ -45,7 +45,6 @@ import com.cloverstudio.spikademo.couchdb.ResultListener;
 import com.cloverstudio.spikademo.couchdb.SpikaAsyncTask;
 import com.cloverstudio.spikademo.couchdb.SpikaException;
 import com.cloverstudio.spikademo.couchdb.model.User;
-import com.cloverstudio.spikademo.extendables.SpikaAsync;
 import com.cloverstudio.spikademo.management.UsersManagement;
 import com.cloverstudio.spikademo.utils.Const;
 import com.cloverstudio.spikademo.utils.Logger;

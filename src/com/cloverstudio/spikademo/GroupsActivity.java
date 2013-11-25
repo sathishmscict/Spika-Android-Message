@@ -24,10 +24,14 @@
 
 package com.cloverstudio.spikademo;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
+import org.apache.http.client.ClientProtocolException;
+import org.json.JSONException;
 
 import android.content.Context;
 import android.content.Intent;
@@ -48,6 +52,7 @@ import com.cloverstudio.spikademo.R;
 import com.cloverstudio.spikademo.adapters.GroupCategoriesAdapter;
 import com.cloverstudio.spikademo.adapters.GroupsAdapter;
 import com.cloverstudio.spikademo.couchdb.CouchDB;
+import com.cloverstudio.spikademo.couchdb.SpikaException;
 import com.cloverstudio.spikademo.couchdb.model.Group;
 import com.cloverstudio.spikademo.couchdb.model.GroupCategory;
 import com.cloverstudio.spikademo.couchdb.model.GroupSearch;
@@ -322,29 +327,40 @@ public class GroupsActivity extends SubMenuActivity {
 		@Override
 		protected List<Group> doInBackground(String... params) {
 
-			searchType = params[0];
-
-			if (UsersManagement.getLoginUser().getActivitySummary() != null) {
-
-				for (RecentActivity recentActivity : UsersManagement
-						.getLoginUser().getActivitySummary()
-						.getRecentActivityList()) {
-					if (recentActivity.getTargetType().equals(Const.GROUP)) {
-						mGroupNotifications = recentActivity.getNotifications();
+			try {
+			
+				searchType = params[0];
+	
+				if (UsersManagement.getLoginUser().getActivitySummary() != null) {
+	
+					for (RecentActivity recentActivity : UsersManagement
+							.getLoginUser().getActivitySummary()
+							.getRecentActivityList()) {
+						if (recentActivity.getTargetType().equals(Const.GROUP)) {
+							mGroupNotifications = recentActivity.getNotifications();
+						}
 					}
+	
 				}
-
-			}
-
-			if (params[0].equals(ALL_GROUPS)) {
+	
+				if (params[0].equals(ALL_GROUPS)) {
+					return CouchDB.findAllGroups();
+				} else if (params[0].equals(FAVORITES)) {
+					
+						return CouchDB.findUserFavoriteGroups(UsersManagement
+								.getLoginUser().getId());
+					
+					
+				} else if (params[0].equals(CATEGORY)) {
+					return CouchDB.findGroupByCategoryId(params[1]);
+				}
 				return CouchDB.findAllGroups();
-			} else if (params[0].equals(FAVORITES)) {
-				return CouchDB.findUserFavoriteGroups(UsersManagement
-						.getLoginUser().getId());
-			} else if (params[0].equals(CATEGORY)) {
-				return CouchDB.findGroupByCategoryId(params[1]);
+				
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-			return CouchDB.findAllGroups();
+			return null;
 		}
 
 		@Override

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  * 
- * Copyright © 2013 Clover Studio Ltd. All rights reserved.
+ * Copyright ï¿½ 2013 Clover Studio Ltd. All rights reserved.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -38,14 +38,10 @@ import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.cloverstudio.spikademo.R;
-import com.cloverstudio.spikademo.utils.Logger;
 
 /**
  * PasscodeActivity

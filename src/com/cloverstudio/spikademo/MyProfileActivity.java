@@ -31,7 +31,6 @@ import org.json.JSONException;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -69,8 +68,6 @@ import com.cloverstudio.spikademo.couchdb.SpikaAsyncTask;
 import com.cloverstudio.spikademo.couchdb.SpikaException;
 import com.cloverstudio.spikademo.couchdb.model.User;
 import com.cloverstudio.spikademo.dialog.DatePickerDialogWithRange;
-import com.cloverstudio.spikademo.dialog.HookUpProgressDialog;
-import com.cloverstudio.spikademo.extendables.SpikaAsync;
 import com.cloverstudio.spikademo.extendables.SideBarActivity;
 import com.cloverstudio.spikademo.lazy.ImageLoader;
 import com.cloverstudio.spikademo.management.UsersManagement;

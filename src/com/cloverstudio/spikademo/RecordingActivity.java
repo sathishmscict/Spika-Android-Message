@@ -53,18 +53,14 @@ import com.cloverstudio.spikademo.R;
 import com.cloverstudio.spikademo.couchdb.CouchDB;
 import com.cloverstudio.spikademo.couchdb.ResultListener;
 import com.cloverstudio.spikademo.dialog.HookUpAlertDialog;
-import com.cloverstudio.spikademo.dialog.HookUpDialog;
-import com.cloverstudio.spikademo.dialog.HookUpProgressDialog;
 import com.cloverstudio.spikademo.dialog.HookUpAlertDialog.ButtonType;
 import com.cloverstudio.spikademo.extendables.SpikaActivity;
-import com.cloverstudio.spikademo.extendables.SpikaAsync;
 import com.cloverstudio.spikademo.lazy.ImageLoader;
 import com.cloverstudio.spikademo.management.UsersManagement;
 import com.cloverstudio.spikademo.messageshandling.SendMessageAsync;
 import com.cloverstudio.spikademo.utils.Const;
 import com.cloverstudio.spikademo.utils.ExtAudioRecorder;
 import com.cloverstudio.spikademo.utils.LayoutHelper;
-import com.cloverstudio.spikademo.utils.Logger;
 import com.cloverstudio.spikademo.utils.Utils;
 
 /**

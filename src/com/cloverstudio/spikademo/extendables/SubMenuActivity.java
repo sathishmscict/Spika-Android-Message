@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  * 
- * Copyright © 2013 Clover Studio Ltd. All rights reserved.
+ * Copyright ï¿½ 2013 Clover Studio Ltd. All rights reserved.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,14 +27,10 @@ package com.cloverstudio.spikademo.extendables;
 import com.cloverstudio.spikademo.R;
 import com.cloverstudio.spikademo.SpikaApp;
 
-import android.app.Activity;
-import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageButton;

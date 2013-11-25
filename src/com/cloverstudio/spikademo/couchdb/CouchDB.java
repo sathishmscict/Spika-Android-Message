@@ -41,7 +41,6 @@ import org.json.JSONObject;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.os.UserManager;
 import android.util.Log;
 
 import com.cloverstudio.spikademo.SpikaApp;
@@ -487,7 +486,7 @@ public class CouchDB {
     	new SpikaAsyncTask<Void, Void, User>(new CouchDB.FindUserById(id), resultListener, context, showProgressBar).execute();
     }
 
-    private static class FindUserById implements Command<User>
+    public static class FindUserById implements Command<User>
     {
     	String id;
     	
@@ -684,18 +683,30 @@ public class CouchDB {
 
         final String URL = Const.FIND_GROUP_BY_NAME + groupname;
 
-        JSONArray jsonArray = ConnectionHandler.getJsonArrayDeprecated(URL, null, null);
+//        JSONArray jsonArray = ConnectionHandler.getJsonArrayDeprecated(URL, null, null);
+        JSONObject jsonObject = null;
+        try {
+			jsonObject = ConnectionHandler.getJsonObject(URL, UsersManagement.getLoginUser().getId());
+		} catch (ClientProtocolException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (JSONException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (SpikaException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 
-        if (jsonArray.length() == 0)
-            return null;
+//        if (jsonArray.length() == 0)
+//            return null;
 
         Group group = null;
 
-        try {
-            group = CouchDBHelper.parseSingleGroupObjectWithoutRowParam(jsonArray.getJSONObject(0));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        group = CouchDBHelper.parseSingleGroupObjectWithoutRowParam(jsonObject);
 
         return group;
     }
@@ -1040,7 +1051,7 @@ public class CouchDB {
 			e.printStackTrace();
 		}
 
-        return CouchDBHelper.parseSingleGroupObject(json);
+        return CouchDBHelper.parseSingleGroupObjectWithoutRowParam(json);
     }
     
     public static void findGroupByIdAsync(String id, ResultListener<Group> resultListener, Context context, boolean showProgressBar)
@@ -1048,7 +1059,7 @@ public class CouchDB {
     	new SpikaAsyncTask<Void, Void, Group>(new FindGroupById(id), resultListener, context, showProgressBar).execute();
     }
     
-    private static class FindGroupById implements Command<Group>
+    public static class FindGroupById implements Command<Group>
     {
     	String id;
     	
@@ -1107,7 +1118,7 @@ public class CouchDB {
     	new SpikaAsyncTask<Void, Void, List<Group>>(new FindGroupsByName(name), resultListener, context, showProgressBar).execute();
     }
     
-    private static class FindGroupsByName implements Command<List<Group>>
+    public static class FindGroupsByName implements Command<List<Group>>
     {
     	String name;
 
@@ -1127,25 +1138,39 @@ public class CouchDB {
      * 
      * @param id
      * @return
+     * @throws SpikaException 
+     * @throws IOException 
+     * @throws JSONException 
+     * @throws ClientProtocolException 
      */
     @Deprecated
-    public static List<Group> findUserFavoriteGroups(String id) {
+    public static List<Group> findUserFavoriteGroups(String id) throws ClientProtocolException, JSONException, IOException, SpikaException {
 
-        id = "\"" + id + "\"";
-
-        try {
-            id = URLEncoder.encode(id, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-
-            return null;
-        }
-
-        JSONObject json = ConnectionHandler.getJsonObjectDeprecated(sUrl
-                + "_design/app/_view/find_favorite_groups?key=" + id + "&include_docs=true",
-                UsersManagement.getLoginUser().getId());
-
-        return CouchDBHelper.parseFavoriteGroups(json);
+    	ArrayList<Group> groups = new ArrayList<Group>();
+    	
+    	User user = findUserById(id);
+    	
+    	for (String groupId : user.getGroupIds()) {
+			groups.add(findGroupById(groupId));
+		}
+    	
+    	return groups;
+    	
+//        id = "\"" + id + "\"";
+//
+//        try {
+//            id = URLEncoder.encode(id, "UTF-8");
+//        } catch (UnsupportedEncodingException e) {
+//            e.printStackTrace();
+//
+//            return null;
+//        }
+//
+//        JSONObject json = ConnectionHandler.getJsonObjectDeprecated(sUrl
+//                + "_design/app/_view/find_favorite_groups?key=" + id + "&include_docs=true",
+//                UsersManagement.getLoginUser().getId());
+//
+//        return CouchDBHelper.parseFavoriteGroups(json);
     }
     
     public static void findUserFavoriteGroups (String id, ResultListener<List<Group>> resultListener, Context context, boolean showProgressBar) {
@@ -1162,7 +1187,7 @@ public class CouchDB {
     	}
 
 		@Override
-		public List<Group> execute() throws JSONException, IOException {
+		public List<Group> execute() throws JSONException, IOException, SpikaException {
 			return findUserFavoriteGroups(id);
 		}
     }

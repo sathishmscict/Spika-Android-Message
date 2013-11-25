@@ -262,7 +262,8 @@ public class GroupProfileActivity extends SpikaActivity {
 			getIntent().removeExtra(Const.GROUP_URI_INTENT);
 			String groupName = getIntent().getStringExtra(Const.GROUP_URI_NAME);
 			try {
-				mGroup = new GetGroupByNameAsync(this).execute(groupName).get();
+//				mGroup = new GetGroupByNameAsync(this).execute(groupName).get();
+				mGroup = new SpikaAsyncTask<Void, Void, List<Group>>(new CouchDB.FindGroupsByName(groupName), null, GroupProfileActivity.this, true).execute().get().get(0);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			} catch (ExecutionException e) {

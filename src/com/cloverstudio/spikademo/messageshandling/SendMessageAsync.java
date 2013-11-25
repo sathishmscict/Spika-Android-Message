@@ -28,7 +28,6 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.cloverstudio.spikademo.WallActivity;
 import com.cloverstudio.spikademo.couchdb.CouchDB;
 import com.cloverstudio.spikademo.couchdb.model.Emoticon;
 import com.cloverstudio.spikademo.couchdb.model.Message;
@@ -283,4 +282,12 @@ public class SendMessageAsync extends SpikaAsync<Object, Void, Boolean> {
 			}
 		}
 	}
+
+	@Override
+	protected Boolean protectedMethod(Object... params) {
+		// TODO Auto-generated method stub
+		return true;
+	}
+	
+	
 }

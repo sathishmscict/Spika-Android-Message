@@ -50,8 +50,10 @@ import com.cloverstudio.spikademo.GCMIntentService;
 import com.cloverstudio.spikademo.SpikaApp;
 import com.cloverstudio.spikademo.PasscodeActivity;
 import com.cloverstudio.spikademo.WallActivity;
+import com.cloverstudio.spikademo.couchdb.Command;
 import com.cloverstudio.spikademo.couchdb.CouchDB;
 import com.cloverstudio.spikademo.couchdb.ResultListener;
+import com.cloverstudio.spikademo.couchdb.SpikaAsyncTask;
 import com.cloverstudio.spikademo.couchdb.SpikaException;
 import com.cloverstudio.spikademo.couchdb.model.ActivitySummary;
 import com.cloverstudio.spikademo.couchdb.model.Group;
@@ -212,60 +214,100 @@ public class SpikaActivity extends Activity {
 	};
 
 	private void handlePushNotification(Intent intent) {
-
 		getActivitySummary();
+		new SpikaAsyncTask<Void, Void, PushNotificationData>(new HandlePushNotification(intent), new HandlePushNotificationFinish(), SpikaActivity.this, false).execute();
+	}
+	
+	protected class PushNotificationData {
 		
-		String message = intent.getStringExtra(Const.PUSH_MESSAGE);
-		String fromUserId = intent.getStringExtra(Const.PUSH_FROM_USER_ID);
-		String fromType = intent.getStringExtra(Const.PUSH_FROM_TYPE);
+		public String message;
+		public User fromUser;
+		public Group fromGroup;
+		public String fromType;
+		public String fromUserId;
+		public String fromGroupId;
+		
+		public PushNotificationData(String message, User fromUser, Group fromGroup, String fromType, String fromUserId, String fromGroupId) {
+			this.message = message;
+			this.fromUser = fromUser;
+			this.fromGroup = fromGroup;
+			this.fromType = fromType;
+			this.fromUserId = fromUserId;
+			this.fromGroupId = fromGroupId;
+		}
+	}
+	
+	private class HandlePushNotification implements Command<PushNotificationData> {
 
-		if (mRlPushNotification != null) {
+		Intent intent;
+		
+		public HandlePushNotification (Intent intent) {
+			this.intent = intent;
+		}
+		
+		@Override
+		public PushNotificationData execute() throws JSONException, IOException, SpikaException {
+			
+			String message = intent.getStringExtra(Const.PUSH_MESSAGE);
+			String fromUserId = intent.getStringExtra(Const.PUSH_FROM_USER_ID);
+			String fromType = intent.getStringExtra(Const.PUSH_FROM_TYPE);
+			String fromGroupId = intent.getStringExtra(Const.PUSH_FROM_GROUP_ID);
 
 			User fromUser = null;
 			Group fromGroup = null;
+			
+			if (mRlPushNotification != null) {
 
-			try {
-				fromUser = new GetUserByIdAsync(SpikaActivity.this).execute(
-						fromUserId).get();
+				fromUser = CouchDB.findUserById(fromUserId);
+				
 				if (fromType.equals(Const.PUSH_TYPE_GROUP)) {
-					String fromGroupId = intent
-							.getStringExtra(Const.PUSH_FROM_GROUP_ID);
-					fromGroup = new GetGroupByIdAsync(SpikaActivity.this)
-							.execute(fromGroupId).get();
-
-					if (UsersManagement.getToGroup() != null) {
-						boolean isGroupWallOpened = fromGroupId
-								.equals(UsersManagement.getToGroup().getId())
-								&& WallActivity.gIsVisible;
-						if (isGroupWallOpened) {
-							refreshWallMessages();
-							return;
-						}
-					}
+					fromGroup = CouchDB.findGroupById(fromGroupId);
 				}
-				if (fromType.equals(Const.PUSH_TYPE_USER)) {
-
-					if (UsersManagement.getToUser() != null) {
-
-						boolean isUserWallOpened = fromUserId
-								.equals(UsersManagement.getToUser().getId())
-								&& WallActivity.gIsVisible;
-						if (isUserWallOpened) {
-							
-							WallActivity.gIsRefreshUserProfile = false;
-							refreshWallMessages();
-							return;
-						}
-					}
-				}
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			} catch (ExecutionException e) {
-				e.printStackTrace();
+				
+				return new PushNotificationData(message, fromUser, fromGroup, fromType, fromUserId, fromGroupId);
 			}
+			return null;
+		}
+	}
+	
+	private class HandlePushNotificationFinish implements ResultListener<PushNotificationData> {
+		
+		@Override
+		public void onResultsSucceded(PushNotificationData result) {
+			
+			if (result == null) return;
+			
+			if (result.fromType.equals(Const.PUSH_TYPE_GROUP)) {
+				if (UsersManagement.getToGroup() != null) {
+					boolean isGroupWallOpened = result.fromGroupId
+							.equals(UsersManagement.getToGroup().getId())
+							&& WallActivity.gIsVisible;
+					if (isGroupWallOpened) {
+						refreshWallMessages();
+						return;
+					}
+				}
+			}
+			if (result.fromType.equals(Const.PUSH_TYPE_USER)) {
 
-			PushNotification.show(this, mRlPushNotification, message, fromUser,
-					fromGroup, fromType);
+				if (UsersManagement.getToUser() != null) {
+
+					boolean isUserWallOpened = result.fromUserId
+							.equals(UsersManagement.getToUser().getId())
+							&& WallActivity.gIsVisible;
+					if (isUserWallOpened) {
+						WallActivity.gIsRefreshUserProfile = false;
+						refreshWallMessages();
+						return;
+					}
+				}
+			}
+			PushNotification.show(SpikaActivity.this, mRlPushNotification, result.message, result.fromUser,
+					result.fromGroup, result.fromType);
+		}
+
+		@Override
+		public void onResultsFail() {
 		}
 	}
 
@@ -412,36 +454,6 @@ public class SpikaActivity extends Activity {
 		public void onResultsFail() {
 		}
 	}
-	
-//	protected class GetActivitySummary extends
-//			SpikaAsync<Void, Void, ActivitySummary> {
-//
-//		public GetActivitySummary(Context context) {
-//			super(context);
-//		}
-//
-//		@Override
-//		protected ActivitySummary doInBackground(Void... params) {
-//			if (UsersManagement.getLoginUser() != null) {
-//				
-//				return CouchDB.findUserActivitySummary(UsersManagement
-//						.getLoginUser().getId());
-//			} else
-//				return null;
-//		}
-//
-//		@Override
-//		protected void onPostExecute(ActivitySummary activitySummary) {
-//			if (activitySummary != null) {
-//				UsersManagement.getLoginUser().setActivitySummary(
-//						activitySummary);
-//
-//				SpikaActivity.this.refreshActivitySummaryViews();
-//
-//			}
-//
-//		}
-//	}
 
 	protected void unbindDrawables(View view) {
 		if (view.getBackground() != null) {
@@ -477,8 +489,6 @@ public class SpikaActivity extends Activity {
             SpikaApp.getPreferences().setShowTutorial(false, Utils.getClassNameInStr(this));
             tutorialShowed = true;
         }
-
-        
     }
     
     protected void showTutorialOnceAfterBoot(String textTutorial) {
@@ -488,10 +498,5 @@ public class SpikaActivity extends Activity {
             SpikaApp.getPreferences().setShowTutorialForBoot(false, Utils.getClassNameInStr(this));
             tutorialShowed = true;
         }
-        
-        
     }
-    
-    
-
 }

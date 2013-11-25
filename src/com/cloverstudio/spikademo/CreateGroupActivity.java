@@ -37,7 +37,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.text.InputType;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -192,9 +191,8 @@ public class CreateGroupActivity extends SpikaActivity {
 				groupToCreate.setCategoryName(selectedCategory.getTitle());
 
 				if (nameAndPasswordAreValid(mGroupName, mGroupPassword) == true) {
-				    new AvailabilityAsync(CreateGroupActivity.this).execute(groupToCreate);
-				    
-					
+//				    new AvailabilityAsync(CreateGroupActivity.this).execute(groupToCreate);
+				    CouchDB.getGroupByNameAsync(groupToCreate.getName(), new CheckAvailabilityFinish(groupToCreate), CreateGroupActivity.this, true);
 				}
 			}
 		});
@@ -224,45 +222,67 @@ public class CreateGroupActivity extends SpikaActivity {
 		}
 	}
 
-    private class AvailabilityAsync extends SpikaAsync<Group, Void, Group> {
+//    private class AvailabilityAsync extends SpikaAsync<Group, Void, Group> {
+//
+//        private Group mGroup;
+//        private Group mGroupFound;
+//        private HookUpProgressDialog mProgressDialog;
+//
+//        protected AvailabilityAsync(Context context) {
+//            super(context);
+//            mProgressDialog = new HookUpProgressDialog(CreateGroupActivity.this);
+//        }
+//
+//        
+//        @Override
+//        protected void onPreExecute() {
+//            super.onPreExecute();
+//            mProgressDialog.show();
+//        }
+//
+//        @Override
+//        protected Group doInBackground(Group... params) {
+//            
+//            mGroup = params[0];
+//            mGroupFound = CouchDB.getGroupByName(mGroup.getName());
+//            
+//            return mGroupFound;
+//            
+//        }
+//
+//        @Override
+//        protected void onPostExecute(Group result) {
+//            super.onPostExecute(result);
+//            mProgressDialog.dismiss();
+//
+//            if (mGroupFound != null) {
+//                Toast.makeText(CreateGroupActivity.this, getString(R.string.groupname_taken), Toast.LENGTH_SHORT).show();
+//            }  else {
+//            	createGroupAsync(mGroup);
+//            }
+//        }
+//    }
+    
+    private class CheckAvailabilityFinish implements ResultListener<Group> {
 
-        private Group mGroup;
-        private Group mGroupFound;
-        private HookUpProgressDialog mProgressDialog;
+    	Group group;
+    	
+		public CheckAvailabilityFinish(Group group) {
+			this.group = group;
+		}
 
-        protected AvailabilityAsync(Context context) {
-            super(context);
-            mProgressDialog = new HookUpProgressDialog(CreateGroupActivity.this);
-        }
-
-        
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            mProgressDialog.show();
-        }
-
-        @Override
-        protected Group doInBackground(Group... params) {
-            
-            mGroup = params[0];
-            mGroupFound = CouchDB.getGroupByName(mGroup.getName());
-            
-            return mGroupFound;
-            
-        }
-
-        @Override
-        protected void onPostExecute(Group result) {
-            super.onPostExecute(result);
-            mProgressDialog.dismiss();
-
-            if (mGroupFound != null) {
+		@Override
+		public void onResultsSucceded(Group result) {
+			if (result != null) {
                 Toast.makeText(CreateGroupActivity.this, getString(R.string.groupname_taken), Toast.LENGTH_SHORT).show();
             }  else {
-            	createGroupAsync(mGroup);
+            	createGroupAsync(group);
             }
-        }
+		}
+
+		@Override
+		public void onResultsFail() {			
+		}
     }
 
     private void createGroupAsync (Group group) {

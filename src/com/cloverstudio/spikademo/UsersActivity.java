@@ -29,12 +29,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.os.UserManager;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -57,8 +55,6 @@ import com.cloverstudio.spikademo.couchdb.model.Notification;
 import com.cloverstudio.spikademo.couchdb.model.RecentActivity;
 import com.cloverstudio.spikademo.couchdb.model.User;
 import com.cloverstudio.spikademo.couchdb.model.UserSearch;
-import com.cloverstudio.spikademo.dialog.HookUpProgressDialog;
-import com.cloverstudio.spikademo.extendables.SpikaAsync;
 import com.cloverstudio.spikademo.extendables.SubMenuActivity;
 import com.cloverstudio.spikademo.management.UsersManagement;
 import com.cloverstudio.spikademo.utils.Const;
@@ -290,8 +286,8 @@ public class UsersActivity extends SubMenuActivity {
 				} else {
 					userSearch.setFromAge(mTvFromAge.getText().toString());
 				}
-				if (mTvFromAge.getText().toString()
-						.equals(String.valueOf(FROM_AGE))) {
+				if (mTvToAge.getText().toString()
+						.equals(String.valueOf(TO_AGE))) {
 					userSearch.setToAge(null);
 				} else {
 					userSearch.setToAge(mTvToAge.getText().toString());

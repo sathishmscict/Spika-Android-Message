@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  * 
- * Copyright © 2013 Clover Studio Ltd. All rights reserved.
+ * Copyright ï¿½ 2013 Clover Studio Ltd. All rights reserved.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,15 +27,9 @@ package com.cloverstudio.spikademo.adapters;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.annotation.TargetApi;
-import android.app.ActionBar.LayoutParams;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Build;
-import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,22 +37,17 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
-import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.cloverstudio.spikademo.R;
 import com.cloverstudio.spikademo.GroupProfileActivity;
 import com.cloverstudio.spikademo.GroupsActivity;
-import com.cloverstudio.spikademo.WallActivity;
 import com.cloverstudio.spikademo.couchdb.model.Group;
 import com.cloverstudio.spikademo.couchdb.model.Notification;
 import com.cloverstudio.spikademo.lazy.ImageLoader;
-import com.cloverstudio.spikademo.management.SettingsManager;
 import com.cloverstudio.spikademo.management.UsersManagement;
 import com.cloverstudio.spikademo.utils.Utils;
 

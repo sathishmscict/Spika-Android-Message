@@ -45,11 +45,8 @@ import android.view.animation.LinearInterpolator;
 import android.view.animation.TranslateAnimation;
 
 import com.cloverstudio.spikademo.R;
-import com.cloverstudio.spikademo.couchdb.CouchDB;
-import com.cloverstudio.spikademo.extendables.SpikaAsync;
 import com.cloverstudio.spikademo.lazy.FileDir;
 import com.cloverstudio.spikademo.lazy.ImageLoader;
-import com.cloverstudio.spikademo.management.UsersManagement;
 import com.cloverstudio.spikademo.utils.Logger;
 import com.cloverstudio.spikademo.utils.Preferences;
 

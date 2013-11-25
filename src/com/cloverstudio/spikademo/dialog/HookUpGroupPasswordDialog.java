@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  * 
- * Copyright © 2013 Clover Studio Ltd. All rights reserved.
+ * Copyright ï¿½ 2013 Clover Studio Ltd. All rights reserved.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,11 +33,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.cloverstudio.spikademo.R;
-import com.cloverstudio.spikademo.CreateGroupActivity;
 import com.cloverstudio.spikademo.GroupProfileActivity;
 import com.cloverstudio.spikademo.SpikaApp;
-import com.cloverstudio.spikademo.SettingsActivity;
-import com.cloverstudio.spikademo.utils.Utils;
 
 /**
  * HookUpGroupPasswordDialog

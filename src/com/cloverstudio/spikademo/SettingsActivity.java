@@ -25,7 +25,6 @@
 package com.cloverstudio.spikademo;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -46,11 +45,8 @@ import com.cloverstudio.spikademo.couchdb.ResultListener;
 import com.cloverstudio.spikademo.couchdb.model.User;
 import com.cloverstudio.spikademo.dialog.HookUpDialog;
 import com.cloverstudio.spikademo.dialog.HookUpPasswordDialog;
-import com.cloverstudio.spikademo.dialog.HookUpProgressDialog;
-import com.cloverstudio.spikademo.extendables.SpikaAsync;
 import com.cloverstudio.spikademo.extendables.SideBarActivity;
 import com.cloverstudio.spikademo.management.UsersManagement;
-import com.cloverstudio.spikademo.utils.Preferences;
 
 /**
  * SettingsActivity

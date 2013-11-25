@@ -118,8 +118,4 @@ public class SpikaAsyncTask<Params, Progress, Result> extends AsyncTask<Params, 
 			if (resultListener != null) resultListener.onResultsSucceded(result);
 		}
 	}
-
-	
-	
-	
 }

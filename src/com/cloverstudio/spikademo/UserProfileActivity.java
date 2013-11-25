@@ -24,11 +24,9 @@
 
 package com.cloverstudio.spikademo;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.util.TypedValue;
@@ -49,9 +47,7 @@ import com.cloverstudio.spikademo.couchdb.CouchDB;
 import com.cloverstudio.spikademo.couchdb.ResultListener;
 import com.cloverstudio.spikademo.couchdb.model.User;
 import com.cloverstudio.spikademo.dialog.HookUpAlertDialog;
-import com.cloverstudio.spikademo.dialog.HookUpProgressDialog;
 import com.cloverstudio.spikademo.extendables.SpikaActivity;
-import com.cloverstudio.spikademo.extendables.SpikaAsync;
 import com.cloverstudio.spikademo.lazy.ImageLoader;
 import com.cloverstudio.spikademo.management.SettingsManager;
 import com.cloverstudio.spikademo.management.UsersManagement;

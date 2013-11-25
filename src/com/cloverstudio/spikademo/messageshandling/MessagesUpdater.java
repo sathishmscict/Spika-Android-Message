@@ -26,12 +26,7 @@ package com.cloverstudio.spikademo.messageshandling;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
-
 import org.json.JSONException;
-
-import android.content.Context;
-import android.util.Log;
 
 import com.cloverstudio.spikademo.WallActivity;
 import com.cloverstudio.spikademo.couchdb.Command;
@@ -40,8 +35,6 @@ import com.cloverstudio.spikademo.couchdb.ResultListener;
 import com.cloverstudio.spikademo.couchdb.SpikaAsyncTask;
 import com.cloverstudio.spikademo.couchdb.SpikaException;
 import com.cloverstudio.spikademo.couchdb.model.Message;
-import com.cloverstudio.spikademo.dialog.HookUpProgressDialog;
-import com.cloverstudio.spikademo.extendables.SpikaAsync;
 import com.cloverstudio.spikademo.management.SettingsManager;
 import com.cloverstudio.spikademo.management.TimeMeasurer;
 import com.cloverstudio.spikademo.management.UsersManagement;
