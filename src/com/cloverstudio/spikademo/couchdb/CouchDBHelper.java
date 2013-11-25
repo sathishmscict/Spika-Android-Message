@@ -88,40 +88,34 @@ public class CouchDBHelper {
 				return null;
 			}
 
-			try {
+			JSONArray rows = json.getJSONArray(Const.ROWS);
+			JSONObject row = rows.getJSONObject(0);
+			JSONObject userJson = row.getJSONObject(Const.VALUE);
 
-				JSONArray rows = json.getJSONArray(Const.ROWS);
-				JSONObject row = rows.getJSONObject(0);
-				JSONObject userJson = row.getJSONObject(Const.VALUE);
+			user = sGsonExpose.fromJson(userJson.toString(), User.class);
+			
+			if (userJson.has(Const.FAVORITE_GROUPS)) {
+				JSONArray favorite_groups = userJson
+						.getJSONArray(Const.FAVORITE_GROUPS);
 
-				user = sGsonExpose.fromJson(userJson.toString(), User.class);
-				
-				if (userJson.has(Const.FAVORITE_GROUPS)) {
-					JSONArray favorite_groups = userJson
-							.getJSONArray(Const.FAVORITE_GROUPS);
+				List<String> groups = new ArrayList<String>();
 
-					List<String> groups = new ArrayList<String>();
-
-					for (int i = 0; i < favorite_groups.length(); i++) {
-						groups.add(favorite_groups.getString(i));
-					}
-
-					user.setGroupIds(groups);
+				for (int i = 0; i < favorite_groups.length(); i++) {
+					groups.add(favorite_groups.getString(i));
 				}
 
-				if (userJson.has(Const.CONTACTS)) {
-					JSONArray contacts = userJson.getJSONArray(Const.CONTACTS);
-
-					for (int i = 0; i < contacts.length(); i++) {
-						contactsIds.add(contacts.getString(i));
-					}
-
-					user.setContactIds(contactsIds);
-				}
-			} catch (JSONException e) {
-
+				user.setGroupIds(groups);
 			}
 
+			if (userJson.has(Const.CONTACTS)) {
+				JSONArray contacts = userJson.getJSONArray(Const.CONTACTS);
+
+				for (int i = 0; i < contacts.length(); i++) {
+					contactsIds.add(contacts.getString(i));
+				}
+
+				user.setContactIds(contactsIds);
+			}
 		}
 
 		return user;
@@ -143,7 +137,6 @@ public class CouchDBHelper {
         if (userJson != null) {
         	
         	if (userJson.length() == 0) {
-        		Log.e("json", "empty");
         		return null;
         	}
         	
@@ -186,8 +179,9 @@ public class CouchDBHelper {
 	 * 
 	 * @param json
 	 * @return
+	 * @throws JSONException 
 	 */
-	public static List<User> parseMultiUserObjects(JSONObject json) {
+	public static List<User> parseMultiUserObjects(JSONObject json) throws JSONException {
 
 		List<User> users = null;
 		ArrayList<String> contactsIds = new ArrayList<String>();
@@ -199,54 +193,47 @@ public class CouchDBHelper {
 				return null;
 			}
 
-			try {
-				users = new ArrayList<User>();
+			users = new ArrayList<User>();
 
-				// Get the element that holds the users ( JSONArray )
-				JSONArray rows = json.getJSONArray(Const.ROWS);
+			// Get the element that holds the users ( JSONArray )
+			JSONArray rows = json.getJSONArray(Const.ROWS);
 
-				for (int i = 0; i < rows.length(); i++) {
+			for (int i = 0; i < rows.length(); i++) {
 
-					JSONObject row = rows.getJSONObject(i);
-					JSONObject userJson = row.getJSONObject(Const.VALUE);
+				JSONObject row = rows.getJSONObject(i);
+				JSONObject userJson = row.getJSONObject(Const.VALUE);
 
-					User user = new User();
+				User user = new User();
 
-					user = sGsonExpose
-							.fromJson(userJson.toString(), User.class);
+				user = sGsonExpose
+						.fromJson(userJson.toString(), User.class);
 
-					if (userJson.has(Const.CONTACTS)) {
+				if (userJson.has(Const.CONTACTS)) {
 
-						JSONArray contacts = userJson
-								.getJSONArray(Const.CONTACTS);
+					JSONArray contacts = userJson
+							.getJSONArray(Const.CONTACTS);
 
-						for (int j = 0; j < contacts.length(); j++) {
-							contactsIds.add(contacts.getString(j));
-						}
-
-						user.setContactIds(contactsIds);
+					for (int j = 0; j < contacts.length(); j++) {
+						contactsIds.add(contacts.getString(j));
 					}
 
-					if (userJson.has(Const.FAVORITE_GROUPS)) {
-						JSONArray favorite_groups = userJson
-								.getJSONArray(Const.FAVORITE_GROUPS);
-
-						List<String> groups = new ArrayList<String>();
-
-						for (int k = 0; k < favorite_groups.length(); k++) {
-							groups.add(favorite_groups.getString(k));
-						}
-
-						user.setGroupIds(groups);
-					}
-
-					users.add(user);
+					user.setContactIds(contactsIds);
 				}
-			} catch (Exception e) {
-				Logger.error(
-						TAG + "parseMultiUserObjects",
-						"Error while retrieving data from json... Probably no users found!",
-						e);
+
+				if (userJson.has(Const.FAVORITE_GROUPS)) {
+					JSONArray favorite_groups = userJson
+							.getJSONArray(Const.FAVORITE_GROUPS);
+
+					List<String> groups = new ArrayList<String>();
+
+					for (int k = 0; k < favorite_groups.length(); k++) {
+						groups.add(favorite_groups.getString(k));
+					}
+
+					user.setGroupIds(groups);
+				}
+
+				users.add(user);
 			}
 		}
 
@@ -258,61 +245,55 @@ public class CouchDBHelper {
 	 * 
 	 * @param json
 	 * @return
+	 * @throws JSONException 
 	 */
-	public static List<User> parseSearchUsersResult(JSONArray jsonArray) {
+	public static List<User> parseSearchUsersResult(JSONArray jsonArray) throws JSONException {
 
 		List<User> users = null;
 		ArrayList<String> contactsIds = new ArrayList<String>();
 
 		if (jsonArray != null) {
 
-			try {
-				users = new ArrayList<User>();
+			users = new ArrayList<User>();
 
-				// Get the element that holds the users ( JSONArray )
+			// Get the element that holds the users ( JSONArray )
 
-				for (int i = 0; i < jsonArray.length(); i++) {
+			for (int i = 0; i < jsonArray.length(); i++) {
 
-					JSONObject userJson = jsonArray.getJSONObject(i);
+				JSONObject userJson = jsonArray.getJSONObject(i);
 
-					User user = new User();
+				User user = new User();
 
-					user = sGsonExpose
-							.fromJson(userJson.toString(), User.class);
+				user = sGsonExpose
+						.fromJson(userJson.toString(), User.class);
 
 
-					if (userJson.has(Const.CONTACTS)) {
+				if (userJson.has(Const.CONTACTS)) {
 
-						JSONArray contacts = userJson
-								.getJSONArray(Const.CONTACTS);
+					JSONArray contacts = userJson
+							.getJSONArray(Const.CONTACTS);
 
-						for (int j = 0; j < contacts.length(); j++) {
-							contactsIds.add(contacts.getString(j));
-						}
-
-						user.setContactIds(contactsIds);
+					for (int j = 0; j < contacts.length(); j++) {
+						contactsIds.add(contacts.getString(j));
 					}
 
-					if (userJson.has(Const.FAVORITE_GROUPS)) {
-						JSONArray favorite_groups = userJson
-								.getJSONArray(Const.FAVORITE_GROUPS);
-
-						List<String> groups = new ArrayList<String>();
-
-						for (int k = 0; k < favorite_groups.length(); k++) {
-							groups.add(favorite_groups.getString(k));
-						}
-
-						user.setGroupIds(groups);
-					}
-
-					users.add(user);
+					user.setContactIds(contactsIds);
 				}
-			} catch (Exception e) {
-				Logger.error(
-						TAG + "parseMultiUserObjects",
-						"Error while retrieving data from json... Probably no users found!",
-						e);
+
+				if (userJson.has(Const.FAVORITE_GROUPS)) {
+					JSONArray favorite_groups = userJson
+							.getJSONArray(Const.FAVORITE_GROUPS);
+
+					List<String> groups = new ArrayList<String>();
+
+					for (int k = 0; k < favorite_groups.length(); k++) {
+						groups.add(favorite_groups.getString(k));
+					}
+
+					user.setGroupIds(groups);
+				}
+
+				users.add(user);
 			}
 		}
 
@@ -324,75 +305,30 @@ public class CouchDBHelper {
 	 * 
 	 * @param json
 	 * @return
+	 * @throws JSONException 
 	 */
-	public static List<Group> parseSearchGroupsResult(JSONArray jsonArray) {
+	public static List<Group> parseSearchGroupsResult(JSONArray jsonArray) throws JSONException {
 
 		List<Group> groups = null;
 
 		if (jsonArray != null) {
 
-			try {
-				groups = new ArrayList<Group>();
+			groups = new ArrayList<Group>();
 
-				// Get the element that holds the groups ( JSONArray )
+			// Get the element that holds the groups ( JSONArray )
 
-				for (int i = 0; i < jsonArray.length(); i++) {
+			for (int i = 0; i < jsonArray.length(); i++) {
 
-					JSONObject groupJson = jsonArray.getJSONObject(i);
+				JSONObject groupJson = jsonArray.getJSONObject(i);
 
-					Group group = new Group();
+				Group group = new Group();
 
-					group = sGsonExpose.fromJson(groupJson.toString(),
-							Group.class);
+				group = sGsonExpose.fromJson(groupJson.toString(),
+						Group.class);
 
-					// if (groupJson.has(Const.ATTACHMENTS)) {
-					//
-					// List<Attachment> attachments = new
-					// ArrayList<Attachment>();
-					//
-					// JSONObject json_attachments = groupJson
-					// .getJSONObject(Const.ATTACHMENTS);
-					//
-					// @SuppressWarnings("unchecked")
-					// Iterator<String> keys = json_attachments.keys();
-					// while (keys.hasNext()) {
-					// String key = keys.next();
-					// try {
-					//
-					// JSONObject json_attachment = json_attachments
-					// .getJSONObject(key);
-					// Attachment attachment = sGsonExpose.fromJson(
-					// json_attachment.toString(),
-					// Attachment.class);
-					// attachment.setName(key);
-					// attachments.add(attachment);
-					// } catch (Exception e) {
-					// }
-					// }
-					// group.setAttachments(attachments);
-					//
-					// String url = null;
-					// if (group.getAvatarName() != null) {
-					// url = CouchDB.getUrl() + group.getId() + "/"
-					// + group.getAvatarName();
-					// } else {
-					// url = CouchDB.getUrl() + group.getId() + "/"
-					// + Const.GROUP_AVATAR;
-					// }
-					// group.setImageUrl(url);
-					//
-					// } else {
-					// group.setImageUrl(null);
-					// }
-
-					groups.add(group);
-				}
-			} catch (Exception e) {
-				Logger.error(
-						TAG + "parseMultiUserObjects",
-						"Error while retrieving data from json... Probably no users found!",
-						e);
+				groups.add(group);
 			}
+			
 		}
 
 		return groups;
@@ -404,9 +340,12 @@ public class CouchDBHelper {
 	 * @param json
 	 * @return
 	 * @throws JSONException
+	 * @throws SpikaException 
+	 * @throws IOException 
+	 * @throws ClientProtocolException 
 	 */
 	public static ActivitySummary parseSingleActivitySummaryObject(
-			JSONObject json) {
+			JSONObject json) throws JSONException, ClientProtocolException, IOException, SpikaException {
 
 		ActivitySummary activitySummary = null;
 
@@ -417,32 +356,26 @@ public class CouchDBHelper {
 				return null;
 			}
 
-			try {
+			JSONArray rows = json.getJSONArray(Const.ROWS);
 
-				JSONArray rows = json.getJSONArray(Const.ROWS);
+			if (rows.length() > 0) {
+				JSONObject row = rows.getJSONObject(0);
+				JSONObject activitySummaryJson = row
+						.getJSONObject(Const.VALUE);
 
-				if (rows.length() > 0) {
-					JSONObject row = rows.getJSONObject(0);
-					JSONObject activitySummaryJson = row
-							.getJSONObject(Const.VALUE);
+				activitySummary = new ActivitySummary();
+				activitySummary = sGsonExpose.fromJson(
+						activitySummaryJson.toString(),
+						ActivitySummary.class);
 
-					activitySummary = new ActivitySummary();
-					activitySummary = sGsonExpose.fromJson(
-							activitySummaryJson.toString(),
-							ActivitySummary.class);
-
-					if (activitySummaryJson.has(Const.RECENT_ACTIVITY)) {
-						JSONObject recentActivityListJson = activitySummaryJson
-								.getJSONObject(Const.RECENT_ACTIVITY);
-						List<RecentActivity> recentActivityList = CouchDBHelper
-								.parseMultiRecentActivityObjects(recentActivityListJson);
-						activitySummary
-								.setRecentActivityList(recentActivityList);
-					}
+				if (activitySummaryJson.has(Const.RECENT_ACTIVITY)) {
+					JSONObject recentActivityListJson = activitySummaryJson
+							.getJSONObject(Const.RECENT_ACTIVITY);
+					List<RecentActivity> recentActivityList = CouchDBHelper
+							.parseMultiRecentActivityObjects(recentActivityListJson);
+					activitySummary
+							.setRecentActivityList(recentActivityList);
 				}
-			} catch (Exception e) {
-				Logger.error(TAG + "parseSingleActivitySummaryObject",
-						"Error while retrieving data from json", e);
 			}
 		}
 
@@ -564,8 +497,9 @@ public class CouchDBHelper {
 	 * 
 	 * @param json
 	 * @return
+	 * @throws JSONException 
 	 */
-	public static List<User> parseUserContacts(JSONObject json) {
+	public static List<User> parseUserContacts(JSONObject json) throws JSONException {
 
 		List<User> users = null;
 
@@ -576,97 +510,49 @@ public class CouchDBHelper {
 				return null;
 			}
 
-			try {
-				users = new ArrayList<User>();
+			users = new ArrayList<User>();
 
-				// Get the element that holds the users ( JSONArray )
-				JSONArray rows = json.getJSONArray(Const.ROWS);
+			// Get the element that holds the users ( JSONArray )
+			JSONArray rows = json.getJSONArray(Const.ROWS);
 
-				for (int i = 0; i < rows.length(); i++) {
+			for (int i = 0; i < rows.length(); i++) {
 
-					JSONObject row = rows.getJSONObject(i);
-					if (!row.isNull(Const.DOC)) {
-						JSONObject userJson = row.getJSONObject(Const.DOC);
+				JSONObject row = rows.getJSONObject(i);
+				if (!row.isNull(Const.DOC)) {
+					JSONObject userJson = row.getJSONObject(Const.DOC);
 
-						User user = new User();
+					User user = new User();
 
-						user = sGsonExpose.fromJson(userJson.toString(),
-								User.class);
+					user = sGsonExpose.fromJson(userJson.toString(),
+							User.class);
 
-						// if (userJson.has(Const.ATTACHMENTS)) {
-						//
-						// List<Attachment> attachments = new
-						// ArrayList<Attachment>();
-						//
-						// JSONObject json_attachments = userJson
-						// .getJSONObject(Const.ATTACHMENTS);
-						//
-						// @SuppressWarnings("unchecked")
-						// Iterator<String> keys = json_attachments.keys();
-						// while (keys.hasNext()) {
-						// String key = keys.next();
-						// try {
-						//
-						// JSONObject json_attachment = json_attachments
-						// .getJSONObject(key);
-						// Attachment attachment = sGsonExpose
-						// .fromJson(
-						// json_attachment.toString(),
-						// Attachment.class);
-						// attachment.setName(key);
-						// attachments.add(attachment);
-						// } catch (Exception e) {
-						// }
-						// }
-						// user.setAttachments(attachments);
-						//
-						// String url = null;
-						// if (user.getAvatarName() != null) {
-						// url = CouchDB.getUrl() + user.getId() + "/"
-						// + user.getAvatarName();
-						// } else {
-						// url = CouchDB.getUrl() + user.getId() + "/"
-						// + Const.USER_AVATAR;
-						// }
-						// user.setImageUrl(url);
-						//
-						// } else {
-						// user.setImageUrl(null);
-						// }
+					if (userJson.has(Const.FAVORITE_GROUPS)) {
+						JSONArray favorite_groups = userJson
+								.getJSONArray(Const.FAVORITE_GROUPS);
 
-						if (userJson.has(Const.FAVORITE_GROUPS)) {
-							JSONArray favorite_groups = userJson
-									.getJSONArray(Const.FAVORITE_GROUPS);
+						List<String> groups = new ArrayList<String>();
 
-							List<String> groups = new ArrayList<String>();
-
-							for (int z = 0; z < favorite_groups.length(); z++) {
-								groups.add(favorite_groups.getString(z));
-							}
-
-							user.setGroupIds(groups);
+						for (int z = 0; z < favorite_groups.length(); z++) {
+							groups.add(favorite_groups.getString(z));
 						}
 
-						if (userJson.has(Const.CONTACTS)) {
-							JSONArray contacts = userJson
-									.getJSONArray(Const.CONTACTS);
-
-							List<String> contactsIds = new ArrayList<String>();
-
-							for (int j = 0; j < contacts.length(); j++) {
-								contactsIds.add(contacts.getString(j));
-							}
-							user.setContactIds(contactsIds);
-						}
-
-						users.add(user);
+						user.setGroupIds(groups);
 					}
+
+					if (userJson.has(Const.CONTACTS)) {
+						JSONArray contacts = userJson
+								.getJSONArray(Const.CONTACTS);
+
+						List<String> contactsIds = new ArrayList<String>();
+
+						for (int j = 0; j < contacts.length(); j++) {
+							contactsIds.add(contacts.getString(j));
+						}
+						user.setContactIds(contactsIds);
+					}
+
+					users.add(user);
 				}
-			} catch (Exception e) {
-				Logger.error(
-						TAG + "parseUserContacts",
-						"Error while retrieving data from json... Probably no users found!",
-						e);
 			}
 		}
 
@@ -678,8 +564,9 @@ public class CouchDBHelper {
 	 * 
 	 * @param json
 	 * @return
+	 * @throws JSONException 
 	 */
-	public static List<Comment> parseMessageComments(JSONObject json) {
+	public static List<Comment> parseMessageComments(JSONObject json) throws JSONException {
 
 		List<Comment> comments = null;
 
@@ -690,29 +577,22 @@ public class CouchDBHelper {
 				return null;
 			}
 
-			try {
-				comments = new ArrayList<Comment>();
+			comments = new ArrayList<Comment>();
 
-				// Get the element that holds the users ( JSONArray )
-				JSONArray rows = json.getJSONArray(Const.ROWS);
+			// Get the element that holds the users ( JSONArray )
+			JSONArray rows = json.getJSONArray(Const.ROWS);
 
-				for (int i = 0; i < rows.length(); i++) {
+			for (int i = 0; i < rows.length(); i++) {
 
-					JSONObject row = rows.getJSONObject(i);
-					if (!row.isNull(Const.DOC)) {
-						JSONObject commentJson = row.getJSONObject(Const.DOC);
+				JSONObject row = rows.getJSONObject(i);
+				if (!row.isNull(Const.DOC)) {
+					JSONObject commentJson = row.getJSONObject(Const.DOC);
 
-						Comment comment = new Comment();
-						comment = sGsonExpose.fromJson(commentJson.toString(),
-								Comment.class);
-						comments.add(comment);
-					}
+					Comment comment = new Comment();
+					comment = sGsonExpose.fromJson(commentJson.toString(),
+							Comment.class);
+					comments.add(comment);
 				}
-			} catch (Exception e) {
-				Logger.error(
-						TAG + "parseMessageComments",
-						"Error while retrieving data from json... Probably no comments found!",
-						e);
 			}
 		}
 
@@ -757,9 +637,10 @@ public class CouchDBHelper {
 	 * 
 	 * @param json
 	 * @return
+	 * @throws JSONException 
 	 */
 	public static boolean updateUser(JSONObject json, List<String> contactsIds,
-			List<String> groupsIds) {
+			List<String> groupsIds) throws JSONException {
 
 		String rev = "";
 
@@ -770,25 +651,20 @@ public class CouchDBHelper {
 				return false;
 			}
 
-			try {
-				rev = json.getString(Const._REV);
+			rev = json.getString(Const._REV);
 
-				UsersManagement.getLoginUser().setRev(rev);
+			UsersManagement.getLoginUser().setRev(rev);
 
-				if (null != contactsIds) {
-					UsersManagement.getLoginUser().setContactIds(
-							contactsIds);
-				}
-
-				if (null != groupsIds) {
-					UsersManagement.getLoginUser().setGroupIds(groupsIds);
-				}
-
-				return true;
-			} catch (Exception e) {
-				Logger.error(TAG + "updateUser",
-						"Error while retrieving data from json", e);
+			if (null != contactsIds) {
+				UsersManagement.getLoginUser().setContactIds(
+						contactsIds);
 			}
+
+			if (null != groupsIds) {
+				UsersManagement.getLoginUser().setGroupIds(groupsIds);
+			}
+
+			return true;
 		}
 
 		return false;
@@ -799,8 +675,9 @@ public class CouchDBHelper {
 	 * 
 	 * @param json
 	 * @return
+	 * @throws JSONException 
 	 */
-	public static String createGroup(JSONObject json) {
+	public static String createGroup(JSONObject json) throws JSONException {
 
 		boolean ok = false;
 		String id = null;
@@ -812,13 +689,8 @@ public class CouchDBHelper {
 				return null;
 			}
 
-			try {
-				ok = json.getBoolean(Const.OK);
-				id = json.getString(Const.ID);
-			} catch (Exception e) {
-				Logger.error(TAG + "createGroup",
-						"Error while retrieving data from json", e);
-			}
+			ok = json.getBoolean(Const.OK);
+			id = json.getString(Const.ID);
 		}
 
 		if (!ok) {
@@ -834,8 +706,9 @@ public class CouchDBHelper {
 	 * 
 	 * @param json
 	 * @return
+	 * @throws JSONException 
 	 */
-	public static boolean deleteGroup(JSONObject json) {
+	public static boolean deleteGroup(JSONObject json) throws JSONException {
 
 		boolean ok = false;
 
@@ -845,13 +718,8 @@ public class CouchDBHelper {
 				appLogout(false, false, isInvalidToken(json));
 				return false;
 			}
-
-			try {
-				ok = json.getBoolean(Const.OK);
-			} catch (Exception e) {
-				Logger.error(TAG + "deleteGroup",
-						"Error while retrieving data from json", e);
-			}
+			
+			ok = json.getBoolean(Const.OK);
 		}
 
 		return ok;
@@ -908,8 +776,9 @@ public class CouchDBHelper {
 	 * 
 	 * @param json
 	 * @return
+	 * @throws JSONException 
 	 */
-	public static String createUserGroup(JSONObject json) {
+	public static String createUserGroup(JSONObject json) throws JSONException {
 
 		boolean ok = false;
 		String id = null;
@@ -921,13 +790,8 @@ public class CouchDBHelper {
 				return null;
 			}
 
-			try {
-				ok = json.getBoolean(Const.OK);
-				id = json.getString(Const.ID);
-			} catch (Exception e) {
-				Logger.error(TAG + "createUserGroup",
-						"Error while retrieving data from json", e);
-			}
+			ok = json.getBoolean(Const.OK);
+			id = json.getString(Const.ID);
 		}
 
 		if (!ok) {
@@ -943,8 +807,9 @@ public class CouchDBHelper {
 	 * 
 	 * @param json
 	 * @return
+	 * @throws JSONException 
 	 */
-	public static String createComment(JSONObject json) {
+	public static String createComment(JSONObject json) throws JSONException {
 
 		boolean ok = false;
 		String id = null;
@@ -956,13 +821,8 @@ public class CouchDBHelper {
 				return null;
 			}
 
-			try {
-				ok = json.getBoolean(Const.OK);
-				id = json.getString(Const.ID);
-			} catch (Exception e) {
-				Logger.error(TAG + "createComment",
-						"Error while retrieving data from json", e);
-			}
+			ok = json.getBoolean(Const.OK);
+			id = json.getString(Const.ID);
 		}
 
 		if (!ok) {
@@ -1010,8 +870,9 @@ public class CouchDBHelper {
 	 * 
 	 * @param json
 	 * @return
+	 * @throws JSONException 
 	 */
-	public static Group parseSingleGroupObject(JSONObject json) {
+	public static Group parseSingleGroupObject(JSONObject json) throws JSONException {
 
 		Group group = null;
 
@@ -1022,55 +883,11 @@ public class CouchDBHelper {
 				return null;
 			}
 
-			try {
+			JSONArray rows = json.getJSONArray(Const.ROWS);
+			JSONObject row = rows.getJSONObject(0);
 
-				JSONArray rows = json.getJSONArray(Const.ROWS);
-				JSONObject row = rows.getJSONObject(0);
-
-				JSONObject groupJson = row.getJSONObject(Const.VALUE);
-				group = sGsonExpose.fromJson(groupJson.toString(), Group.class);
-
-				// if (groupJson.has(Const.ATTACHMENTS)) {
-				// List<Attachment> attachments = new ArrayList<Attachment>();
-				//
-				// JSONObject json_attachments = groupJson
-				// .getJSONObject(Const.ATTACHMENTS);
-				//
-				// @SuppressWarnings("unchecked")
-				// Iterator<String> keys = json_attachments.keys();
-				// while (keys.hasNext()) {
-				// String key = keys.next();
-				// try {
-				//
-				// JSONObject json_attachment = json_attachments
-				// .getJSONObject(key);
-				// Attachment attachment = sGsonExpose.fromJson(
-				// json_attachment.toString(),
-				// Attachment.class);
-				// attachment.setName(key);
-				// attachments.add(attachment);
-				// } catch (Exception e) {
-				// }
-				// }
-				// group.setAttachments(attachments);
-				//
-				// String url = null;
-				// if (group.getAvatarName() != null) {
-				// url = CouchDB.getUrl() + group.getId() + "/"
-				// + group.getAvatarName();
-				// } else {
-				// url = CouchDB.getUrl() + group.getId() + "/"
-				// + Const.GROUP_AVATAR;
-				// }
-				// group.setImageUrl(url);
-				// } else {
-				// group.setImageUrl(null);
-				// }
-
-			} catch (Exception e) {
-				Logger.error(TAG + "parseSingleGroupObject",
-						"Error while retrieving data from json", e);
-			}
+			JSONObject groupJson = row.getJSONObject(Const.VALUE);
+			group = sGsonExpose.fromJson(groupJson.toString(), Group.class);
 		}
 
 		return group;
@@ -1093,14 +910,7 @@ public class CouchDBHelper {
 				return null;
 			}
 
-            try {
-
-                group = sGsonExpose.fromJson(json.toString(), Group.class);
-
-            } catch (Exception e) {
-                Logger.error(TAG + "parseSingleGroupObject",
-                        "Error while retrieving data from json", e);
-            }
+            group = sGsonExpose.fromJson(json.toString(), Group.class);            
         }
 
         return group;
@@ -1111,8 +921,9 @@ public class CouchDBHelper {
 	 * 
 	 * @param json
 	 * @return
+	 * @throws JSONException 
 	 */
-	public static List<Group> parseMultiGroupObjects(JSONObject json) {
+	public static List<Group> parseMultiGroupObjects(JSONObject json) throws JSONException {
 
 		List<Group> groups = null;
 
@@ -1123,69 +934,24 @@ public class CouchDBHelper {
 				return null;
 			}
 
-			try {
-				groups = new ArrayList<Group>();
+			groups = new ArrayList<Group>();
 
-				JSONArray rows = json.getJSONArray(Const.ROWS);
+			JSONArray rows = json.getJSONArray(Const.ROWS);
 
-				for (int i = 0; i < rows.length(); i++) {
+			for (int i = 0; i < rows.length(); i++) {
 
-					JSONObject row = rows.getJSONObject(i);
-					String key = row.getString(Const.KEY);
+				JSONObject row = rows.getJSONObject(i);
+				String key = row.getString(Const.KEY);
 
-					if (!key.equals(Const.NULL)) {
+				if (!key.equals(Const.NULL)) {
 
-						JSONObject groupJson = row.getJSONObject(Const.VALUE);
+					JSONObject groupJson = row.getJSONObject(Const.VALUE);
 
-						Group group = sGsonExpose.fromJson(
-								groupJson.toString(), Group.class);
+					Group group = sGsonExpose.fromJson(
+							groupJson.toString(), Group.class);
 
-						// if (groupJson.has(Const.ATTACHMENTS)) {
-						// List<Attachment> attachments = new
-						// ArrayList<Attachment>();
-						//
-						// JSONObject json_attachments = groupJson
-						// .getJSONObject(Const.ATTACHMENTS);
-						//
-						// @SuppressWarnings("unchecked")
-						// Iterator<String> keys = json_attachments.keys();
-						// while (keys.hasNext()) {
-						// String attachmentKey = keys.next();
-						// try {
-						//
-						// JSONObject json_attachment = json_attachments
-						// .getJSONObject(attachmentKey);
-						// Attachment attachment = sGsonExpose
-						// .fromJson(
-						// json_attachment.toString(),
-						// Attachment.class);
-						// attachment.setName(attachmentKey);
-						// attachments.add(attachment);
-						// } catch (Exception e) {
-						// }
-						// }
-						// group.setAttachments(attachments);
-						//
-						// String url = null;
-						// if (group.getAvatarName() != null) {
-						// url = CouchDB.getUrl() + group.getId() + "/"
-						// + group.getAvatarName();
-						// } else {
-						// url = CouchDB.getUrl() + group.getId() + "/"
-						// + Const.GROUP_AVATAR;
-						// }
-						// group.setImageUrl(url);
-						//
-						// } else {
-						// group.setImageUrl(null);
-						// }
-
-						groups.add(group);
-					}
+					groups.add(group);
 				}
-			} catch (Exception e) {
-				Logger.error(TAG + "parseMultiGroupObjects",
-						"Error while retrieving data from json", e);
 			}
 		}
 
@@ -1197,8 +963,9 @@ public class CouchDBHelper {
 	 * 
 	 * @param json
 	 * @return
+	 * @throws JSONException 
 	 */
-	public static List<Group> parseFavoriteGroups(JSONObject json) {
+	public static List<Group> parseFavoriteGroups(JSONObject json) throws JSONException {
 
 		List<Group> groups = null;
 
@@ -1208,34 +975,26 @@ public class CouchDBHelper {
 				appLogout(null, false, isInvalidToken(json));
 				return null;
 			}
+			
+			groups = new ArrayList<Group>();
 
-			try {
-				groups = new ArrayList<Group>();
+			JSONArray rows = json.getJSONArray(Const.ROWS);
 
-				JSONArray rows = json.getJSONArray(Const.ROWS);
+			for (int i = 0; i < rows.length(); i++) {
 
-				for (int i = 0; i < rows.length(); i++) {
+				JSONObject row = rows.getJSONObject(i);
 
-					JSONObject row = rows.getJSONObject(i);
+				JSONObject groupJson = row.getJSONObject(Const.DOC);
 
-					try {
-						JSONObject groupJson = row.getJSONObject(Const.DOC);
-
-						String type = groupJson.getString(Const.TYPE);
-						if (!type.equals(Const.GROUP)) {
-							continue;
-						}
-
-						Group group = sGsonExpose.fromJson(
-								groupJson.toString(), Group.class);
-
-						groups.add(group);
-					} catch (Exception e) {
-					}
+				String type = groupJson.getString(Const.TYPE);
+				if (!type.equals(Const.GROUP)) {
+					continue;
 				}
-			} catch (Exception e) {
-				Logger.error(TAG + "parseFavoriteGroups", e);
-				e.printStackTrace();
+
+				Group group = sGsonExpose.fromJson(
+						groupJson.toString(), Group.class);
+
+				groups.add(group);	
 			}
 		}
 
@@ -1247,8 +1006,9 @@ public class CouchDBHelper {
 	 * 
 	 * @param json
 	 * @return
+	 * @throws JSONException 
 	 */
-	public static List<UserGroup> parseMultiUserGroupObjects(JSONObject json) {
+	public static List<UserGroup> parseMultiUserGroupObjects(JSONObject json) throws JSONException {
 
 		List<UserGroup> usersGroup = null;
 
@@ -1259,30 +1019,26 @@ public class CouchDBHelper {
 				return null;
 			}
 
-			try {
-				usersGroup = new ArrayList<UserGroup>();
+			usersGroup = new ArrayList<UserGroup>();
 
-				JSONArray rows = json.getJSONArray(Const.ROWS);
+			JSONArray rows = json.getJSONArray(Const.ROWS);
 
-				for (int i = 0; i < rows.length(); i++) {
+			for (int i = 0; i < rows.length(); i++) {
 
-					JSONObject row = rows.getJSONObject(i);
-					String key = row.getString(Const.KEY);
+				JSONObject row = rows.getJSONObject(i);
+				String key = row.getString(Const.KEY);
 
-					if (!key.equals(Const.NULL)) {
+				if (!key.equals(Const.NULL)) {
 
-						JSONObject userGroupJson = row
-								.getJSONObject(Const.VALUE);
+					JSONObject userGroupJson = row
+							.getJSONObject(Const.VALUE);
 
-						UserGroup userGroup = sGsonExpose.fromJson(
-								userGroupJson.toString(), UserGroup.class);
-						usersGroup.add(userGroup);
-					}
+					UserGroup userGroup = sGsonExpose.fromJson(
+							userGroupJson.toString(), UserGroup.class);
+					usersGroup.add(userGroup);
 				}
-			} catch (Exception e) {
-				Logger.error(TAG + "parseMultiUserGroupObjects",
-						"Error while retrieving data from json", e);
 			}
+			
 		}
 
 		return usersGroup;
@@ -1293,8 +1049,9 @@ public class CouchDBHelper {
 	 * 
 	 * @param json
 	 * @return
+	 * @throws JSONException 
 	 */
-	public static List<GroupCategory> parseMultiGroupCategoryObjects(JSONObject json) {
+	public static List<GroupCategory> parseMultiGroupCategoryObjects(JSONObject json) throws JSONException {
 		List<GroupCategory> groupCategories = null;
 
 		if (json != null) {
@@ -1304,61 +1061,56 @@ public class CouchDBHelper {
 				return null;
 			}
 
-			try {
-				groupCategories = new ArrayList<GroupCategory>();
+			groupCategories = new ArrayList<GroupCategory>();
 
-				JSONArray rows = json.getJSONArray(Const.ROWS);
+			JSONArray rows = json.getJSONArray(Const.ROWS);
 
-				for (int i = 0; i < rows.length(); i++) {
+			for (int i = 0; i < rows.length(); i++) {
 
-					JSONObject row = rows.getJSONObject(i);
-					String key = row.getString(Const.KEY);
+				JSONObject row = rows.getJSONObject(i);
+				String key = row.getString(Const.KEY);
 
-					if (!key.equals(Const.NULL)) {
+				if (!key.equals(Const.NULL)) {
 
-						JSONObject groupCategoryJson = row.getJSONObject(Const.VALUE);
+					JSONObject groupCategoryJson = row.getJSONObject(Const.VALUE);
 
-						GroupCategory groupCategory = sGsonExpose.fromJson(
-								groupCategoryJson.toString(), GroupCategory.class);
+					GroupCategory groupCategory = sGsonExpose.fromJson(
+							groupCategoryJson.toString(), GroupCategory.class);
 
-						if (groupCategoryJson.has(Const.ATTACHMENTS)) {
-							List<Attachment> attachments = new ArrayList<Attachment>();
+					if (groupCategoryJson.has(Const.ATTACHMENTS)) {
+						List<Attachment> attachments = new ArrayList<Attachment>();
 
-							JSONObject json_attachments = groupCategoryJson
-									.getJSONObject(Const.ATTACHMENTS);
+						JSONObject json_attachments = groupCategoryJson
+								.getJSONObject(Const.ATTACHMENTS);
 
-							@SuppressWarnings("unchecked")
-							Iterator<String> keys = json_attachments.keys();
-							while (keys.hasNext()) {
-								String attachmentKey = keys.next();
-								try {
-
-									JSONObject json_attachment = json_attachments
-											.getJSONObject(attachmentKey);
-									Attachment attachment = sGsonExpose
-											.fromJson(
-													json_attachment.toString(),
-													Attachment.class);
-									attachment.setName(attachmentKey);
-									attachments.add(attachment);
-								} catch (Exception e) {
-								}
+						@SuppressWarnings("unchecked")
+						Iterator<String> keys = json_attachments.keys();
+						while (keys.hasNext()) {
+							String attachmentKey = keys.next();
+							try {
+								JSONObject json_attachment = json_attachments
+										.getJSONObject(attachmentKey);
+								Attachment attachment = sGsonExpose
+										.fromJson(
+												json_attachment.toString(),
+												Attachment.class);
+								attachment.setName(attachmentKey);
+								attachments.add(attachment);
+							} catch (JSONException e) {
+								e.printStackTrace();
 							}
-							groupCategory.setAttachments(attachments);
-
-							String imageUrl = CouchDB.getUrl() + groupCategory.getId() + "/"
-										+ Const.GROUP_CATEGORY_AVATAR;
-							groupCategory.setImageUrl(imageUrl);
-						} else {
-							groupCategory.setImageUrl(null);
 						}
+						groupCategory.setAttachments(attachments);
 
-						groupCategories.add(groupCategory);
+						String imageUrl = CouchDB.getUrl() + groupCategory.getId() + "/"
+									+ Const.GROUP_CATEGORY_AVATAR;
+						groupCategory.setImageUrl(imageUrl);
+					} else {
+						groupCategory.setImageUrl(null);
 					}
+
+					groupCategories.add(groupCategory);
 				}
-			} catch (Exception e) {
-				Logger.error(TAG + "parseMultiGroupObjects",
-						"Error while retrieving data from json", e);
 			}
 		}
 
@@ -1369,8 +1121,9 @@ public class CouchDBHelper {
 	 * 
 	 * @param json
 	 * @return
+	 * @throws JSONException 
 	 */
-	public static int getCommentCount(JSONObject json) {
+	public static int getCommentCount(JSONObject json) throws JSONException {
 
 		int count = 0;
 
@@ -1381,19 +1134,13 @@ public class CouchDBHelper {
 				return 0;
 			}
 
-			try {
+			JSONArray rows = json.getJSONArray(Const.ROWS);
 
-				JSONArray rows = json.getJSONArray(Const.ROWS);
+			for (int i = 0; i < rows.length(); i++) {
 
-				for (int i = 0; i < rows.length(); i++) {
+				JSONObject row = rows.getJSONObject(i);
+				count = row.getInt(Const.VALUE);
 
-					JSONObject row = rows.getJSONObject(i);
-					count = row.getInt(Const.VALUE);
-
-				}
-			} catch (Exception e) {
-				Logger.error(TAG + "getCommentCount",
-						"Error while retrieving data from json", e);
 			}
 		}
 
@@ -1691,8 +1438,9 @@ public class CouchDBHelper {
 	 * 
 	 * @param json
 	 * @return
+	 * @throws JSONException 
 	 */
-	public static List<Comment> parseCommentsJson(JSONObject json) {
+	public static List<Comment> parseCommentsJson(JSONObject json) throws JSONException {
 
 		List<Comment> comments = null;
 
@@ -1703,24 +1451,18 @@ public class CouchDBHelper {
 				return null;
 			}
 
-			try {
-				comments = new ArrayList<Comment>();
+			comments = new ArrayList<Comment>();
 
-				JSONArray rows = json.getJSONArray(Const.COMMENTS);
+			JSONArray rows = json.getJSONArray(Const.COMMENTS);
 
-				for (int i = 0; i < rows.length(); i++) {
+			for (int i = 0; i < rows.length(); i++) {
 
-					JSONObject commentJson = rows.getJSONObject(i);
+				JSONObject commentJson = rows.getJSONObject(i);
 
-					Comment comment = sGsonExpose.fromJson(
-							commentJson.toString(), Comment.class);
+				Comment comment = sGsonExpose.fromJson(
+						commentJson.toString(), Comment.class);
 
-					comments.add(comment);
-
-				}
-			} catch (Exception e) {
-				Logger.error(TAG + "parseCommentsJson",
-						"Error in parsing JSON data", e);
+				comments.add(comment);
 			}
 		}
 
@@ -1732,8 +1474,9 @@ public class CouchDBHelper {
 	 * 
 	 * @param json
 	 * @return
+	 * @throws JSONException 
 	 */
-	public static List<Comment> parseMultiCommentObjects(JSONObject json) {
+	public static List<Comment> parseMultiCommentObjects(JSONObject json) throws JSONException {
 
 		List<Comment> comments = null;
 
@@ -1744,31 +1487,25 @@ public class CouchDBHelper {
 				return null;
 			}
 
-			try {
-				comments = new ArrayList<Comment>();
+			comments = new ArrayList<Comment>();
 
-				JSONArray rows = json.getJSONArray(Const.ROWS);
+			JSONArray rows = json.getJSONArray(Const.ROWS);
 
-				for (int i = 0; i < rows.length(); i++) {
+			for (int i = 0; i < rows.length(); i++) {
 
-					JSONObject row = rows.getJSONObject(i);
+				JSONObject row = rows.getJSONObject(i);
 
-					String key = row.getString(Const.KEY);
+				String key = row.getString(Const.KEY);
 
-					if (!"null".equals(key)) {
+				if (!"null".equals(key)) {
 
-						JSONObject commentJson = row.getJSONObject(Const.VALUE);
+					JSONObject commentJson = row.getJSONObject(Const.VALUE);
 
-						Comment comment = sGsonExpose.fromJson(
-								commentJson.toString(), Comment.class);
+					Comment comment = sGsonExpose.fromJson(
+							commentJson.toString(), Comment.class);
 
-						comments.add(comment);
-					}
-
+					comments.add(comment);
 				}
-			} catch (Exception e) {
-				Logger.error(TAG + "parseMultiComments",
-						"Error in parsing JSON data", e);
 			}
 		}
 
@@ -1780,8 +1517,9 @@ public class CouchDBHelper {
 	 * 
 	 * @param json
 	 * @return
+	 * @throws JSONException 
 	 */
-	public static List<Emoticon> parseMultiEmoticonObjects(JSONObject json) {
+	public static List<Emoticon> parseMultiEmoticonObjects(JSONObject json) throws JSONException {
 
 		List<Emoticon> emoticons = null;
 
@@ -1792,35 +1530,30 @@ public class CouchDBHelper {
 				return null;
 			}
 
-			try {
-				emoticons = new ArrayList<Emoticon>();
+			emoticons = new ArrayList<Emoticon>();
 
-				JSONArray rows = json.getJSONArray(Const.ROWS);
+			JSONArray rows = json.getJSONArray(Const.ROWS);
 
-				for (int i = 0; i < rows.length(); i++) {
+			for (int i = 0; i < rows.length(); i++) {
 
-					JSONObject row = rows.getJSONObject(i);
+				JSONObject row = rows.getJSONObject(i);
 
-					String key = row.getString(Const.KEY);
+				String key = row.getString(Const.KEY);
 
-					if (!"null".equals(key)) {
+				if (!"null".equals(key)) {
 
-						JSONObject emoticonJson = row
-								.getJSONObject(Const.VALUE);
+					JSONObject emoticonJson = row
+							.getJSONObject(Const.VALUE);
 
-						Emoticon emoticon = sGsonExpose.fromJson(
-								emoticonJson.toString(), Emoticon.class);
+					Emoticon emoticon = sGsonExpose.fromJson(
+							emoticonJson.toString(), Emoticon.class);
 
-						emoticons.add(emoticon);
+					emoticons.add(emoticon);
 
 //						SpikaApp.getFileDir().saveFile(
 //								emoticon.getIdentifier(),
 //								emoticon.getImageUrl());
-					}
 				}
-			} catch (Exception e) {
-				Logger.error(TAG + "parseMultiEmoticons",
-						"Error i parsing JSON data", e);
 			}
 		}
 

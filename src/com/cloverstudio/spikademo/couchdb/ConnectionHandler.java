@@ -103,7 +103,7 @@ public class ConnectionHandler {
 
 		retVal = jObjectFromString(result);
 			
-		Log.e("Response: ", retVal.toString());
+		Logger.debug("Response: ", retVal.toString());
 		return retVal;
 	}
 	
@@ -126,7 +126,7 @@ public class ConnectionHandler {
 		result = getString(is);
 		is.close();
 
-		Log.e("Response: ", result.toString());
+		Logger.debug("Response: ", result.toString());
 		return result;
 	}
 	
@@ -142,7 +142,7 @@ public class ConnectionHandler {
 
 		retVal = jArrayFromString(result);	
 
-		Log.e("Response: ", retVal.toString());
+		Logger.debug("Response: ", retVal.toString());
 		return retVal;
 	}
 
@@ -170,7 +170,7 @@ public class ConnectionHandler {
 
         retVal = jObjectFromString(result);
 
-        Log.e("Response: ", retVal.toString());
+        Logger.debug("Response: ", retVal.toString());
         return retVal;
     }
     
@@ -193,7 +193,7 @@ public class ConnectionHandler {
 
         is.close();
 
-        Log.e("Response: ", result.toString());
+        Logger.debug("Response: ", result.toString());
         return result;
     }
     
@@ -219,7 +219,7 @@ public class ConnectionHandler {
 
 		retVal = jObjectFromString(result);
 
-		Log.e("Response: ", retVal.toString());
+		Logger.debug("Response: ", retVal.toString());
 		return retVal;
 	}
     
@@ -245,7 +245,7 @@ public class ConnectionHandler {
 
 		retVal = jObjectFromString(result);
 
-		Log.e("Response: ", retVal.toString());
+		Logger.debug("Response: ", retVal.toString());
 		return retVal;
 	}
 
@@ -278,7 +278,7 @@ public class ConnectionHandler {
 
 		}
 
-		Log.e("Response: ", retVal.toString());
+		Logger.debug("Response: ", retVal.toString());
 		return retVal;
 	}
 
@@ -313,7 +313,7 @@ public class ConnectionHandler {
 
 		}
 
-		Log.e("Response: ", retVal.toString());
+		Logger.debug("Response: ", retVal.toString());
 		return retVal;
 	}
 
@@ -399,7 +399,7 @@ public class ConnectionHandler {
 	 */
 	private static JSONObject jObjectFromString(String result)
 			throws JSONException {
-		Log.e("resonse to json", result);
+		Logger.debug("response to json", result);
 		return new JSONObject(result);
 	}
 	
@@ -412,7 +412,7 @@ public class ConnectionHandler {
 	 */
 	private static JSONArray jArrayFromString(String result)
 			throws JSONException {
-		Log.e("resonse to json", result);
+		Logger.debug("response to json", result);
 		return new JSONArray(result);
 	}
 
@@ -480,7 +480,7 @@ public class ConnectionHandler {
 		HttpResponse response = HttpSingleton.getInstance().execute(httpget);
 		HttpEntity entity = response.getEntity();
 		
-		Log.e("STATUS", "" + response.getStatusLine().getStatusCode());
+		Logger.debug("STATUS", "" + response.getStatusLine().getStatusCode());
 		if (response.getStatusLine().getStatusCode() > 400)
 		{
 			if (response.getStatusLine().getStatusCode() == 500) throw new SpikaException(getError(entity.getContent()));
@@ -515,7 +515,7 @@ public class ConnectionHandler {
 		HttpConnectionParams.setSoTimeout(httppost.getParams(), 5000);
 		
 		
-		Log.e("TIMEOUTS", 
+		Logger.debug("TIMEOUTS", 
 				HttpConnectionParams.getConnectionTimeout(httppost.getParams()) + " " +
 						HttpConnectionParams.getSoTimeout(httppost.getParams()));
 
@@ -547,7 +547,7 @@ public class ConnectionHandler {
 		HttpResponse response = HttpSingleton.getInstance().execute(httppost);
 		HttpEntity entity = response.getEntity();
 		
-		Log.e("STATUS", "" + response.getStatusLine().getStatusCode());
+		Logger.debug("STATUS", "" + response.getStatusLine().getStatusCode());
 		if (response.getStatusLine().getStatusCode() > 400)
 		{
 			if (response.getStatusLine().getStatusCode() == 500) throw new SpikaException(getError(entity.getContent()));
@@ -617,7 +617,7 @@ public class ConnectionHandler {
 		is.close();
 		String json = sb.toString();
 
-		Log.e("RESPONSE", json);
+		Logger.debug("RESPONSE", json);
 		
 		return json;
 	}
@@ -748,30 +748,28 @@ public class ConnectionHandler {
 		ByteArrayOutputStream outstream = new ByteArrayOutputStream();
 		entity.writeTo(outstream);
 		String content = outstream.toString();
-		Log.e("content", content);
+		Logger.debug("content", content);
 	}
 	
 	public static void print (HttpEntityEnclosingRequestBase httpMethod) throws IOException
 	{
-		Log.e (httpMethod.getMethod(), httpMethod.getURI().toString());
-		Log.e (httpMethod.getMethod(), httpMethod.getRequestLine().toString());
+		Logger.debug (httpMethod.getMethod(), httpMethod.getRequestLine().toString());
 		
 		print(httpMethod.getEntity());
 		
 		Header[] headers = httpMethod.getAllHeaders();
 		for (Header header : headers) {
-			Log.e("headers", header.toString());
+			Logger.debug("headers", header.toString());
 		}
 	}
 	
 	public static void print (HttpRequestBase httpMethod)
 	{
-		Log.e (httpMethod.getMethod(), httpMethod.getURI().toString());
-		Log.e (httpMethod.getMethod(), httpMethod.getRequestLine().toString());
+		Logger.debug (httpMethod.getMethod(), httpMethod.getRequestLine().toString());
 				
 		Header[] headers = httpMethod.getAllHeaders();
 		for (Header header : headers) {
-			Log.e("headers", header.toString());
+			Logger.debug("headers", header.toString());
 		}
 	}
 	
