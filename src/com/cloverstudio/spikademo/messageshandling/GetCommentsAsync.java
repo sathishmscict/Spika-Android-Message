@@ -64,6 +64,7 @@ public class GetCommentsAsync extends SpikaAsync<String, Void, List<Comment>> {
 			List<Comment> comments, CommentsAdapter commentsAdapter,
 			ListView commentListView) {
 		super(context);
+		mContext = context;
 		mMessage = message;
 		mComments = comments;
 		mCommentsAdapter = commentsAdapter;
@@ -75,6 +76,7 @@ public class GetCommentsAsync extends SpikaAsync<String, Void, List<Comment>> {
 			ListView commentListView,
 			RefreshCommentHandler refreshCommentHandler, boolean firstTime) {
 		super(context);
+		mContext = context;
 		mMessage = message;
 		mComments = comments;
 		mCommentsAdapter = commentsAdapter;

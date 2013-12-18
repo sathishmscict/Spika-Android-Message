@@ -374,7 +374,7 @@ public class VoiceActivity extends SpikaActivity {
 		@Override
 		public void onResultsSucceded(String commentId) {
 			if (commentId != null) {
-				new SendMessageAsync(VoiceActivity.this, SendMessageAsync.TYPE_VOICE).execute(mMessage, false, true);
+//				new SendMessageAsync(VoiceActivity.this, SendMessageAsync.TYPE_VOICE).execute(mMessage, false, true);
 				new GetCommentsAsync(VoiceActivity.this, mMessage, mComments,
 						mCommentsAdapter, mLvComments, mRefreshCommentHandler, true).execute(mMessage.getId());
 			}

@@ -234,7 +234,7 @@ public class PhotoActivity extends SpikaActivity {
 		@Override
 		public void onResultsSucceded(String commentId) {
 			if (commentId != null) {
-				new SendMessageAsync(PhotoActivity.this, SendMessageAsync.TYPE_PHOTO).execute(mMessage, false, true);
+//				new SendMessageAsync(PhotoActivity.this, SendMessageAsync.TYPE_PHOTO).execute(mMessage, false, true);
 				new GetCommentsAsync(PhotoActivity.this, mMessage, mComments,
 						mCommentsAdapter, mLvComments, mRefreshCommentHandler, true).execute(mMessage.getId());
 			} else {

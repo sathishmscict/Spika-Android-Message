@@ -54,7 +54,7 @@ public class SendMessageAsync extends SpikaAsync<Object, Void, Boolean> {
 	public static final int TYPE_VOICE = 4;
 	public static final int TYPE_VIDEO = 5;
 
-	private boolean isComment;
+//	private boolean isComment;
 
 	public SendMessageAsync(Context context, int messageType) {
 		super(context);
@@ -71,7 +71,7 @@ public class SendMessageAsync extends SpikaAsync<Object, Void, Boolean> {
 
 		boolean isRedirection = false;
 		boolean isSuccess = false;
-		isComment = false;
+//		isComment = false;
 		Object obj = params[0];
 
 		try {
@@ -81,12 +81,12 @@ public class SendMessageAsync extends SpikaAsync<Object, Void, Boolean> {
 			isRedirection = false;
 		}
 
-		try {
-			isComment = (Boolean) params[2];
-		} catch (Exception e) {
-			Log.e(TAG, "not a comment");
-			isComment = false;
-		}
+//		try {
+//			isComment = (Boolean) params[2];
+//		} catch (Exception e) {
+//			Log.e(TAG, "not a comment");
+//			isComment = false;
+//		}
 
 		String body = "";
 		Message message = null;
@@ -96,18 +96,18 @@ public class SendMessageAsync extends SpikaAsync<Object, Void, Boolean> {
         String fileId = null;
         String fileThumbId = null;
 
-		if (isComment) {
-			try {
-				message = (Message) obj;
-				message.setModified(System.currentTimeMillis() / 1000);
-				sendMessage(message, isComment);
-				isSuccess = true;// TODO
-			} catch (Exception e) {
-				Log.e(TAG, "params not message!");
-				message = null;
-				isSuccess = false;
-			}
-		} else {
+//		if (isComment) {
+//			try {
+//				message = (Message) obj;
+//				message.setModified(System.currentTimeMillis() / 1000);
+//				sendMessage(message, isComment);
+//				isSuccess = true;// TODO
+//			} catch (Exception e) {
+//				Log.e(TAG, "params not message!");
+//				message = null;
+//				isSuccess = false;
+//			}
+//		} else {
 			switch (messageType) {
 			case TYPE_PHOTO:
 				try {
@@ -249,7 +249,7 @@ public class SendMessageAsync extends SpikaAsync<Object, Void, Boolean> {
 			default:
 				break;
 			}
-		}
+//		}
 
 		if (message != null) {
 
@@ -261,26 +261,23 @@ public class SendMessageAsync extends SpikaAsync<Object, Void, Boolean> {
 		return isSuccess;
 	}
 
-	private void sendMessage(Message message, boolean isPut) {
-		
-		if (UsersManagement.getToUser() != null) {
-			CouchDB.updateMessageForUser(message);
-		}
-		if (UsersManagement.getToGroup() != null) {
-			CouchDB.updateMessageForGroup(message);
-		}
-	}
+//	private void sendMessage(Message message, boolean isPut) {
+//		if (UsersManagement.getToUser() != null) {
+//			CouchDB.updateMessageForUser(message);
+//		}
+//		if (UsersManagement.getToGroup() != null) {
+//			CouchDB.updateMessageForGroup(message);
+//		}
+//	}
 
 	@Override
 	protected void onPostExecute(Boolean result) {
 		super.onPostExecute(result);
 		MessagesUpdater.update(true);
-		if (!isComment) {
-			if (result) {
-				//Toast.makeText(mContext, "Success", Toast.LENGTH_SHORT).show();
-			} else {
-				Toast.makeText(mContext, "Failed", Toast.LENGTH_SHORT).show();
-			}
+		if (result) {
+			//Toast.makeText(mContext, "Success", Toast.LENGTH_SHORT).show();
+		} else {
+			Toast.makeText(mContext, "Failed", Toast.LENGTH_SHORT).show();
 		}
 	}	
 }

@@ -255,32 +255,32 @@ public class ConnectionHandler {
 	 * @param create
 	 * @return
 	 */
-	public static JSONObject deleteJsonObject(String documentId,
-			String documentRev, String userId, String token) {
-
-		JSONObject retVal = null;
-
-		try {
-
-			InputStream is = httpDeleteRequest(CouchDB.getUrl() + documentId
-					+ "?rev=" + documentRev, userId);
-			String result = getString(is);
-
-			is.close();
-
-			retVal = jObjectFromString(result);
-			
-		} catch (Exception e) {
-			
-			Logger.error(TAG + "postJsonObject", e);
-
-			return null;
-
-		}
-
-		Logger.debug("Response: ", retVal.toString());
-		return retVal;
-	}
+//	public static JSONObject deleteJsonObject(String documentId,
+//			String documentRev, String userId, String token) {
+//
+//		JSONObject retVal = null;
+//
+//		try {
+//
+//			InputStream is = httpDeleteRequest(CouchDB.getUrl() + documentId
+//					+ "?rev=" + documentRev, userId);
+//			String result = getString(is);
+//
+//			is.close();
+//
+//			retVal = jObjectFromString(result);
+//			
+//		} catch (Exception e) {
+//			
+//			Logger.error(TAG + "postJsonObject", e);
+//
+//			return null;
+//
+//		}
+//
+//		Logger.debug("Response: ", retVal.toString());
+//		return retVal;
+//	}
 
 	/**
 	 * Http PUT
@@ -289,33 +289,33 @@ public class ConnectionHandler {
 	 * @param id
 	 * @return
 	 */
-	public static JSONObject putJsonObject(JSONObject create, String id,
-			String userId, String token) {
-
-		JSONObject retVal = null;
-
-		try {
-
-			InputStream is = httpPutRequest(CouchDB.getUrl() + id, create,
-					userId);
-			String result = getString(is);
-
-			is.close();
-
-			retVal = jObjectFromString(result);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-
-			Logger.error(TAG + "putJsonObject", e);
-
-			return null;
-
-		}
-
-		Logger.debug("Response: ", retVal.toString());
-		return retVal;
-	}
+//	public static JSONObject putJsonObject(JSONObject create, String id,
+//			String userId, String token) {
+//
+//		JSONObject retVal = null;
+//
+//		try {
+//
+//			InputStream is = httpPutRequest(CouchDB.getUrl() + id, create,
+//					userId);
+//			String result = getString(is);
+//
+//			is.close();
+//
+//			retVal = jObjectFromString(result);
+//
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//
+//			Logger.error(TAG + "putJsonObject", e);
+//
+//			return null;
+//
+//		}
+//
+//		Logger.debug("Response: ", retVal.toString());
+//		return retVal;
+//	}
 
 	/**
 	 * Get a Bitmap object from an URL
@@ -631,44 +631,44 @@ public class ConnectionHandler {
 	 * @throws ClientProtocolException
 	 * @throws IOException
 	 */
-	private static InputStream httpPutRequest(String url, JSONObject create,
-			String userId) throws ClientProtocolException,
-			IOException {
-
-		HttpPut httpput = new HttpPut(url);
-
-		httpput.getParams().setBooleanParameter(
-				CoreProtocolPNames.USE_EXPECT_CONTINUE, false);
-
-		httpput.setHeader("Content-Type", "application/json");
-		httpput.setHeader("Encoding", "utf-8");
-	    httpput.setHeader("database", Const.DATABASE);
-
-        if(userId != null && userId.length() > 0)
-            httpput.setHeader("user_id", userId);
-        else{
-            String userIdSaved = SpikaApp.getPreferences().getUserId();
-            if(userIdSaved != null)
-                httpput.setHeader("user_id", userIdSaved);
-        }
-        
-        String token = SpikaApp.getPreferences().getUserToken();
-        if(token != null && token.length() > 0)
-            httpput.setHeader("token", token);
-        
-
-		StringEntity stringEntity = new StringEntity(create.toString(),
-				HTTP.UTF_8);
-
-		httpput.setEntity(stringEntity);
-
-		print (httpput);
-		
-		HttpResponse response = HttpSingleton.getInstance().execute(httpput);
-		HttpEntity entity = response.getEntity();
-
-		return entity.getContent();
-	}
+//	private static InputStream httpPutRequest(String url, JSONObject create,
+//			String userId) throws ClientProtocolException,
+//			IOException {
+//
+//		HttpPut httpput = new HttpPut(url);
+//
+//		httpput.getParams().setBooleanParameter(
+//				CoreProtocolPNames.USE_EXPECT_CONTINUE, false);
+//
+//		httpput.setHeader("Content-Type", "application/json");
+//		httpput.setHeader("Encoding", "utf-8");
+//	    httpput.setHeader("database", Const.DATABASE);
+//
+//        if(userId != null && userId.length() > 0)
+//            httpput.setHeader("user_id", userId);
+//        else{
+//            String userIdSaved = SpikaApp.getPreferences().getUserId();
+//            if(userIdSaved != null)
+//                httpput.setHeader("user_id", userIdSaved);
+//        }
+//        
+//        String token = SpikaApp.getPreferences().getUserToken();
+//        if(token != null && token.length() > 0)
+//            httpput.setHeader("token", token);
+//        
+//
+//		StringEntity stringEntity = new StringEntity(create.toString(),
+//				HTTP.UTF_8);
+//
+//		httpput.setEntity(stringEntity);
+//
+//		print (httpput);
+//		
+//		HttpResponse response = HttpSingleton.getInstance().execute(httpput);
+//		HttpEntity entity = response.getEntity();
+//
+//		return entity.getContent();
+//	}
 
 	/**
 	 * Form a DELETE reqest
@@ -678,36 +678,36 @@ public class ConnectionHandler {
 	 * @throws ClientProtocolException
 	 * @throws IOException
 	 */
-	private static InputStream httpDeleteRequest(String url, String userId) throws ClientProtocolException, IOException {
-
-		HttpDelete httpdelete = new HttpDelete(url);
-
-		httpdelete.getParams().setBooleanParameter(
-				CoreProtocolPNames.USE_EXPECT_CONTINUE, false);
-
-		httpdelete.setHeader("Content-Type", "application/json");
-		httpdelete.setHeader("Encoding", "utf-8");
-	    httpdelete.setHeader("database", Const.DATABASE);
-
-        if(userId != null && userId.length() > 0)
-            httpdelete.setHeader("user_id", userId);
-        else{
-            String userIdSaved = SpikaApp.getPreferences().getUserId();
-            if(userIdSaved != null)
-                httpdelete.setHeader("user_id", userIdSaved);
-        }
-        
-        String token = SpikaApp.getPreferences().getUserToken();
-        if(token != null && token.length() > 0)
-            httpdelete.setHeader("token", token);
-        
-        print (httpdelete);
-        
-		HttpResponse response = HttpSingleton.getInstance().execute(httpdelete);
-		HttpEntity entity = response.getEntity();
-		
-		return entity.getContent();
-	}
+//	private static InputStream httpDeleteRequest(String url, String userId) throws ClientProtocolException, IOException {
+//
+//		HttpDelete httpdelete = new HttpDelete(url);
+//
+//		httpdelete.getParams().setBooleanParameter(
+//				CoreProtocolPNames.USE_EXPECT_CONTINUE, false);
+//
+//		httpdelete.setHeader("Content-Type", "application/json");
+//		httpdelete.setHeader("Encoding", "utf-8");
+//	    httpdelete.setHeader("database", Const.DATABASE);
+//
+//        if(userId != null && userId.length() > 0)
+//            httpdelete.setHeader("user_id", userId);
+//        else{
+//            String userIdSaved = SpikaApp.getPreferences().getUserId();
+//            if(userIdSaved != null)
+//                httpdelete.setHeader("user_id", userIdSaved);
+//        }
+//        
+//        String token = SpikaApp.getPreferences().getUserToken();
+//        if(token != null && token.length() > 0)
+//            httpdelete.setHeader("token", token);
+//        
+//        print (httpdelete);
+//        
+//		HttpResponse response = HttpSingleton.getInstance().execute(httpdelete);
+//		HttpEntity entity = response.getEntity();
+//		
+//		return entity.getContent();
+//	}
 
 	/**
 	 * HttpClient mini singleton

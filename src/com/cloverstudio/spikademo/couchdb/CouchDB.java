@@ -1745,86 +1745,67 @@ public class CouchDB {
      * @return
      */
     //TODO: NEW API ????
-    public static boolean updateMessageForUser(Message m) {
-    	
-    	Log.d("log", "couchDB: "+m.getImageThumbFileId());
-
-        boolean isSuccess = true;
-
-        JSONObject jsonObj = new JSONObject();
-
-        try {
-            jsonObj.put(Const._ID, m.getId());
-            jsonObj.put(Const._REV, m.getRev());
-            jsonObj.put(Const.MESSAGE_TYPE, m.getMessageType());
-            jsonObj.put(Const.MODIFIED, m.getModified());
-            jsonObj.put(Const.TYPE, m.getType());
-            jsonObj.put(Const.FROM_USER_NAME, m.getFromUserName());
-            jsonObj.put(Const.FROM_USER_ID, m.getFromUserId());
-            jsonObj.put(Const.VALID, m.isValid());
-            jsonObj.put(Const.MESSAGE_TARGET_TYPE, m.getMessageTargetType());
-            jsonObj.put(Const.CREATED, m.getCreated());
-            jsonObj.put(Const.TO_USER_NAME, m.getToUserName());
-            jsonObj.put(Const.TO_USER_ID, m.getToUserId());
-            jsonObj.put(Const.BODY, m.getBody());
-            if (!m.getLatitude().equals("")) {
-                jsonObj.put(Const.LATITUDE, m.getLatitude());
-            }
-            if (!m.getLongitude().equals("")) {
-                jsonObj.put(Const.LONGITUDE, m.getLongitude());
-            }
-            if (!m.getAttachments().equals("")) {
-                jsonObj.put(Const._ATTACHMENTS, new JSONObject(m.getAttachments()));
-            }
-            if (!m.getVideoFileId().equals("")) {
-                jsonObj.put(Const.VIDEO_FILE_ID, m.getVideoFileId());
-            }
-            if (!m.getVoiceFileId().equals("")) {
-                jsonObj.put(Const.VOICE_FILE_ID, m.getVoiceFileId());
-            }
-            if (!m.getImageFileId().equals("")) {
-                jsonObj.put(Const.PICTURE_FILE_ID, m.getImageFileId());
-            }
-            if (!m.getImageThumbFileId().equals("")) {
-                jsonObj.put(Const.PICTURE_THUMB_FILE_ID, m.getImageThumbFileId());
-            }
-            if (!m.getEmoticonImageUrl().equals("")) {
-                jsonObj.put(Const.EMOTICON_IMAGE_URL, m.getEmoticonImageUrl());
-            }
-            
-        } catch (JSONException e) {
-            e.printStackTrace();
-            isSuccess = false;
-        }
-
-        // XXX Need to check if json return ok or failed like for delete group
-        JSONObject resultOfCouchDB = ConnectionHandler.putJsonObject(jsonObj, m.getId(),
-                UsersManagement.getLoginUser().getId(), UsersManagement.getLoginUser().getToken());
-
-        if (resultOfCouchDB == null) {
-            isSuccess = false;
-        }
-        return isSuccess;
-    }
-
-    public static void updateMessageForUser(Message m, ResultListener<Boolean> resultListener, Context context, boolean showProgressBar) {
-    	new SpikaAsyncTask<Void, Void, Boolean>(new UpdateMessageForUser(m), resultListener, context, showProgressBar).execute();
-    }
-    
-    private static class UpdateMessageForUser implements Command<Boolean> {
-    	
-    	Message m;
-    	
-    	public UpdateMessageForUser(Message m) {
-    		this.m = m;
-    	}
-
-		@Override
-		public Boolean execute() throws JSONException, IOException,
-				SpikaException {
-			return updateMessageForUser(m);
-		}
-    }
+//    public static boolean updateMessageForUser(Message m) {
+//    	
+//    	Log.d("log", "couchDB: "+m.getImageThumbFileId());
+//
+//        boolean isSuccess = true;
+//
+//        JSONObject jsonObj = new JSONObject();
+//
+//        try {
+//            jsonObj.put(Const._ID, m.getId());
+//            jsonObj.put(Const._REV, m.getRev());
+//            jsonObj.put(Const.MESSAGE_TYPE, m.getMessageType());
+//            jsonObj.put(Const.MODIFIED, m.getModified());
+//            jsonObj.put(Const.TYPE, m.getType());
+//            jsonObj.put(Const.FROM_USER_NAME, m.getFromUserName());
+//            jsonObj.put(Const.FROM_USER_ID, m.getFromUserId());
+//            jsonObj.put(Const.VALID, m.isValid());
+//            jsonObj.put(Const.MESSAGE_TARGET_TYPE, m.getMessageTargetType());
+//            jsonObj.put(Const.CREATED, m.getCreated());
+//            jsonObj.put(Const.TO_USER_NAME, m.getToUserName());
+//            jsonObj.put(Const.TO_USER_ID, m.getToUserId());
+//            jsonObj.put(Const.BODY, m.getBody());
+//            if (!m.getLatitude().equals("")) {
+//                jsonObj.put(Const.LATITUDE, m.getLatitude());
+//            }
+//            if (!m.getLongitude().equals("")) {
+//                jsonObj.put(Const.LONGITUDE, m.getLongitude());
+//            }
+//            if (!m.getAttachments().equals("")) {
+//                jsonObj.put(Const._ATTACHMENTS, new JSONObject(m.getAttachments()));
+//            }
+//            if (!m.getVideoFileId().equals("")) {
+//                jsonObj.put(Const.VIDEO_FILE_ID, m.getVideoFileId());
+//            }
+//            if (!m.getVoiceFileId().equals("")) {
+//                jsonObj.put(Const.VOICE_FILE_ID, m.getVoiceFileId());
+//            }
+//            if (!m.getImageFileId().equals("")) {
+//                jsonObj.put(Const.PICTURE_FILE_ID, m.getImageFileId());
+//            }
+//            if (!m.getImageThumbFileId().equals("")) {
+//                jsonObj.put(Const.PICTURE_THUMB_FILE_ID, m.getImageThumbFileId());
+//            }
+//            if (!m.getEmoticonImageUrl().equals("")) {
+//                jsonObj.put(Const.EMOTICON_IMAGE_URL, m.getEmoticonImageUrl());
+//            }
+//            
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//            isSuccess = false;
+//        }
+//
+//        // XXX Need to check if json return ok or failed like for delete group
+//        JSONObject resultOfCouchDB = ConnectionHandler.putJsonObject(jsonObj, m.getId(),
+//                UsersManagement.getLoginUser().getId(), UsersManagement.getLoginUser().getToken());
+//
+//        if (resultOfCouchDB == null) {
+//            isSuccess = false;
+//        }
+//        return isSuccess;
+//    }
    
 //************* SEND MESSAGE TO GROUP ********************
     
@@ -1919,85 +1900,65 @@ public class CouchDB {
      * @return
      */
     //TODO: NEW API ????
-    public static boolean updateMessageForGroup(Message m) {
-        boolean isSuccess = true;
-
-        JSONObject jsonObj = new JSONObject();
-        try {
-            jsonObj.put(Const._ID, m.getId());
-            jsonObj.put(Const._REV, m.getRev());
-            jsonObj.put(Const.MESSAGE_TYPE, m.getMessageType());
-            jsonObj.put(Const.MODIFIED, m.getModified());
-            jsonObj.put(Const.TYPE, m.getType());
-            jsonObj.put(Const.FROM_USER_NAME, m.getFromUserName());
-            jsonObj.put(Const.FROM_USER_ID, m.getFromUserId());
-            jsonObj.put(Const.VALID, m.isValid());
-            jsonObj.put(Const.TO_GROUP_ID, m.getToGroupId());
-            jsonObj.put(Const.TO_GROUP_NAME, m.getToGroupName());
-            jsonObj.put(Const.MESSAGE_TARGET_TYPE, m.getMessageTargetType());
-            jsonObj.put(Const.CREATED, m.getCreated());
-            jsonObj.put(Const.BODY, m.getBody());
-
-            if (!m.getLatitude().equals("")) {
-                jsonObj.put(Const.LATITUDE, m.getLatitude());
-            }
-            if (!m.getLongitude().equals("")) {
-                jsonObj.put(Const.LONGITUDE, m.getLongitude());
-            }
-            if (!m.getAttachments().equals("")) {
-                jsonObj.put(Const._ATTACHMENTS, new JSONObject(m.getAttachments()));
-            }
-            if (!m.getVideoFileId().equals("")) {
-                jsonObj.put(Const.VIDEO_FILE_ID, m.getVideoFileId());
-            }
-            if (!m.getVoiceFileId().equals("")) {
-                jsonObj.put(Const.VOICE_FILE_ID, m.getVoiceFileId());
-            }
-            if (!m.getImageFileId().equals("")) {
-                jsonObj.put(Const.PICTURE_FILE_ID, m.getImageFileId());
-            }
-            if (!m.getImageThumbFileId().equals("")) {
-                jsonObj.put(Const.PICTURE_THUMB_FILE_ID, m.getImageThumbFileId());
-            }
-            if (!m.getEmoticonImageUrl().equals("")) {
-                jsonObj.put(Const.EMOTICON_IMAGE_URL, m.getEmoticonImageUrl());
-            }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-            isSuccess = false;
-        }
-
-        // XXX Need to check if json return ok or failed like for delete group
-
-        JSONObject resultOfCouchDB = ConnectionHandler.putJsonObject(jsonObj, m.getId(),
-                UsersManagement.getLoginUser().getId(), UsersManagement.getLoginUser().getToken());
-
-        if (resultOfCouchDB == null) {
-            isSuccess = false;
-        }
-        return isSuccess;
-    }
-
-    public static void updateMessageForGroup(Message m, ResultListener<Boolean> resultListener, Context context, boolean showProgressBar) {
-    	new SpikaAsyncTask<Void, Void, Boolean>(new UpdateMessageForGroup(m), resultListener, context, showProgressBar).execute();
-    }
-    
-    private static class UpdateMessageForGroup implements Command<Boolean>
-    {
-    	Message m;
-    	
-    	public UpdateMessageForGroup(Message m)
-    	{
-    		this.m = m;
-    	}
-
-		@Override
-		public Boolean execute() throws JSONException, IOException,
-				SpikaException {
-			return updateMessageForGroup(m);
-		}
-    }
+//    public static boolean updateMessageForGroup(Message m) {
+//        boolean isSuccess = true;
+//
+//        JSONObject jsonObj = new JSONObject();
+//        try {
+//            jsonObj.put(Const._ID, m.getId());
+//            jsonObj.put(Const._REV, m.getRev());
+//            jsonObj.put(Const.MESSAGE_TYPE, m.getMessageType());
+//            jsonObj.put(Const.MODIFIED, m.getModified());
+//            jsonObj.put(Const.TYPE, m.getType());
+//            jsonObj.put(Const.FROM_USER_NAME, m.getFromUserName());
+//            jsonObj.put(Const.FROM_USER_ID, m.getFromUserId());
+//            jsonObj.put(Const.VALID, m.isValid());
+//            jsonObj.put(Const.TO_GROUP_ID, m.getToGroupId());
+//            jsonObj.put(Const.TO_GROUP_NAME, m.getToGroupName());
+//            jsonObj.put(Const.MESSAGE_TARGET_TYPE, m.getMessageTargetType());
+//            jsonObj.put(Const.CREATED, m.getCreated());
+//            jsonObj.put(Const.BODY, m.getBody());
+//
+//            if (!m.getLatitude().equals("")) {
+//                jsonObj.put(Const.LATITUDE, m.getLatitude());
+//            }
+//            if (!m.getLongitude().equals("")) {
+//                jsonObj.put(Const.LONGITUDE, m.getLongitude());
+//            }
+//            if (!m.getAttachments().equals("")) {
+//                jsonObj.put(Const._ATTACHMENTS, new JSONObject(m.getAttachments()));
+//            }
+//            if (!m.getVideoFileId().equals("")) {
+//                jsonObj.put(Const.VIDEO_FILE_ID, m.getVideoFileId());
+//            }
+//            if (!m.getVoiceFileId().equals("")) {
+//                jsonObj.put(Const.VOICE_FILE_ID, m.getVoiceFileId());
+//            }
+//            if (!m.getImageFileId().equals("")) {
+//                jsonObj.put(Const.PICTURE_FILE_ID, m.getImageFileId());
+//            }
+//            if (!m.getImageThumbFileId().equals("")) {
+//                jsonObj.put(Const.PICTURE_THUMB_FILE_ID, m.getImageThumbFileId());
+//            }
+//            if (!m.getEmoticonImageUrl().equals("")) {
+//                jsonObj.put(Const.EMOTICON_IMAGE_URL, m.getEmoticonImageUrl());
+//            }
+//
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//            isSuccess = false;
+//        }
+//
+//        // XXX Need to check if json return ok or failed like for delete group
+//
+//        JSONObject resultOfCouchDB = ConnectionHandler.putJsonObject(jsonObj, m.getId(),
+//                UsersManagement.getLoginUser().getId(), UsersManagement.getLoginUser().getToken());
+//
+//        if (resultOfCouchDB == null) {
+//            isSuccess = false;
+//        }
+//        return isSuccess;
+//    }
  
     //****************** CREATE COMMENT ****************************
     

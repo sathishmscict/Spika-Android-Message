@@ -416,7 +416,7 @@ public class VideoActivity extends SpikaActivity {
 		@Override
 		public void onResultsSucceded(String commentId) {
 			if (commentId != null) {
-				new SendMessageAsync(VideoActivity.this, SendMessageAsync.TYPE_VIDEO).execute(mMessage, false, true);
+//				new SendMessageAsync(VideoActivity.this, SendMessageAsync.TYPE_VIDEO).execute(mMessage, false, true);
 				new GetCommentsAsync(VideoActivity.this, mMessage, mComments,
 						mCommentsAdapter, mLvComments, mRefreshCommentHandler,
 						true).execute(mMessage.getId());
