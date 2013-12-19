@@ -1035,8 +1035,7 @@ public class CouchDB {
             return null;
         }
 
-//        String url = Const.FIND_GROUP_BY_NAME + name;
-        String url = sUrl + "_design/app/_view/find_group_by_name?startkey=" + name; 
+        String url = Const.FIND_GROUP_BY_NAME + name;
 
         JSONObject json = ConnectionHandler.getJsonObject(url, UsersManagement.getLoginUser().getId());
 

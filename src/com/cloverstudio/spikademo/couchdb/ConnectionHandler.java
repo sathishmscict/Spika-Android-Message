@@ -601,7 +601,7 @@ public class ConnectionHandler {
 
 		if (httpResponse.getStatusLine().getStatusCode() > 400)
 		{
-			if (httpResponse.getStatusLine().getStatusCode() == 403) throw new SpikaException(ConnectionHandler.getError(entity.getContent()));
+			if (httpResponse.getStatusLine().getStatusCode() == 500) throw new SpikaException(ConnectionHandler.getError(entity.getContent()));
 			throw new IOException(httpResponse.getStatusLine().getReasonPhrase());
 		}
 		
@@ -775,13 +775,35 @@ public class ConnectionHandler {
 	
 	public static String getError (InputStream inputStream) throws IOException, JSONException {
 		
-		String error = "Unknown Spika Error";
+		String error = "Unknown Spika Error: ";
 		
 		String jsonString = getString(inputStream);
 		JSONObject jsonObject = jObjectFromString(jsonString);
 		if (jsonObject.has("message"))
 		{
 			error = jsonObject.getString("message");
+		}
+		else
+		{
+			error += jsonObject.toString();
+		}
+		return error;
+	}
+	
+	public static String getError (JSONObject jsonObject) {
+		
+		String error = "Unknown Spika Error: ";
+		
+		if (jsonObject.has("message"))
+		{
+			try {
+				error = jsonObject.getString("message");
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+		else {
+			error += jsonObject.toString();
 		}
 		return error;
 	}

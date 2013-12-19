@@ -112,7 +112,7 @@ public class SpikaAsyncTask<Params, Progress, Result> extends AsyncTask<Params, 
 			}else if(exception instanceof NullPointerException){
 			    errorMessage = context.getString(R.string.an_internal_error_has_occurred) + "\n" + exception.getClass().getName() + " " + error;
 			}else if(exception instanceof SpikaException){
-				errorMessage = context.getString(R.string.an_internal_error_has_occurred) + "\n" + error;
+				errorMessage = error;
 			}else{
 			    errorMessage = context.getString(R.string.an_internal_error_has_occurred) + "\n" + exception.getClass().getName() + " " + error;
 			}	

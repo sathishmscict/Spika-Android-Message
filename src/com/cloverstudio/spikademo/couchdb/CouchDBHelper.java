@@ -142,7 +142,7 @@ public class CouchDBHelper {
         	
         	if (userJson.has(Const.ERROR)) {
 				appLogout(null, false, isInvalidToken(userJson));
-				throw new SpikaException(userJson.toString());
+				throw new SpikaException(ConnectionHandler.getError(userJson));
 			}
 
             user = sGsonExpose.fromJson(userJson.toString(), User.class);
@@ -910,6 +910,10 @@ public class CouchDBHelper {
 				return null;
 			}
 
+        	if (json.length() == 0) {
+        		return null;
+        	}
+        	
             group = sGsonExpose.fromJson(json.toString(), Group.class);            
         }
 

@@ -424,7 +424,12 @@ public class GroupsActivity extends SubMenuActivity {
 		@Override
 		protected void onPostExecute(List<Group> result) {
 			super.onPostExecute(result);
-			mGroups = (ArrayList<Group>) result;
+			if (result != null) {
+				mGroups = new ArrayList<Group>(result);
+			} else {
+				mGroups = new ArrayList<Group>();
+			}
+//			mGroups = (ArrayList<Group>) result;
 
 			mLvGroupCategories.setVisibility(View.GONE);
 			mLvGroups.setVisibility(View.VISIBLE);

@@ -73,6 +73,7 @@ import com.cloverstudio.spikademo.extendables.SpikaActivity;
 import com.cloverstudio.spikademo.extendables.SpikaAsync;
 import com.cloverstudio.spikademo.lazy.ImageLoader;
 import com.cloverstudio.spikademo.utils.Const;
+import com.cloverstudio.spikademo.utils.Logger;
 import com.cloverstudio.spikademo.utils.Utils;
 
 /**
@@ -275,6 +276,7 @@ public class CreateGroupActivity extends SpikaActivity {
 		@Override
 		public void onResultsSucceded(Group result) {
 			if (result != null) {
+				Logger.debug("group", result.getName() + "");
                 Toast.makeText(CreateGroupActivity.this, getString(R.string.groupname_taken), Toast.LENGTH_SHORT).show();
             }  else {
             	createGroupAsync(group);
