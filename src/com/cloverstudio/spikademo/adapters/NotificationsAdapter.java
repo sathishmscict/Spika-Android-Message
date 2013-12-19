@@ -155,10 +155,11 @@ public class NotificationsAdapter extends BaseAdapter implements
 						.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 				v = li.inflate(R.layout.notification_item, parent, false);
 
-				final LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-						LayoutParams.MATCH_PARENT, 100);
-				params.setMargins(0, 2, 0, 2);
-				v.setLayoutParams(params);
+//				final LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+//						LayoutParams.MATCH_PARENT, 100);
+//				params.setMargins(0, 2, 0, 2);
+//				v.setLayoutParams(params);
+				
 				holder = new ViewHolder();
 				holder.ivImage = (ImageView) v.findViewById(R.id.ivImage);
 				holder.tvMessage = (TextView) v.findViewById(R.id.tvMessage);
