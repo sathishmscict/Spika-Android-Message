@@ -191,7 +191,7 @@ public class Const {
 	public static final String MESSAGE_ID = "message_id";
 	
 	/* Push notification constants */
-	public static final String PUSH_SENDER_ID = "213821121647";
+	public static final String PUSH_SENDER_ID = "116353279636";
 	public static final String PUSH_MESSAGE = "message";
 	public static final String PUSH_FROM_USER_ID = "fromUser";
 	public static final String PUSH_FROM_NAME= "fromUserName";
