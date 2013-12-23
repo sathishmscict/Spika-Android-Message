@@ -27,6 +27,7 @@ package com.cloverstudio.spikademo.couchdb.model;
 import android.graphics.Bitmap;
 import com.cloverstudio.spikademo.SpikaApp;
 import com.cloverstudio.spikademo.couchdb.CouchDB;
+import com.cloverstudio.spikademo.utils.Const;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -92,7 +93,8 @@ public class Emoticon {
 	}
 
 	public String getImageUrl() {
-		return CouchDB.getUrl() + this.getId() + "/" + mIdentifier + ".png";
+//		return CouchDB.getUrl() + this.getId() + "/" + mIdentifier + ".png";
+		return CouchDB.getUrl() + "Emoticon/" + this.getId();
 	}
 
 	public Bitmap getBitmap() {
