@@ -38,7 +38,7 @@ public class Const {
 	/* CouchDB credentials */
 	//public static final String API_URL = "http://hookup.clover-studio.com/hookup/hookup-api2.php?";
 	public static final String BASE_URL                	= "http://192.168.1.120:8080/wwwroot/api/";
-	public static final String SUPPORT_USER				= "0e5004f0c60b0f04569ee7d5c4000a37";
+	public static final String SUPPORT_USER				= "88ee633db11d260b3102baafd000058c";
 //	public static final String BASE_URL                	= "http://spikademo2.clover-studio.com/api/";
 	public static final String API_URL                 	= BASE_URL;
 	public static final String AUTH_URL                	= BASE_URL + "auth?";
