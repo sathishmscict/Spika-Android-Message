@@ -2137,9 +2137,9 @@ public class CouchDB {
         jsonObj.put(Const.GROUP_ID, watchingGroupLog.getGroupId());
         jsonObj.put(Const.CREATED, Utils.getCurrentDateTime());
         
-        JSONObject json = ConnectionHandler.postJsonObject(Const.WATCH_GROUP, jsonObj, UsersManagement.getLoginUser().getId(), UsersManagement.getLoginUser().getToken());
+        String result = ConnectionHandler.postJsonObjectForString(Const.WATCH_GROUP, jsonObj, UsersManagement.getLoginUser().getId(), UsersManagement.getLoginUser().getToken());
         
-        return CouchDBHelper.createWatchingGroupLog(json);
+        return CouchDBHelper.createWatchingGroupLog(result);
     }
     
     public static void createWatchingGroupLogAsync (WatchingGroupLog watchingGroupLog, ResultListener<String> resultListener, Context context, boolean showProgressBar) {
@@ -2173,20 +2173,20 @@ public class CouchDB {
      * @throws ClientProtocolException 
      * 
      */
-    public static boolean deleteWatchingGroupLog(String id, String rev) throws JSONException, ClientProtocolException, IllegalStateException, IOException, SpikaException {
+    public static String deleteWatchingGroupLog(String id, String rev) throws JSONException, ClientProtocolException, IllegalStateException, IOException, SpikaException {
 
     	JSONObject create = new JSONObject();
     	create.put(Const.GROUP_ID, id);
     	create.put(Const.REV, rev);
     	
-    	return CouchDBHelper.deleteWatchingGroupLog(ConnectionHandler.postJsonObject(Const.UNWATCH_GROUP, create, UsersManagement.getLoginUser().getId(), UsersManagement.getLoginUser().getToken()));
+    	return CouchDBHelper.deleteWatchingGroupLog(ConnectionHandler.postJsonObjectForString(Const.UNWATCH_GROUP, create, UsersManagement.getLoginUser().getId(), UsersManagement.getLoginUser().getToken()));
     }
     
-    public static void deleteWatchingGroupLogAsync(String id, String rev, ResultListener<Boolean> resultListener, Context context, boolean showProgressBar) {
-    	new SpikaAsyncTask<Void, Void, Boolean>(new DeleteWatchingGroupLog(id, rev), resultListener, context, showProgressBar).execute();
+    public static void deleteWatchingGroupLogAsync(String id, String rev, ResultListener<String> resultListener, Context context, boolean showProgressBar) {
+    	new SpikaAsyncTask<Void, Void, String>(new DeleteWatchingGroupLog(id, rev), resultListener, context, showProgressBar).execute();
     }
     
-    private static class DeleteWatchingGroupLog implements Command<Boolean> {
+    private static class DeleteWatchingGroupLog implements Command<String> {
     	
     	String id;
     	String rev;
@@ -2198,7 +2198,7 @@ public class CouchDB {
     	}
 
 		@Override
-		public Boolean execute() throws JSONException, IOException,
+		public String execute() throws JSONException, IOException,
 				SpikaException {
 			return deleteWatchingGroupLog(id, rev);
 		}

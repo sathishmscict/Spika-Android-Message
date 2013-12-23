@@ -95,7 +95,7 @@
             android:name=".WallActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"
-            android:launchMode="singleTop" >
+            android:launchMode="singleTask" >
         </activity>
         <activity
             android:name=".extendables.SideBarActivity"
@@ -131,7 +131,7 @@
         </activity>
         <activity
             android:name=".CreateGroupActivity"
-            android:launchMode="singleTop"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
              >
         </activity>
@@ -142,7 +142,7 @@
         <activity
             android:name=".MyProfileActivity"
             android:screenOrientation="portrait"
-            android:launchMode="singleTop" >
+            android:launchMode="singleTask" >
         </activity>
         <activity
             android:name=".UserProfileActivity"
@@ -156,28 +156,28 @@
         </activity>
         <activity
             android:name=".LocationActivity"
-            android:launchMode="singleTop"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".RecordingActivity"
             android:screenOrientation="portrait"
-            android:launchMode="singleTop" >
+            android:launchMode="singleTask" >
         </activity>
         <activity
             android:name=".VoiceActivity"
             android:screenOrientation="portrait"
-            android:launchMode="singleTop" >
+            android:launchMode="singleTask" >
         </activity>
         <activity
             android:name=".SettingsActivity"
             android:screenOrientation="portrait"
-            android:launchMode="singleTop" >
+            android:launchMode="singleTask" >
         </activity>
         <activity
             android:name=".VideoActivity"
             android:screenOrientation="portrait"
-            android:launchMode="singleTop" 
+            android:launchMode="singleTask" 
             android:configChanges="keyboardHidden|orientation|screenSize">
         </activity>
         <activity
@@ -187,7 +187,7 @@
         </activity>
         <activity
             android:name=".RecentActivityActivity"
-            android:launchMode="singleTop"
+            android:launchMode="singleTask"
             android:windowSoftInputMode="stateAlwaysHidden"
             android:screenOrientation="portrait" >
         </activity>

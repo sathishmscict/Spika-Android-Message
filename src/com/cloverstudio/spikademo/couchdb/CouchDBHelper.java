@@ -1571,34 +1571,34 @@ public class CouchDBHelper {
 	 * @return
 	 * @throws JSONException 
 	 */
-	public static String createWatchingGroupLog(JSONObject json) throws JSONException {
+	public static String createWatchingGroupLog(String result) throws JSONException {
 
-		boolean ok = false;
-		String id = null;
-		String rev = null;
+//		boolean ok = false;
+//		String id = null;
+//		String rev = null;
+//
+//		if (result != null) {
+//
+//			if (json.has(Const.ERROR)) {
+//				appLogout(null, false, isInvalidToken(json));
+//				return null;
+//			}
+//
+//			ok = json.getBoolean(Const.OK);
+//			id = json.getString(Const.ID);
+//			rev = json.getString(Const.REV);
+//			
+//			SpikaApp.getPreferences().setWatchingGroupId(id);
+//			SpikaApp.getPreferences().setWatchingGroupRev(rev);
+//			
+//		}
+//
+//		if (!ok) {
+//			Logger.error(TAG + "createWatchingGroupLog", "error in creating a watching group log");
+//			return null;
+//		}
 
-		if (json != null) {
-
-			if (json.has(Const.ERROR)) {
-				appLogout(null, false, isInvalidToken(json));
-				return null;
-			}
-
-			ok = json.getBoolean(Const.OK);
-			id = json.getString(Const.ID);
-			rev = json.getString(Const.REV);
-			
-			SpikaApp.getPreferences().setWatchingGroupId(id);
-			SpikaApp.getPreferences().setWatchingGroupRev(rev);
-			
-		}
-
-		if (!ok) {
-			Logger.error(TAG + "createWatchingGroupLog", "error in creating a watching group log");
-			return null;
-		}
-
-		return id;
+		return result;
 	}
 	
 	/**
@@ -1608,22 +1608,22 @@ public class CouchDBHelper {
 	 * @return
 	 * @throws JSONException 
 	 */
-	public static boolean deleteWatchingGroupLog(JSONObject json) throws JSONException {
+	public static String deleteWatchingGroupLog(String result) throws JSONException {
 
-		boolean ok = false;
+//		boolean ok = false;
+//
+//		if (json != null) {
+//
+//			if (json.has(Const.ERROR)) {
+//				appLogout(false, false, isInvalidToken(json));
+//				return false;
+//			}
+//
+//			ok = json.getBoolean(Const.OK);	
+//			
+//		}
 
-		if (json != null) {
-
-			if (json.has(Const.ERROR)) {
-				appLogout(false, false, isInvalidToken(json));
-				return false;
-			}
-
-			ok = json.getBoolean(Const.OK);	
-			
-		}
-
-		return ok;
+		return result;
 	}
 	
 	private static boolean isInvalidToken(JSONObject json) {

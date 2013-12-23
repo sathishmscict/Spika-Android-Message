@@ -623,10 +623,10 @@ public class WallActivity extends SideBarActivity {
 		}
 	}
 	
-	private class DeleteWatchingLogFinish implements ResultListener<Boolean> {
+	private class DeleteWatchingLogFinish implements ResultListener<String> {
 
 		@Override
-		public void onResultsSucceded(Boolean result) {
+		public void onResultsSucceded(String result) {
 			// TODO Auto-generated method stub
 		}
 
