@@ -37,8 +37,8 @@ public class Const {
 
 	/* CouchDB credentials */
 	//public static final String API_URL = "http://hookup.clover-studio.com/hookup/hookup-api2.php?";
-	public static final String BASE_URL                	= "http://192.168.1.120:8080/wwwroot/api/";
-	public static final String SUPPORT_USER				= "0e5004f0c60b0f04569ee7d5c4000a37";
+	public static final String BASE_URL                	= "http://192.168.1.105:8080/wwwroot/api/";
+	public static final String SUPPORT_USER				= "5b1ace6289ae4b7f46cd1d18bf0005b9";
 //	public static final String BASE_URL                	= "http://spikademo2.clover-studio.com/api/";
 	public static final String API_URL                 	= BASE_URL;
 	public static final String AUTH_URL                	= BASE_URL + "auth?";
@@ -191,7 +191,7 @@ public class Const {
 	public static final String MESSAGE_ID = "message_id";
 	
 	/* Push notification constants */
-	public static final String PUSH_SENDER_ID = "213821121647";
+	public static final String PUSH_SENDER_ID = "116353279636";
 	public static final String PUSH_MESSAGE = "message";
 	public static final String PUSH_FROM_USER_ID = "fromUser";
 	public static final String PUSH_FROM_NAME= "fromUserName";
