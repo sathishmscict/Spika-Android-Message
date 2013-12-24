@@ -157,6 +157,7 @@
     <string name="SEND_PASSWORD">SEND PASSWORD</string>
     <string name="FORGOT_PASSWORD">SEND PASSWORD</string>
     <string name="send_password">Send password to: </string>
+    <string name="confirm_email">Please check email and open link.</string>
     <string name="USER">USER</string>
     <string name="my_contacts">My Contacts</string>
     <string name="favorite_groups">Favorite groups</string>
