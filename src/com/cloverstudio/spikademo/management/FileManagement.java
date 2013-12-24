@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  * 
- * Copyright © 2013 Clover Studio Ltd. All rights reserved.
+ * Copyright ï¿½ 2013 Clover Studio Ltd. All rights reserved.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -141,7 +141,7 @@ public class FileManagement {
 		}
 	}
 
-	private static String md5(String s) {
+	public static String md5(String s) {
 		MessageDigest digest;
 		try {
 			digest = MessageDigest.getInstance("MD5");

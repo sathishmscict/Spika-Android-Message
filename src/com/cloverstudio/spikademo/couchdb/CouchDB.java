@@ -57,6 +57,7 @@ import com.cloverstudio.spikademo.couchdb.model.UserGroup;
 import com.cloverstudio.spikademo.couchdb.model.UserSearch;
 import com.cloverstudio.spikademo.couchdb.model.WatchingGroupLog;
 import com.cloverstudio.spikademo.lazy.Emoticons;
+import com.cloverstudio.spikademo.management.FileManagement;
 import com.cloverstudio.spikademo.management.SettingsManager;
 import com.cloverstudio.spikademo.management.UsersManagement;
 import com.cloverstudio.spikademo.utils.Const;
@@ -249,7 +250,7 @@ public class CouchDB {
         JSONObject jPost = new JSONObject();
 
         jPost.put("email", email);
-        jPost.put("password", password);
+        jPost.put("password", FileManagement.md5(password));
 
         JSONObject json = ConnectionHandler.postAuth(jPost);
 
@@ -313,7 +314,7 @@ public class CouchDB {
     	JSONObject userJson = new JSONObject();
 
         userJson.put(Const.NAME, name);
-        userJson.put(Const.PASSWORD, password);
+        userJson.put(Const.PASSWORD, FileManagement.md5(password));
         userJson.put(Const.TYPE, Const.USER);
         userJson.put(Const.EMAIL, email);
         userJson.put(Const.LAST_LOGIN, Utils.getCurrentDateTime());
@@ -531,7 +532,7 @@ public class CouchDB {
         userJson.put(Const.EMAIL, user.getEmail());
         userJson.put(Const.NAME, user.getName());
         userJson.put(Const.TYPE, Const.USER);
-        userJson.put(Const.PASSWORD, SpikaApp.getPreferences().getUserPassword());
+        userJson.put(Const.PASSWORD, FileManagement.md5(SpikaApp.getPreferences().getUserPassword()));
         userJson.put(Const.LAST_LOGIN, user.getLastLogin());
         userJson.put(Const.ABOUT, user.getAbout());
         userJson.put(Const.BIRTHDAY, user.getBirthday());

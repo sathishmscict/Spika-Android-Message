@@ -68,7 +68,6 @@ import com.cloverstudio.spikademo.couchdb.model.Group;
 import com.cloverstudio.spikademo.couchdb.model.GroupCategory;
 import com.cloverstudio.spikademo.couchdb.model.GroupSearch;
 import com.cloverstudio.spikademo.dialog.HookUpPasswordDialog;
-import com.cloverstudio.spikademo.dialog.HookUpProgressDialog;
 import com.cloverstudio.spikademo.extendables.SpikaActivity;
 import com.cloverstudio.spikademo.extendables.SpikaAsync;
 import com.cloverstudio.spikademo.lazy.ImageLoader;
