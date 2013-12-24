@@ -144,7 +144,12 @@ public class CreateGroupActivity extends SpikaActivity {
 	}
 	
 	public void setNewPassword(String newPassword) {
-		mEtGroupPassword.setText(newPassword);
+		mGroupPassword = newPassword;
+		if (mGroupPassword != null && !mGroupPassword.equals("")) {
+			mEtGroupPassword.setText(R.string.YES);
+		} else {
+			mEtGroupPassword.setText(R.string.NO);
+		}
 		hideKeyboard();
 	}
 
@@ -182,9 +187,10 @@ public class CreateGroupActivity extends SpikaActivity {
 				Group groupToCreate = new Group();
 				mGroupName = mEtGroupName.getText().toString();
 				groupToCreate.setName(mEtGroupName.getText().toString());
-				mGroupPassword = mEtGroupPassword.getText().toString();
-				groupToCreate
-						.setPassword(mEtGroupPassword.getText().toString());
+//				mGroupPassword = mEtGroupPassword.getText().toString();
+//				groupToCreate
+//						.setPassword(mEtGroupPassword.getText().toString());
+				groupToCreate.setPassword(mGroupPassword);
 				groupToCreate.setDescription(mEtGroupDescription.getText()
 						.toString());
 				GroupCategory selectedCategory = mGroupCategories.get(mSpinnerCategory.getSelectedItemPosition());

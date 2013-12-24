@@ -152,7 +152,6 @@
                             android:layout_toRightOf="@+id/tvPassword"
                             android:background="@android:color/white"
                             android:hint="@string/tap_to_add_password"
-                            android:inputType="textPassword"
                             android:padding="5dp"
                             android:singleLine="false"
                             android:textColor="@color/hookup_positive"

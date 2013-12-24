@@ -35,6 +35,7 @@ import android.widget.Toast;
 import com.cloverstudio.spikademo.R;
 import com.cloverstudio.spikademo.GroupProfileActivity;
 import com.cloverstudio.spikademo.SpikaApp;
+import com.cloverstudio.spikademo.management.FileManagement;
 
 /**
  * HookUpGroupPasswordDialog
@@ -104,7 +105,7 @@ public class HookUpGroupPasswordDialog extends Dialog {
 	}
 
 	private String checkPasswords() {
-		String currentPass = mEtGroupPassword.getText().toString();
+		String currentPass = FileManagement.md5(mEtGroupPassword.getText().toString());
 		if (!currentPass.equals(mCurrentPassword)) {
 			return mActivity.getString(R.string.wrongpassword);
 		}

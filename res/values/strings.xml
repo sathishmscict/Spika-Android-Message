@@ -229,5 +229,8 @@
 
     <string name="no_recent_activities">No recent activities</string>
     <string name="wrongpassword">Wrong Password</string>
+    
+    <string name="YES">YES</string>
+    <string name="NO">NO</string>
 
 </resources>

@@ -82,6 +82,7 @@ import com.cloverstudio.spikademo.lazy.ImageLoader;
 import com.cloverstudio.spikademo.management.SettingsManager;
 import com.cloverstudio.spikademo.management.UsersManagement;
 import com.cloverstudio.spikademo.utils.Const;
+import com.cloverstudio.spikademo.utils.Logger;
 import com.cloverstudio.spikademo.utils.Utils;
 
 /**
@@ -230,9 +231,9 @@ public class GroupProfileActivity extends SpikaActivity {
 			mRlGroupPassword.setVisibility(View.VISIBLE);
 
 			if (mGroupPassword != null && !mGroupPassword.equals("")) {
-				mEtGroupPassword.setText(mGroupPassword);
+				mEtGroupPassword.setText(R.string.YES);
 			} else {
-				mEtGroupPassword.setText(mGroupPassword);
+				mEtGroupPassword.setText(R.string.NO);
 			}
 
 			mEtGroupPassword.setEnabled(false);
@@ -273,6 +274,7 @@ public class GroupProfileActivity extends SpikaActivity {
 		} else {
 			// If opened from another activity
 			mGroup = UsersManagement.getToGroup();
+			Logger.error("*** group password ***", mGroup.getPassword());
 		}
 
 		mRlGroupDescription = (RelativeLayout) findViewById(R.id.rlGroupDescription);
@@ -349,6 +351,8 @@ public class GroupProfileActivity extends SpikaActivity {
 
 	private void setupProfile() {
 
+		Logger.error("*** group password at profile setup ***", mGroup.getPassword());
+		
 		mGroupName = mGroup.getName();
 		mTvGroupName.setText(getString(R.string.GROUP_NAME));
 		mEtGroupName.setText(mGroup.getName());
@@ -361,9 +365,9 @@ public class GroupProfileActivity extends SpikaActivity {
 		mGroupAvatarThumbId = mGroup.getAvatarThumbFileId();
 
 		if (mGroupPassword != null && !mGroupPassword.equals("")) {
-			mEtGroupPassword.setText(mGroupPassword);
+			mEtGroupPassword.setText(R.string.YES);
 		} else {
-			mEtGroupPassword.setText(null);
+			mEtGroupPassword.setText(R.string.NO);
 		}
 
 		boolean userOwnsGroup = mGroupOwner.getId().equals(
@@ -863,6 +867,11 @@ public class GroupProfileActivity extends SpikaActivity {
 
 	public void setNewPassword(String newPassword) {
 		mGroupPassword = newPassword;
+		if (mGroupPassword != null && !mGroupPassword.equals("")) {
+			mEtGroupPassword.setText(R.string.YES);
+		} else {
+			mEtGroupPassword.setText(R.string.NO);
+		}
 		hideKeyboard();
 		updateGroupAsync();
 	}

@@ -263,7 +263,7 @@ public class CouchDB {
         	SpikaApp.getPreferences().setUserToken(user.getToken());
         	SpikaApp.getPreferences().setUserEmail(user.getEmail());
         	SpikaApp.getPreferences().setUserId(user.getId());
-        	SpikaApp.getPreferences().setUserPassword(user.getPassword());
+        	SpikaApp.getPreferences().setUserPassword(password);
 
         	UsersManagement.setLoginUser(user);
         	UsersManagement.setToUser(user);
@@ -1150,7 +1150,7 @@ public class CouchDB {
         JSONObject groupJson = new JSONObject();
 
         groupJson.put(Const.NAME, group.getName());
-        groupJson.put(Const.GROUP_PASSWORD, group.getPassword());
+        groupJson.put(Const.GROUP_PASSWORD, FileManagement.md5(group.getPassword()));
         groupJson.put(Const.TYPE, Const.GROUP);
         groupJson.put(Const.USER_ID, UsersManagement.getLoginUser().getId());
         groupJson.put(Const.DESCRIPTION, group.getDescription());
@@ -1201,7 +1201,7 @@ public class CouchDB {
         JSONObject groupJson = new JSONObject();
 
         groupJson.put(Const.NAME, group.getName());
-        groupJson.put(Const.GROUP_PASSWORD, group.getPassword());
+        groupJson.put(Const.GROUP_PASSWORD, FileManagement.md5(group.getPassword()));
         groupJson.put(Const.TYPE, Const.GROUP);
         groupJson.put(Const.USER_ID, UsersManagement.getLoginUser().getId());
         groupJson.put(Const.DESCRIPTION, group.getDescription());

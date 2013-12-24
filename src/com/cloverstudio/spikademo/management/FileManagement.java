@@ -142,6 +142,7 @@ public class FileManagement {
 	}
 
 	public static String md5(String s) {
+		if (s.equals("")) return "";
 		MessageDigest digest;
 		try {
 			digest = MessageDigest.getInstance("MD5");

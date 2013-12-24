@@ -228,4 +228,7 @@
     <string name="no_recent_activities">未読メッセージはありません。</string>
     <string name="wrongpassword">パスワードが違います。</string>
 
+    <string name="YES">はい</string>
+    <string name="NO">いいえ</string>
+    
 </resources>
