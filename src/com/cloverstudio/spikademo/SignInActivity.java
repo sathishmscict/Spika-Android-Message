@@ -521,7 +521,7 @@ public class SignInActivity extends Activity {
 			if (mUserByEmail != null) {
 				mSendPasswordEmail = mEtSendPasswordEmail.getText().toString();
 				mSendPasswordDialog.show(getString(R.string.confirm_email)
-						+ "\n" + mSendPasswordEmail + "?");
+						+ "\n" + mSendPasswordEmail);
 			} else {
 				final HookUpDialog dialog = new HookUpDialog(
 						SignInActivity.this);

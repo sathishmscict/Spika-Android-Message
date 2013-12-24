@@ -44,7 +44,6 @@ import com.cloverstudio.spikademo.couchdb.CouchDB;
 import com.cloverstudio.spikademo.couchdb.ResultListener;
 import com.cloverstudio.spikademo.couchdb.model.User;
 import com.cloverstudio.spikademo.dialog.HookUpDialog;
-import com.cloverstudio.spikademo.dialog.HookUpPasswordDialog;
 import com.cloverstudio.spikademo.extendables.SideBarActivity;
 import com.cloverstudio.spikademo.management.UsersManagement;
 
@@ -67,7 +66,8 @@ public class SettingsActivity extends SideBarActivity {
 	private Button mBtnChangePassword;
 	private ToggleButton mBtnShowPassword;
 	private EditText mEtPassword;
-	private HookUpPasswordDialog mPasswordDialog;
+//	private HookUpPasswordDialog mPasswordDialog;
+	private HookUpDialog mSendPasswordDialog;
 	private String mPassword;
 
 	@Override
@@ -78,10 +78,40 @@ public class SettingsActivity extends SideBarActivity {
 		initialization();
 	}
 
+	private class SendPasswordListener implements ResultListener<Void> {
+		@Override
+		public void onResultsSucceded(Void result) {
+		}
+		@Override
+		public void onResultsFail() {			
+		}
+	}
+	
 	private void initialization() {
 
 		getLoginUserAsync();
-		mPasswordDialog = new HookUpPasswordDialog(this, false);
+		
+		mSendPasswordDialog = new HookUpDialog(this);
+		mSendPasswordDialog.setOnButtonClickListener(HookUpDialog.BUTTON_OK,
+				new OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+						CouchDB.sendPassword(UsersManagement.getLoginUser().getEmail(), new SendPasswordListener() , SettingsActivity.this, true);
+						mSendPasswordDialog.dismiss();
+					}
+				});
+		mSendPasswordDialog.setOnButtonClickListener(
+				HookUpDialog.BUTTON_CANCEL, new OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+						mSendPasswordDialog.dismiss();
+
+					}
+				});
+		
+//		mPasswordDialog = new HookUpPasswordDialog(this, false);
 
 		mBtnChangePassword = (Button) findViewById(R.id.btnChangePassword);
 		mBtnChangePassword.setTypeface(SpikaApp.getTfMyriadProBold(),
@@ -90,7 +120,9 @@ public class SettingsActivity extends SideBarActivity {
 
 			@Override
 			public void onClick(View v) {
-				mPasswordDialog.show(mPassword);
+//				mPasswordDialog.show(mPassword);
+				mSendPasswordDialog.show(getString(R.string.confirm_email)
+						+ "\n" + UsersManagement.getLoginUser().getEmail());
 
 			}
 		});
