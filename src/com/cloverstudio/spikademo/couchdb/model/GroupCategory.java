@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  * 
- * Copyright © 2013 Clover Studio Ltd. All rights reserved.
+ * Copyright ï¿½ 2013 Clover Studio Ltd. All rights reserved.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -54,9 +54,10 @@ public class GroupCategory {
 	@Expose private String mType;
 	@SerializedName("title")
 	@Expose private String mTitle;
+	@SerializedName("avatar_file_id")
+	@Expose private String mAvatarFileId;
 	
 	private List<Attachment> mAttachments = new ArrayList<Attachment>();
-	private String mImageUrl = null;
 
 	public GroupCategory() {
 	}
@@ -101,19 +102,19 @@ public class GroupCategory {
 		this.mAttachments = mAttachments;
 	}
 
-	public String getImageUrl() {
-		return mImageUrl;
+	public String getAvatarFileId() {
+		return mAvatarFileId;
 	}
 
-	public void setImageUrl(String mImageUrl) {
-		this.mImageUrl = mImageUrl;
+	public void setAvatarFileId(String mImageUrl) {
+		this.mAvatarFileId = mAvatarFileId;
 	}
 
 	@Override
 	public String toString() {
 		return "GroupCategory [mId=" + mId + ", mRev=" + mRev + ", mType="
 				+ mType + ", mTitle=" + mTitle + ", mAttachments="
-				+ mAttachments + ", mImageUrl=" + mImageUrl + "]";
+				+ mAttachments + ", mAvatarFileId=" + mAvatarFileId + "]";
 	}
 
 }

@@ -520,9 +520,9 @@ public class CreateGroupActivity extends SpikaActivity {
 								.findViewById(R.id.pbLoadingForImage);
 						TextView tvCategoryTitle = (TextView) v
 								.findViewById(R.id.tvGroupCategory);
-						Utils.displayImage(category.getImageUrl(),
+						Utils.displayImage(category.getAvatarFileId(),
 								ivCategoryImage, pbLoading, ImageLoader.SMALL,
-								R.drawable.image_stub, true);
+								R.drawable.image_stub, false);
 						tvCategoryTitle.setText(category.getTitle());
 					}
 

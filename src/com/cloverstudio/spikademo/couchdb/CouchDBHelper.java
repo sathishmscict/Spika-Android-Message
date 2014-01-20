@@ -689,7 +689,7 @@ public class CouchDBHelper {
 				return null;
 			}
 
-			ok = json.getBoolean(Const.OK);
+			ok = json.getInt(Const.OK) == 1 ? true : false;
 			id = json.getString(Const.ID);
 		}
 
@@ -852,7 +852,7 @@ public class CouchDBHelper {
 			}
 
 			
-			ok = json.getBoolean(Const.OK);
+			ok = json.getInt(Const.OK) == 1 ? true : false;
 
 			/* Important */
 			UsersManagement.getToGroup().setRev(json.getString(Const.REV));
@@ -914,7 +914,9 @@ public class CouchDBHelper {
         		return null;
         	}
         	
-            group = sGsonExpose.fromJson(json.toString(), Group.class);            
+        	if (json.has(Const.NAME)) {
+        		group = sGsonExpose.fromJson(json.toString(), Group.class);   
+        	}            
         }
 
         return group;
@@ -1104,13 +1106,7 @@ public class CouchDBHelper {
 								e.printStackTrace();
 							}
 						}
-						groupCategory.setAttachments(attachments);
-
-						String imageUrl = CouchDB.getUrl() + groupCategory.getId() + "/"
-									+ Const.GROUP_CATEGORY_AVATAR;
-						groupCategory.setImageUrl(imageUrl);
-					} else {
-						groupCategory.setImageUrl(null);
+						groupCategory.setAttachments(attachments);	
 					}
 
 					groupCategories.add(groupCategory);

@@ -118,9 +118,9 @@ public class GroupCategoriesAdapter extends BaseAdapter implements
 
 			GroupCategory groupCategory = mGroupCategories.get(position);
 
-			Utils.displayImage(groupCategory.getImageUrl(),
+			Utils.displayImage(groupCategory.getAvatarFileId(),
 					holder.ivGroupCategoryImage, holder.pbLoadingForImage,
-					ImageLoader.SMALL, R.drawable.image_stub, true);
+					ImageLoader.SMALL, R.drawable.image_stub, false);
 			holder.tvGroupCategory.setText(groupCategory.getTitle().toUpperCase());
 
 		} catch (Exception e) {
