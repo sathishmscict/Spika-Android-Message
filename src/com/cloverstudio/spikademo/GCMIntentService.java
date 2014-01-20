@@ -186,16 +186,10 @@ public class GCMIntentService extends GCMBaseIntentService {
 		@Override
 		public Boolean execute() throws JSONException, IOException,
 				SpikaException {
-			
-			User loginUser = CouchDB.findUserByEmail(UsersManagement. getLoginUser().getEmail());
-			SpikaApp.getPreferences().setUserEmail(
-					UsersManagement.getLoginUser().getEmail());
-			// end:New code
-
-			UsersManagement.setLoginUser(loginUser);
 
 			/* set new androidToken and onlineStatus */
 			UsersManagement.getLoginUser().setOnlineStatus(onlineStatus);
+			SpikaApp.getPreferences().setUserEmail(UsersManagement.getLoginUser().getEmail());
 			SpikaApp.getPreferences().setUserPushToken(pushToken);
 			return CouchDB.updateUser(UsersManagement.getLoginUser());
 		}
@@ -203,7 +197,6 @@ public class GCMIntentService extends GCMBaseIntentService {
 	
 	private class SavePushTokenListener implements ResultListener<Boolean>{
 
-		User currentUserData;
 		String currentPushToken;
 		
 		public SavePushTokenListener (String currentPushToken) {
@@ -214,7 +207,6 @@ public class GCMIntentService extends GCMBaseIntentService {
 		public void onResultsSucceded(Boolean result) {
 			if (result) {
 			} else {
-				UsersManagement.setLoginUser(currentUserData);
 				SpikaApp.getPreferences().setUserPushToken(currentPushToken);
 			}
 		}
