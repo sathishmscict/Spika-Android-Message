@@ -124,16 +124,18 @@ public class VoiceActivity extends SpikaActivity {
 		String idOfUser = mExtras.getString("idOfUser");
 		String nameOfUser = mExtras.getString("nameOfUser");
 
-		String avatarId = null;
-		try {
-			avatarId = new FindAvatarFileIdAsync(this).execute(idOfUser).get();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			e.printStackTrace();
-		}
-
-		Utils.displayImage(avatarId, ivAvatar, ImageLoader.SMALL, R.drawable.user_stub, false);
+		CouchDB.findAvatarAndDisplay(idOfUser, ivAvatar, this);
+		
+//		String avatarId = null;
+//		try {
+//			avatarId = new FindAvatarFileIdAsync(this).execute(idOfUser).get();
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		} catch (ExecutionException e) {
+//			e.printStackTrace();
+//		}
+//
+//		Utils.displayImage(avatarId, ivAvatar, ImageLoader.SMALL, R.drawable.user_stub, false);
 
 		if (mMessage.getBody().equals(null) || mMessage.getBody().equals("")) {
 			tvNameOfUser.setText(nameOfUser.toUpperCase(Locale.getDefault())

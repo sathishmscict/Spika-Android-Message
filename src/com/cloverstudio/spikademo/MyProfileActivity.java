@@ -390,9 +390,8 @@ public class MyProfileActivity extends SideBarActivity {
 	}
 
 	private void getLoginUserAsync ()
-	{
-		Preferences prefs = SpikaApp.getPreferences();
-		CouchDB.findUserByEmailAsync(prefs.getUserEmail(), new GetLoginUserListener(), MyProfileActivity.this, true);
+	{		
+		CouchDB.findUserByIdAsync(UsersManagement.getLoginUser().getId(), new GetLoginUserListener(), MyProfileActivity.this, true);
 	}
 	
 	private class GetLoginUserListener implements ResultListener<User> {

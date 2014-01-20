@@ -42,7 +42,10 @@ import org.json.JSONObject;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
 
+import com.cloverstudio.spikademo.R;
 import com.cloverstudio.spikademo.SpikaApp;
 import com.cloverstudio.spikademo.WallActivity;
 import com.cloverstudio.spikademo.couchdb.model.ActivitySummary;
@@ -57,6 +60,7 @@ import com.cloverstudio.spikademo.couchdb.model.UserGroup;
 import com.cloverstudio.spikademo.couchdb.model.UserSearch;
 import com.cloverstudio.spikademo.couchdb.model.WatchingGroupLog;
 import com.cloverstudio.spikademo.lazy.Emoticons;
+import com.cloverstudio.spikademo.lazy.ImageLoader;
 import com.cloverstudio.spikademo.management.FileManagement;
 import com.cloverstudio.spikademo.management.SettingsManager;
 import com.cloverstudio.spikademo.management.UsersManagement;
@@ -799,6 +803,27 @@ public class CouchDB {
 		@Override
 		public String execute() throws JSONException, IOException, SpikaException {
 			return findAvatarFileId(userId);
+		}
+    }
+    
+    public static void findAvatarAndDisplay (String userId, ImageView view, Context context) {
+    	findAvatarByIdAsync(userId, new FindAvatarResultListener(view), context, false);
+    }
+    
+    private static class FindAvatarResultListener implements ResultListener<String> {
+    	
+    	ImageView view;
+    	
+    	public FindAvatarResultListener(ImageView view) {
+			this.view = view;
+		}
+    	
+		@Override
+		public void onResultsSucceded(String result) {
+			Utils.displayImage(result, view, ImageLoader.SMALL, R.drawable.user_stub, false);
+		}
+		@Override
+		public void onResultsFail() {			
 		}
     }
  

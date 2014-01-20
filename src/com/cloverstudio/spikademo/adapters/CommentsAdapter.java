@@ -43,6 +43,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cloverstudio.spikademo.R;
+import com.cloverstudio.spikademo.couchdb.CouchDB;
 import com.cloverstudio.spikademo.couchdb.model.Comment;
 import com.cloverstudio.spikademo.dialog.HookUpProgressDialog;
 import com.cloverstudio.spikademo.lazy.ImageLoader;
@@ -143,19 +144,22 @@ public class CommentsAdapter extends ArrayAdapter<Comment> implements
 					LayoutHelper.scaleWidthAndHeightRelativeLayout(mContext,
 							5f, btnAvatarToMe);
 
-					String avatarFileId = null;
-					try {
-						avatarFileId = new FindAvatarFileIdAsync(mContext).execute(
-								comment.getUserId()).get();
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					} catch (ExecutionException e) {
-						e.printStackTrace();
-					}
+//					String avatarFileId = null;
+//					try {
+//						avatarFileId = new FindAvatarFileIdAsync(mContext).execute(
+//								comment.getUserId()).get();
+//						
+//					} catch (InterruptedException e) {
+//						e.printStackTrace();
+//					} catch (ExecutionException e) {
+//						e.printStackTrace();
+//					}
+//
+//					Utils.displayImage(avatarFileId, btnAvatarToMe,
+//							ImageLoader.SMALL, R.drawable.user_stub, false);
 
-					Utils.displayImage(avatarFileId, btnAvatarToMe,
-							ImageLoader.SMALL, R.drawable.user_stub, false);
-
+					CouchDB.findAvatarAndDisplay(comment.getUserId(), btnAvatarToMe, mContext);
+					
 					rlToMe.setVisibility(View.VISIBLE);
 				}
 			}

@@ -146,20 +146,23 @@ public class VideoActivity extends SpikaActivity {
 
 		String avatarId = null;
 		if (extras.getBoolean("videoFromUser")) {
-			try {
-				avatarId = new FindAvatarFileIdAsync(this).execute(idOfUser)
-						.get();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			} catch (ExecutionException e) {
-				e.printStackTrace();
-			}
+			CouchDB.findAvatarAndDisplay(idOfUser, ivAvatar, this);
+//			try {
+//				avatarId = new FindAvatarFileIdAsync(this).execute(idOfUser)
+//						.get();
+//			} catch (InterruptedException e) {
+//				e.printStackTrace();
+//			} catch (ExecutionException e) {
+//				e.printStackTrace();
+//			}
 		} else {
 			avatarId = UsersManagement.getLoginUser().getAvatarFileId();
+			Utils.displayImage(avatarId, ivAvatar, ImageLoader.SMALL,
+					R.drawable.user_stub, false);
 		}
 
-		Utils.displayImage(avatarId, ivAvatar, ImageLoader.SMALL,
-				R.drawable.user_stub, false);
+//		Utils.displayImage(avatarId, ivAvatar, ImageLoader.SMALL,
+//				R.drawable.user_stub, false);
 
 		if (mMessage.getBody().equals(null) || mMessage.getBody().equals("")) {
 			tvNameOfUserVideo.setText(nameOfUser.toUpperCase(Locale.getDefault()) + "'S VIDEO");

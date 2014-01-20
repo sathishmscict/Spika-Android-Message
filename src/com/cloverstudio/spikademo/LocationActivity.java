@@ -47,6 +47,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cloverstudio.spikademo.R;
+import com.cloverstudio.spikademo.couchdb.CouchDB;
 import com.cloverstudio.spikademo.extendables.SpikaAsync;
 import com.cloverstudio.spikademo.extendables.SpikaFragmentActivity;
 import com.cloverstudio.spikademo.lazy.ImageLoader;
@@ -239,24 +240,28 @@ public class LocationActivity extends SpikaFragmentActivity {
 			tvNameOfUser.setText(UsersManagement.getLoginUser().getName()
 					.toUpperCase()
 					+ "'S LOCATION");
+			Utils.displayImage(avatarId,
+					ivAvatar, ImageLoader.SMALL, R.drawable.user_stub, false);
 
 		} else {
 
 			String idOfUser = mExtras.getString("idOfUser");
 			String nameOfUser = mExtras.getString("nameOfUser");
 			
-			try {
-				avatarId = new FindAvatarFileIdAsync(this).execute(idOfUser).get();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			} catch (ExecutionException e) {
-				e.printStackTrace();
-			}
+			CouchDB.findAvatarAndDisplay(idOfUser, ivAvatar, this);
+			
+//			try {
+//				avatarId = new FindAvatarFileIdAsync(this).execute(idOfUser).get();
+//			} catch (InterruptedException e) {
+//				e.printStackTrace();
+//			} catch (ExecutionException e) {
+//				e.printStackTrace();
+//			}
 			tvNameOfUser.setText(nameOfUser.toUpperCase() + "'S LOCATION");
 		}
-		
-		Utils.displayImage(avatarId,
-					ivAvatar, ImageLoader.SMALL, R.drawable.user_stub, false);
+//		
+//		Utils.displayImage(avatarId,
+//					ivAvatar, ImageLoader.SMALL, R.drawable.user_stub, false);
 
 	}
 	

@@ -149,18 +149,20 @@ public class PhotoActivity extends SpikaActivity {
 			LayoutHelper.scaleWidthAndHeightRelativeLayout(this, 5f,
 					mBtnAvatarUser);
 
-			String avatarFileId = null;
-			try {
-				avatarFileId = new FindAvatarFileIdAsync(this).execute(mMessage
-						.getFromUserId()).get();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			} catch (ExecutionException e) {
-				e.printStackTrace();
-			}
+			CouchDB.findAvatarAndDisplay(mMessage.getFromUserId(), mBtnAvatarUser, this);
 			
-			Utils.displayImage(avatarFileId,
-						mBtnAvatarUser, ImageLoader.SMALL, R.drawable.user_stub, false);
+//			String avatarFileId = null;
+//			try {
+//				avatarFileId = new FindAvatarFileIdAsync(this).execute(mMessage
+//						.getFromUserId()).get();
+//			} catch (InterruptedException e) {
+//				e.printStackTrace();
+//			} catch (ExecutionException e) {
+//				e.printStackTrace();
+//			}
+//			
+//			Utils.displayImage(avatarFileId,
+//						mBtnAvatarUser, ImageLoader.SMALL, R.drawable.user_stub, false);
 			
 //			getAvatarAsync();
 
@@ -169,19 +171,20 @@ public class PhotoActivity extends SpikaActivity {
 	}
 	
 	void getAvatarAsync () {
-		CouchDB.findAvatarByIdAsync(mMessage.getFromUserId(), new FindAvatarCompleted(), this, true);
+		CouchDB.findAvatarAndDisplay(mMessage.getFromUserId(), mBtnAvatarUser, this);
+//		CouchDB.findAvatarByIdAsync(mMessage.getFromUserId(), new FindAvatarCompleted(), this, true);
 	}
 	
-	private class FindAvatarCompleted implements ResultListener<String>{
-		@Override
-		public void onResultsSucceded(String result) {
-			Utils.displayImage(result, mBtnAvatarUser, ImageLoader.SMALL, R.drawable.user_stub, false);
-		}
-
-		@Override
-		public void onResultsFail() {			
-		}
-	}
+//	private class FindAvatarCompleted implements ResultListener<String>{
+//		@Override
+//		public void onResultsSucceded(String result) {
+//			Utils.displayImage(result, mBtnAvatarUser, ImageLoader.SMALL, R.drawable.user_stub, false);
+//		}
+//
+//		@Override
+//		public void onResultsFail() {			
+//		}
+//	}
 
 	private void onClickListeners() {
 
