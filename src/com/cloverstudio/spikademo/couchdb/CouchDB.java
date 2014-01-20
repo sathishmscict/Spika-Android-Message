@@ -63,6 +63,7 @@ import com.cloverstudio.spikademo.management.UsersManagement;
 import com.cloverstudio.spikademo.utils.Const;
 import com.cloverstudio.spikademo.utils.Logger;
 import com.cloverstudio.spikademo.utils.Utils;
+import com.google.gson.JsonObject;
 
 /**
  * CouchDB
@@ -845,26 +846,6 @@ public class CouchDB {
 
   //************ ADD USER CONTACT ***********************
     
-    /**
-     * Add favorite user contact to current logged in user
-     * 
-     * @param userId
-     * @return
-     * @throws SpikaException 
-     * @throws IOException 
-     * @throws JSONException 
-     * @throws ClientProtocolException 
-     */
-    public static boolean addUserContact(String userId) throws ClientProtocolException, JSONException, IOException, SpikaException {
-
-        User user = UsersManagement.getLoginUser();
-        User userUpdated = CouchDB.findUserById(user.getId());
-
-        userUpdated.getContactIds().add(userId);
-
-        return CouchDB.updateUser(userUpdated);
-    }
-    
     public static void addUserContactAsync (final String userId, final ResultListener<Boolean> resultListener, final Context context, final boolean showProgressBar)
     {
     	 new SpikaAsyncTask<Void, Void, Boolean>(new AddUserContact(userId), resultListener, context, showProgressBar).execute();
@@ -872,7 +853,6 @@ public class CouchDB {
     
     private static class AddUserContact implements Command<Boolean> 
     {
-    	
     	String userId;
     	
     	public AddUserContact(String userId) {
@@ -881,45 +861,23 @@ public class CouchDB {
 
 		@Override
 		public Boolean execute() throws JSONException, IOException, SpikaException {
-			return addUserContact(userId);
+			addUser(userId);
+			return true;
 		}
+    }
+    
+    private static void addUser (String contactId) throws JSONException, ClientProtocolException, IllegalStateException, IOException, SpikaException {
+    	User user = UsersManagement.getLoginUser();
+    	
+    	JSONObject jsonRequest = new JSONObject();
+    	jsonRequest.put(Const._ID, user.getId());
+    	jsonRequest.put(Const.USER_ID, contactId);
+        
+        JSONObject jsonResponse = ConnectionHandler.postJsonObject(Const.ADD_CONTACT, jsonRequest, user.getId(), user.getToken());
+        UsersManagement.setLoginUser(CouchDBHelper.parseSingleUserObjectWithoutRowParam(jsonResponse));        
     }
 
   //************ REMOVE USER CONTACT ***********************
-    
-    /**
-     * Remove a user from favorite user contacts of current logged in user
-     * 
-     * @param userId
-     * @return
-     * @throws SpikaException 
-     * @throws IOException 
-     * @throws JSONException 
-     * @throws ClientProtocolException 
-     */
-    public static boolean removeUserContact(String userId) throws ClientProtocolException, JSONException, IOException, SpikaException {
-
-        User user = CouchDB.findUserById(UsersManagement.getLoginUser().getId());
-
-        List<String> currentContactIds = UsersManagement.getLoginUser().getContactIds();
-
-        if (!currentContactIds.isEmpty()) {
-
-            List<String> newContactIds = new ArrayList<String>();
-
-            for (String id : currentContactIds) {
-                if (!id.equals(userId)) {
-                    newContactIds.add(id);
-                }
-            }
-
-            user.setContactIds(newContactIds);
-
-            return CouchDB.updateUser(user);
-        }
-
-        return false;
-    }
     
     public static void removeUserContactAsync (String userId, ResultListener<Boolean> resultListener, Context context, boolean showProgressBar) {
     	new SpikaAsyncTask<Void, Void, Boolean>(new RemoveUserContact(userId), resultListener, context, showProgressBar).execute();
@@ -935,8 +893,20 @@ public class CouchDB {
 
 		@Override
 		public Boolean execute() throws JSONException, IOException, SpikaException {
-			return removeUserContact(userId);
+			removeContact(userId);
+			return true;
 		}
+    }
+    
+    private static void removeContact (String contactId) throws JSONException, ClientProtocolException, IllegalStateException, IOException, SpikaException {
+    	User user = UsersManagement.getLoginUser();
+    	
+    	JSONObject jsonRequest = new JSONObject();
+    	jsonRequest.put(Const._ID, user.getId());
+    	jsonRequest.put(Const.USER_ID, contactId);
+        
+        JSONObject jsonResponse = ConnectionHandler.postJsonObject(Const.REMOVE_CONTACT, jsonRequest, user.getId(), user.getToken());
+        UsersManagement.setLoginUser(CouchDBHelper.parseSingleUserObjectWithoutRowParam(jsonResponse));
     }
     
     /**
@@ -1258,14 +1228,13 @@ public class CouchDB {
      * @throws JSONException 
      * @throws ClientProtocolException 
      */
-    public static boolean addFavoriteGroup(String groupId) throws ClientProtocolException, JSONException, IOException, SpikaException {
+    public static void addFavoriteGroup(String groupId) throws ClientProtocolException, JSONException, IOException, SpikaException {
     	
     	JSONObject create = new JSONObject();
     	create.put(Const.GROUP_ID, groupId);
     	
     	JSONObject userJson = ConnectionHandler.postJsonObject(Const.SUBSCRIBE_GROUP, create, UsersManagement.getLoginUser().getId(), UsersManagement.getLoginUser().getToken());
-    	User user = CouchDBHelper.parseSingleUserObjectWithoutRowParam(userJson);
-        return CouchDB.updateUser(user);
+    	UsersManagement.setLoginUser(CouchDBHelper.parseSingleUserObjectWithoutRowParam(userJson));
     }
     
     public static void addFavoriteGroupAsync (final String groupId, final ResultListener<Boolean> resultListener, final Context context, final boolean showProgressBar) {
@@ -1282,7 +1251,8 @@ public class CouchDB {
 
 		@Override
 		public Boolean execute() throws JSONException, IOException, SpikaException {
-			return addFavoriteGroup(groupId);
+			addFavoriteGroup(groupId);
+			return true;
 		}
     }
 
@@ -1298,14 +1268,13 @@ public class CouchDB {
      * @throws JSONException 
      * @throws ClientProtocolException 
      */
-    public static boolean removeFavoriteGroup(String groupId) throws ClientProtocolException, JSONException, IOException, SpikaException {
+    public static void removeFavoriteGroup(String groupId) throws ClientProtocolException, JSONException, IOException, SpikaException {
 
     	JSONObject create = new JSONObject();
     	create.put(Const.GROUP_ID, groupId);
     	
     	JSONObject userJson = ConnectionHandler.postJsonObject(Const.UNSUBSCRIBE_GROUP, create, UsersManagement.getLoginUser().getId(), UsersManagement.getLoginUser().getToken());
-    	User user = CouchDBHelper.parseSingleUserObjectWithoutRowParam(userJson);
-        return CouchDB.updateUser(user);
+    	UsersManagement.setLoginUser(CouchDBHelper.parseSingleUserObjectWithoutRowParam(userJson));
     }
     
     public static void removeFavoriteGroupAsync (String groupId, ResultListener<Boolean> resultListener, Context context, boolean showProgressBar) {
@@ -1322,7 +1291,8 @@ public class CouchDB {
 
 		@Override
 		public Boolean execute() throws JSONException, IOException, SpikaException {
-			return removeFavoriteGroup(groupId);
+			removeFavoriteGroup(groupId);
+			return true;
 		}
     }
 

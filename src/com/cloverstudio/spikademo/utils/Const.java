@@ -37,8 +37,8 @@ public class Const {
 
 	/* CouchDB credentials */
 	//public static final String API_URL = "http://hookup.clover-studio.com/hookup/hookup-api2.php?";
-	public static final String BASE_URL                	= "http://192.168.1.105:8080/wwwroot/api/";
-	public static final String SUPPORT_USER				= "88ee633db11d260b3102baafd000058c";
+	public static final String BASE_URL                	= "http://192.168.1.109:8080/wwwroot/api/";
+	public static final String SUPPORT_USER				= "1";
 //	public static final String BASE_URL                	= "http://spikademo2.clover-studio.com/api/";
 	public static final String API_URL                 	= BASE_URL;
 	public static final String AUTH_URL                	= BASE_URL + "auth?";
@@ -63,6 +63,7 @@ public class Const {
     public static final String FIND_GROUP_BY_CATEGORY_ID= BASE_URL + "findGroup/categoryId/";
     public static final String FIND_GROUP_CATEGORIES	= BASE_URL + "findAllGroupCategory";
     
+    
     public static final String PASSWORDREMINDER_URL    	= BASE_URL + "resetPassword?";
     public static final String UNREGISTER_PUSH_URL     	= BASE_URL + "unregistToken?";
     public static final String DATABASE                	= "spikademo";
@@ -79,6 +80,8 @@ public class Const {
     public static final String UPDATE_GROUP				= "updateGroup";
     public static final String WATCH_GROUP				= "watchGroup";
     public static final String UNWATCH_GROUP			= "unWatchGroup";
+    public static final String ADD_CONTACT				= "addContact";
+    public static final String REMOVE_CONTACT			= "removeContact";
     
 	/* User constants */
 	public static final String FAVORITE_GROUPS = "favorite_groups";
