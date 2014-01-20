@@ -106,8 +106,8 @@ public class GroupCategory {
 		return mAvatarFileId;
 	}
 
-	public void setAvatarFileId(String mImageUrl) {
-		this.mAvatarFileId = mAvatarFileId;
+	public void setAvatarFileId(String avatarFileId) {
+		this.mAvatarFileId = avatarFileId;
 	}
 
 	@Override
