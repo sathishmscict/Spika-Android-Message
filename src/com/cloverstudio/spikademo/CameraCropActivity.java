@@ -30,6 +30,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
@@ -596,7 +598,12 @@ public class CameraCropActivity extends SpikaActivity implements
 
 	protected void onPhotoTaken(String path) {
 
-		mFilePath = path;
+		String fileName = Uri.parse(path).getLastPathSegment();
+		mFilePath = CameraCropActivity.this.getExternalCacheDir() + "/" + fileName;
+		
+		if (!path.equals(mFilePath)) {
+			copy(new File(path), new File(mFilePath));
+		}
 
 		new AsyncTask<String, Void, byte[]>() {
 			boolean loadingFailed = false;
@@ -668,7 +675,7 @@ public class CameraCropActivity extends SpikaActivity implements
 				} 
 
 			}
-		}.execute(path);
+		}.execute(mFilePath);
 
 	}
 
@@ -770,5 +777,28 @@ public class CameraCropActivity extends SpikaActivity implements
 		@Override
 		public void onResultsFail() {			
 		}
+	}
+	
+	public void copy(File src, File dst) {
+	    InputStream in;
+	    OutputStream out;
+		try {
+			in = new FileInputStream(src);
+		    out = new FileOutputStream(dst);
+	
+		    // Transfer bytes from in to out
+		    byte[] buf = new byte[1024];
+		    int len;
+		    while ((len = in.read(buf)) > 0) {
+		        out.write(buf, 0, len);
+		    }
+		    
+		    in.close();
+		    out.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}    
 	}
 }
