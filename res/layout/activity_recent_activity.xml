@@ -30,7 +30,7 @@
             </LinearLayout>
         </ScrollView>
 
-        <com.cloverstudio.spikademo.view.MyriadProTextView
+        <com.cloverstudio.spika.view.MyriadProTextView
             android:id="@+id/tvNoRecentActivities"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -19,7 +19,7 @@
         android:background="@drawable/positive_selector"
         android:visibility="gone" />
 
-    <com.cloverstudio.spikademo.view.MyriadProTextView
+    <com.cloverstudio.spika.view.MyriadProTextView
         android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

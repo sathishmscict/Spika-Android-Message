@@ -27,7 +27,7 @@
             android:orientation="horizontal"
             android:weightSum="3" >
 
-            <com.cloverstudio.spikademo.view.GenderButton
+            <com.cloverstudio.spika.view.GenderButton
                 android:id="@+id/btnMale"
                 android:layout_width="0dip"
                 android:layout_height="match_parent"
@@ -41,7 +41,7 @@
                 android:layout_width="1dp"
                 android:layout_height="match_parent" />
 
-            <com.cloverstudio.spikademo.view.GenderButton
+            <com.cloverstudio.spika.view.GenderButton
                 android:id="@+id/btnFemale"
                 android:layout_width="0dip"
                 android:layout_height="match_parent"
@@ -55,7 +55,7 @@
                 android:layout_width="1dp"
                 android:layout_height="match_parent" />
 
-            <com.cloverstudio.spikademo.view.GenderButton
+            <com.cloverstudio.spika.view.GenderButton
                 android:id="@+id/btnAll"
                 android:layout_width="0dip"
                 android:layout_height="match_parent"
@@ -112,7 +112,7 @@
             android:layout_toLeftOf="@+id/viewRight"
             android:layout_toRightOf="@+id/viewLeft"/>
         
-        <com.cloverstudio.spikademo.view.MyriadProTextView 
+        <com.cloverstudio.spika.view.MyriadProTextView 
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:background="@null"

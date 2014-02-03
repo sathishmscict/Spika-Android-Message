@@ -14,7 +14,7 @@
         android:layout_alignParentTop="true"
         android:background="@drawable/menu_header" >
 
-        <com.cloverstudio.spikademo.uitems.MyriadProTextView
+        <com.cloverstudio.spika.uitems.MyriadProTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
@@ -52,7 +52,7 @@
                 android:scaleType="centerInside"
                 android:src="@drawable/submenu_user_icon" />
 
-            <com.cloverstudio.spikademo.uitems.MyriadProTextView
+            <com.cloverstudio.spika.uitems.MyriadProTextView
                 android:id="@+id/tvMyContacts"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -89,7 +89,7 @@
                 android:scaleType="centerInside"
                 android:src="@drawable/submenu_search_icon" />
 
-            <com.cloverstudio.spikademo.uitems.MyriadProTextView
+            <com.cloverstudio.spika.uitems.MyriadProTextView
                 android:id="@+id/tvSearch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

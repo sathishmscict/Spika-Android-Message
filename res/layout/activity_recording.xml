@@ -40,7 +40,7 @@
 
     </RelativeLayout>
 
-    <com.cloverstudio.spikademo.view.MyriadProTextView
+    <com.cloverstudio.spika.view.MyriadProTextView
         android:id="@+id/tvRecording"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

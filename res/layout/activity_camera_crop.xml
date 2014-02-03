@@ -12,14 +12,14 @@
         android:layout_centerHorizontal="true"
         android:background="@drawable/background_repeat" >
 
-        <com.cloverstudio.spikademo.view.CroppedImageView
+        <com.cloverstudio.spika.view.CroppedImageView
             android:id="@+id/ivCameraCropPhoto"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_centerHorizontal="true"
             android:layout_gravity="center_vertical|center_horizontal"
-            android:scaleType="matrix" >
-        </com.cloverstudio.spikademo.view.CroppedImageView>
+            android:scaleType="matrix"
+        />
 
         <LinearLayout
             android:layout_width="match_parent"

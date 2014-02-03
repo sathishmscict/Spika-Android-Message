@@ -35,7 +35,7 @@
             android:visibility="gone" />
     </RelativeLayout>
 
-    <com.cloverstudio.spikademo.view.MyriadProTextView
+    <com.cloverstudio.spika.view.MyriadProTextView
         android:id="@+id/tvMessage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -67,7 +67,7 @@
             android:background="@drawable/sidebar_notification_balloon"
             android:contentDescription="@null" />
 
-        <com.cloverstudio.spikademo.view.MyriadProTextView
+        <com.cloverstudio.spika.view.MyriadProTextView
             android:id="@+id/tvNotificationsNumber"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

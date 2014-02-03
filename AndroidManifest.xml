@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.cloverstudio.spikademo"
+    package="com.cloverstudio.spika"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -28,16 +28,16 @@
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
 
     <permission
-        android:name="com.cloverstudio.spikademo.permission.C2D_MESSAGE"
+        android:name="com.cloverstudio.spika.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
 
-    <uses-permission android:name="com.cloverstudio.spikademo.permission.C2D_MESSAGE" />
+    <uses-permission android:name="com.cloverstudio.spika.permission.C2D_MESSAGE" />
 
     <permission
-        android:name="com.cloverstudio.spikademo.permission.MAPS_RECEIVE"
+        android:name="com.cloverstudio.spika.permission.MAPS_RECEIVE"
         android:protectionLevel="signature" />
 
-    <uses-permission android:name="com.cloverstudio.spikademo.permission.MAPS_RECEIVE" />
+    <uses-permission android:name="com.cloverstudio.spika.permission.MAPS_RECEIVE" />
     
     
     <!-- App receives GCM messages. -->
@@ -52,7 +52,7 @@
         android:required="true" />
 
     <application
-        android:name=".SpikaApp"
+        android:name="com.cloverstudio.spika.SpikaApp"
         android:allowBackup="true"
         android:icon="@drawable/icon"
         android:label="@string/app_name"
@@ -61,13 +61,13 @@
         
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyAShU-d_GUo7sBAboP022DisgqUGQKoqm4" />
+            android:value="AIzaSyAEjfVThq8_-mHeitjZYanpI_XALIyRSAU" />
         
         <meta-data android:name="com.google.android.gms.version" android:value="4030500" />
         
 
         <activity
-            android:name=".SplashScreenActivity"
+            android:name="com.cloverstudio.spika.SplashScreenActivity"
             android:label="@string/app_name"
             android:noHistory="true"
             android:screenOrientation="portrait" >
@@ -89,118 +89,118 @@
 			</intent-filter>
         </activity>
         <activity
-            android:name=".SignInActivity"
+            android:name="com.cloverstudio.spika.SignInActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:launchMode="singleTop" >
         </activity>
         <activity
-            android:name=".WallActivity"
+            android:name="com.cloverstudio.spika.WallActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"
             android:launchMode="singleTask" >
         </activity>
         <activity
-            android:name=".extendables.SideBarActivity"
+            android:name="com.cloverstudio.spika.extendables.SideBarActivity"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".extendables.HookUpActivity"
+            android:name="com.cloverstudio.spika.extendables.HookUpActivity"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".extendables.HookUpFragmentActivity"
+            android:name="com.cloverstudio.spika.extendables.HookUpFragmentActivity"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".PasscodeActivity"
+            android:name="com.cloverstudio.spika.PasscodeActivity"
             android:screenOrientation="portrait"
             android:launchMode="singleTop" >
         </activity>
         <activity
-            android:name=".UsersActivity"
+            android:name="com.cloverstudio.spika.UsersActivity"
             android:screenOrientation="portrait"
             android:launchMode="singleTop" >
         </activity>
         <activity
-            android:name=".GroupsActivity"
+            android:name="com.cloverstudio.spika.GroupsActivity"
             android:screenOrientation="portrait"
             android:launchMode="singleTop" >
         </activity>
         <activity
-            android:name=".PhotoActivity"
+            android:name="com.cloverstudio.spika.PhotoActivity"
             android:screenOrientation="portrait"
             android:launchMode="singleTop" >
         </activity>
         <activity
-            android:name=".CreateGroupActivity"
+            android:name="com.cloverstudio.spika.CreateGroupActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
              >
         </activity>
         <activity
-            android:name=".CameraCropActivity"
+            android:name="com.cloverstudio.spika.CameraCropActivity"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".MyProfileActivity"
+            android:name="com.cloverstudio.spika.MyProfileActivity"
             android:screenOrientation="portrait"
             android:launchMode="singleTask" >
         </activity>
         <activity
-            android:name=".UserProfileActivity"
+            android:name="com.cloverstudio.spika.UserProfileActivity"
             android:screenOrientation="portrait"
             android:launchMode="singleTop" >
         </activity>
         <activity
-            android:name=".GroupProfileActivity"
+            android:name="com.cloverstudio.spika.GroupProfileActivity"
             android:screenOrientation="portrait"
             android:launchMode="singleTop" >
         </activity>
         <activity
-            android:name=".LocationActivity"
+            android:name="com.cloverstudio.spika.LocationActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".RecordingActivity"
+            android:name="com.cloverstudio.spika.RecordingActivity"
             android:screenOrientation="portrait"
             android:launchMode="singleTask" >
         </activity>
         <activity
-            android:name=".VoiceActivity"
+            android:name="com.cloverstudio.spika.VoiceActivity"
             android:screenOrientation="portrait"
             android:launchMode="singleTask" >
         </activity>
         <activity
-            android:name=".SettingsActivity"
+            android:name="com.cloverstudio.spika.SettingsActivity"
             android:screenOrientation="portrait"
             android:launchMode="singleTask" >
         </activity>
         <activity
-            android:name=".VideoActivity"
+            android:name="com.cloverstudio.spika.VideoActivity"
             android:screenOrientation="portrait"
             android:launchMode="singleTask" 
             android:configChanges="keyboardHidden|orientation|screenSize">
         </activity>
         <activity
-            android:name=".RecordingVideoActivity"
+            android:name="com.cloverstudio.spika.RecordingVideoActivity"
             android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation|screenSize" >
         </activity>
         <activity
-            android:name=".RecentActivityActivity"
+            android:name="com.cloverstudio.spika.RecentActivityActivity"
             android:launchMode="singleTask"
             android:windowSoftInputMode="stateAlwaysHidden"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".dialog.Tutorial"
+            android:name="com.cloverstudio.spika.dialog.Tutorial"
             android:screenOrientation="portrait"
             android:theme="@style/TransparentDialogTheme" >
         </activity>
 
-        <service android:name=".GCMIntentService" />
+        <service android:name="com.cloverstudio.spika.GCMIntentService" />
 
 
         <receiver
@@ -210,18 +210,18 @@
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
                 <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
 
-                <category android:name="com.cloverstudio.spikademo" />
+                <category android:name="com.cloverstudio.spika" />
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".management.ConnectionChangeReceiver" >
+        <receiver android:name="com.cloverstudio.spika.management.ConnectionChangeReceiver" >
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
                 <action android:name="android.net.ConnectivityManager.CONNECTIVITY_ACTION" />
             </intent-filter>
         </receiver>
         
-        <receiver android:name=".management.LogoutReceiver">
+        <receiver android:name="com.cloverstudio.spika.management.LogoutReceiver">
           <intent-filter>
           <action android:name=".management.LogoutReceiver.LOGOUT">
           </action>

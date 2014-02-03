@@ -23,7 +23,7 @@
             android:layout_below="@+id/header"
             android:visibility="visible" >
 
-            <com.cloverstudio.spikademo.view.MyriadProTextView
+            <com.cloverstudio.spika.view.MyriadProTextView
                 android:id="@+id/tvServerUrl"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -64,7 +64,7 @@
                 android:layout_marginTop="35dp"
                 android:gravity="center_vertical" >
 
-                <com.cloverstudio.spikademo.view.MyriadProTextView
+                <com.cloverstudio.spika.view.MyriadProTextView
                     android:id="@+id/tvPasscodeProtect"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -103,7 +103,7 @@
                     android:layout_marginTop="15dp"
                     android:gravity="center_vertical" >
 
-                    <com.cloverstudio.spikademo.view.MyriadProTextView
+                    <com.cloverstudio.spika.view.MyriadProTextView
                         android:id="@+id/tvPassword"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

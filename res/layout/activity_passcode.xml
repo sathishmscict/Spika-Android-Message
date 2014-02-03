@@ -30,7 +30,7 @@
         android:layout_alignParentTop="true"
         android:background="@drawable/header_background" >
 
-        <com.cloverstudio.spikademo.view.MyriadProTextView
+        <com.cloverstudio.spika.view.MyriadProTextView
             android:id="@+id/tvTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

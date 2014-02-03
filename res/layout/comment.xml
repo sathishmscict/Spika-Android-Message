@@ -32,7 +32,7 @@
             android:padding="5dp"
             android:gravity="right" >
 
-            <com.cloverstudio.spikademo.view.MyriadProTextView
+            <com.cloverstudio.spika.view.MyriadProTextView
                 android:id="@+id/tvCommentToMe"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -40,7 +40,7 @@
                 android:text="TextView"
                 android:textSize="20sp" />
 
-            <com.cloverstudio.spikademo.view.MyriadProTextView
+            <com.cloverstudio.spika.view.MyriadProTextView
                 android:id="@+id/tvSubTextToMe"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -79,7 +79,7 @@
             android:padding="5dp"
             android:gravity="left" >
 
-            <com.cloverstudio.spikademo.view.MyriadProTextView
+            <com.cloverstudio.spika.view.MyriadProTextView
                 android:id="@+id/tvCommentFromMe"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -87,7 +87,7 @@
                 android:text="TextView"
                 android:textSize="20sp" />
 
-            <com.cloverstudio.spikademo.view.MyriadProTextView
+            <com.cloverstudio.spika.view.MyriadProTextView
                 android:id="@+id/tvSubTextFromMe"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

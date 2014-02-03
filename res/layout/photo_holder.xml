@@ -23,7 +23,7 @@
         android:focusable="true"
         android:focusableInTouchMode="true" >
 
-        <com.cloverstudio.spikademo.view.AspectRatioImageView
+        <com.cloverstudio.spika.view.AspectRatioImageView
             android:id="@+id/ivPhotoImage"
             android:layout_width="match_parent"
             android:layout_height="500px"
@@ -54,7 +54,7 @@
         android:src="@drawable/image_stub"
         android:visibility="visible" />
 
-    <com.cloverstudio.spikademo.view.MyriadProTextView
+    <com.cloverstudio.spika.view.MyriadProTextView
         android:id="@+id/tvPostedBy"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

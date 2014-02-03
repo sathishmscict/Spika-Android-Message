@@ -34,7 +34,7 @@
             android:visibility="visible" />
     </RelativeLayout>
 
-    <com.cloverstudio.spikademo.view.MyriadProTextView
+    <com.cloverstudio.spika.view.MyriadProTextView
         android:id="@+id/tvUserName"
         style="@style/TransparentDialogTheme"
         android:layout_width="wrap_content"
@@ -50,7 +50,7 @@
         android:textSize="16sp"
         android:textStyle="bold" />
 
-    <com.cloverstudio.spikademo.view.MyriadProTextView
+    <com.cloverstudio.spika.view.MyriadProTextView
         android:id="@+id/tvNotification"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

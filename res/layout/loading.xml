@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:indeterminateDrawable="@drawable/loading_icon" />
 
-    <com.cloverstudio.spikademo.view.MyriadProTextView
+    <com.cloverstudio.spika.view.MyriadProTextView
         android:id="@+id/progressTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

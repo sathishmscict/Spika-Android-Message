@@ -14,7 +14,7 @@
         android:layout_alignParentTop="true"
         android:background="@drawable/menu_header" >
 
-        <com.cloverstudio.spikademo.view.MyriadProTextView
+        <com.cloverstudio.spika.view.MyriadProTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -45,7 +45,7 @@
                     android:focusable="true" >
 
 
-                    <com.cloverstudio.spikademo.view.MyriadProTextView
+                    <com.cloverstudio.spika.view.MyriadProTextView
                         android:id="@+id/tvNotificationsTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -73,7 +73,7 @@
                             android:background="@drawable/sidebar_no_notification_balloon"
                             android:contentDescription="@null" />
 
-                        <com.cloverstudio.spikademo.view.MyriadProTextView
+                        <com.cloverstudio.spika.view.MyriadProTextView
                             android:id="@+id/tvNotificationsNumber"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -98,7 +98,7 @@
                     android:layout_height="37dp"
                     android:background="@color/hookup_positive" >
 
-                    <com.cloverstudio.spikademo.view.MyriadProTextView
+                    <com.cloverstudio.spika.view.MyriadProTextView
                         android:id="@+id/tvAccountTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -138,7 +138,7 @@
                             android:scaleType="centerInside"
                             android:src="@drawable/users_icon" />
 
-                        <com.cloverstudio.spikademo.view.MyriadProTextView
+                        <com.cloverstudio.spika.view.MyriadProTextView
                             android:id="@+id/tvUsers"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -168,7 +168,7 @@
                                 android:background="@drawable/sidebar_notification_balloon"
                                 android:contentDescription="@null" />
 
-                            <com.cloverstudio.spikademo.view.MyriadProTextView
+                            <com.cloverstudio.spika.view.MyriadProTextView
                                 android:id="@+id/tvUserNotificationsNumber"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -206,7 +206,7 @@
                             android:scaleType="centerInside"
                             android:src="@drawable/groups_icon" />
 
-                        <com.cloverstudio.spikademo.view.MyriadProTextView
+                        <com.cloverstudio.spika.view.MyriadProTextView
                             android:id="@+id/tvGroups"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -237,7 +237,7 @@
                                 android:background="@drawable/sidebar_notification_balloon"
                                 android:contentDescription="@null" />
 
-                            <com.cloverstudio.spikademo.view.MyriadProTextView
+                            <com.cloverstudio.spika.view.MyriadProTextView
                                 android:id="@+id/tvGroupNotificationsNumber"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -275,7 +275,7 @@
                             android:scaleType="centerInside"
                             android:src="@drawable/profile_icon" />
 
-                        <com.cloverstudio.spikademo.view.MyriadProTextView
+                        <com.cloverstudio.spika.view.MyriadProTextView
                             android:id="@+id/tvProfile"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -313,7 +313,7 @@
                             android:scaleType="centerInside"
                             android:src="@drawable/settings_icon" />
 
-                        <com.cloverstudio.spikademo.view.MyriadProTextView
+                        <com.cloverstudio.spika.view.MyriadProTextView
                             android:id="@+id/tvSettings"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -351,7 +351,7 @@
                             android:scaleType="centerInside"
                             android:src="@drawable/private_wall_icon" />
 
-                        <com.cloverstudio.spikademo.view.MyriadProTextView
+                        <com.cloverstudio.spika.view.MyriadProTextView
                             android:id="@+id/tvPrivateWall"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -389,7 +389,7 @@
                             android:scaleType="centerInside"
                             android:src="@drawable/logout_icon" />
 
-                        <com.cloverstudio.spikademo.view.MyriadProTextView
+                        <com.cloverstudio.spika.view.MyriadProTextView
                             android:id="@+id/tvLogout"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"

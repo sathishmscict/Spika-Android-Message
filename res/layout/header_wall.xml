@@ -17,7 +17,7 @@
         android:scaleType="centerInside"
         android:src="@drawable/menu_icon" />
 
-    <com.cloverstudio.spikademo.view.MyriadProTextView
+    <com.cloverstudio.spika.view.MyriadProTextView
         android:id="@+id/tvTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -40,7 +40,7 @@
             android:duplicateParentState="true"
             android:focusable="true"
             android:focusableInTouchMode="true" />
-    </com.cloverstudio.spikademo.view.MyriadProTextView>
+    </com.cloverstudio.spika.view.MyriadProTextView>
 
     <Button
         android:id="@+id/btnProfile"

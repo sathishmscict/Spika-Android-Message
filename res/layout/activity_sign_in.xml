@@ -329,7 +329,7 @@
         android:layout_alignParentTop="true"
         android:background="@color/sidemenu_header" >
 
-        <com.cloverstudio.spikademo.view.MyriadProTextView
+        <com.cloverstudio.spika.view.MyriadProTextView
             android:id="@+id/tvSignInTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

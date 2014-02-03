@@ -11,7 +11,7 @@
         android:layout_centerHorizontal="true"
         android:background="@drawable/tutorial_background" >
 
-        <com.cloverstudio.spikademo.view.MyriadProTextView
+        <com.cloverstudio.spika.view.MyriadProTextView
             android:id="@+id/tvTutorialText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

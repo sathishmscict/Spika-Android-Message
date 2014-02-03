@@ -15,7 +15,7 @@
         android:background="@drawable/search_icon_black"
         android:enabled="false" />
 
-    <com.cloverstudio.spikademo.view.MyriadProTextView
+    <com.cloverstudio.spika.view.MyriadProTextView
         android:id="@+id/searchLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -26,10 +26,9 @@
         android:gravity="left|center"
         android:text="YOU CAN STILL ADD XX CONTACT"
         android:textColor="@color/dark_gray_text"
-        android:textSize="15sp" >
-    </com.cloverstudio.spikademo.view.MyriadProTextView>
+        android:textSize="15sp" />
 
-    <com.cloverstudio.spikademo.view.MyriadProTextView
+    <com.cloverstudio.spika.view.MyriadProTextView
         android:id="@+id/nameLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -39,8 +38,7 @@
         android:gravity="center_vertical"
         android:text="@string/name"
         android:textColor="@color/dark_gray_text"
-        android:textSize="15sp" >
-    </com.cloverstudio.spikademo.view.MyriadProTextView>
+        android:textSize="15sp" />
 
     <EditText
         android:id="@+id/etSearchUsersNameAdvanced"
@@ -62,7 +60,7 @@
         android:textSize="18sp" >
     </EditText>
 
-    <com.cloverstudio.spikademo.view.MyriadProTextView
+    <com.cloverstudio.spika.view.MyriadProTextView
         android:id="@+id/ageLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -70,10 +68,9 @@
         android:gravity="center_vertical"
         android:text="@string/age"
         android:textColor="@color/dark_gray_text"
-        android:textSize="15sp" >
-    </com.cloverstudio.spikademo.view.MyriadProTextView>
+        android:textSize="15sp" />
 
-    <com.cloverstudio.spikademo.view.MyriadProTextView
+    <com.cloverstudio.spika.view.MyriadProTextView
         android:id="@+id/fromLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -85,8 +82,7 @@
         android:gravity="center_vertical"
         android:text="@string/from"
         android:textColor="@color/dim_gray_text"
-        android:textSize="15sp" >
-    </com.cloverstudio.spikademo.view.MyriadProTextView>
+        android:textSize="15sp" />
 
     <EditText
         android:id="@+id/etSearchUsersFromAgeAdvanced"
@@ -107,7 +103,7 @@
         android:textSize="18sp" >
     </EditText>
 
-    <com.cloverstudio.spikademo.view.MyriadProTextView
+    <com.cloverstudio.spika.view.MyriadProTextView
         android:id="@+id/toLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -118,8 +114,7 @@
         android:gravity="center_vertical"
         android:text="@string/to"
         android:textColor="@color/dim_gray_text"
-        android:textSize="15sp" >
-    </com.cloverstudio.spikademo.view.MyriadProTextView>
+        android:textSize="15sp" />
 
     <EditText
         android:id="@+id/etSearchUsersToAgeAdvanced"
@@ -147,7 +142,7 @@
         android:layout_below="@+id/etSearchUsersFromAgeAdvanced"
         android:layout_marginTop="10dp" >
 
-        <com.cloverstudio.spikademo.view.MyriadProTextView
+        <com.cloverstudio.spika.view.MyriadProTextView
             android:id="@+id/genderLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -155,8 +150,7 @@
             android:layout_marginLeft="25dp"
             android:text="@string/gender"
             android:textColor="@color/dark_gray_text"
-            android:textSize="15sp" >
-        </com.cloverstudio.spikademo.view.MyriadProTextView>
+            android:textSize="15sp" />
 
         <RadioGroup
             android:id="@+id/rgGenderSearchAdvanced"
