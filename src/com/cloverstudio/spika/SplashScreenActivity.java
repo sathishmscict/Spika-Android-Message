@@ -24,6 +24,7 @@
 
 package com.cloverstudio.spika;
 
+import java.io.File;
 import java.util.List;
 
 import android.app.Activity;
@@ -31,6 +32,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.cloverstudio.spika.R;
@@ -120,13 +122,11 @@ public class SplashScreenActivity extends Activity {
 	}
 
 	private void signIn(User u) {
-
+		
 		UsersManagement.setLoginUser(u);
 		UsersManagement.setToUser(u);
 		UsersManagement.setToGroup(null);
 		
-		boolean passcodeProtect = SpikaApp.getPreferences()
-				.getPasscodeProtect();
 		boolean openPushNotification = getIntent().getBooleanExtra(
 				Const.PUSH_INTENT, false);
 		
@@ -160,14 +160,33 @@ public class SplashScreenActivity extends Activity {
 		intent.putExtra(Const.SIGN_IN, true);
 		SplashScreenActivity.this.startActivity(intent);
 		
-		if (passcodeProtect==true && openPushNotification == false) {
+		finish();
+	}
+	
+	private void checkPassProtect (User user) {
+				
+		if (SpikaApp.getPreferences().getPasscodeProtect()) 
+		{
 			Intent passcode = new Intent(SplashScreenActivity.this,
 					PasscodeActivity.class);
 			passcode.putExtra("protect", true);
-			SplashScreenActivity.this.startActivity(passcode);
+			SplashScreenActivity.this.startActivityForResult(passcode, 0);
+		} 
+		else
+		{
+			signIn(user);
 		}
-		
-		finish();
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (resultCode == Activity.RESULT_OK) {
+			signIn(mUser);
+		}
+		else {
+			finish();
+		}
+		super.onActivityResult(requestCode, resultCode, data);
 	}
 
 	private boolean authentificationOk(User user) {
@@ -194,7 +213,7 @@ public class SplashScreenActivity extends Activity {
 
 						@Override
 						public void run() {
-							signIn(mUser);
+							checkPassProtect(mUser);
 						}
 					}, 2000);
 				}

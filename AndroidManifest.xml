@@ -69,7 +69,6 @@
         <activity
             android:name="com.cloverstudio.spika.SplashScreenActivity"
             android:label="@string/app_name"
-            android:noHistory="true"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
