@@ -106,14 +106,17 @@ public class LocationActivity extends SpikaFragmentActivity {
 		mLatitude = mExtras.getDouble(Const.LATITUDE);
 		mLongitude = mExtras.getDouble(Const.LONGITUDE);
 
+		Log.e("Loaction", mTypeOfLocation + " " + mLatitude + " " + mLongitude);
+		
 		initialization();
-        setGps();
+        
 
 		if (mTypeOfLocation.equals("userLocation")) {
 			setLocation(mLatitude, mLongitude);
 			setAvatarAndName(false);
 		} else {
 			setAvatarAndName(true);
+			setGps();
 		}
 
 		setOnClickListener();
@@ -184,6 +187,9 @@ public class LocationActivity extends SpikaFragmentActivity {
 	}
 
 	private void setLocation(double lat, double lon) {
+		
+		Log.e("set location", "" + lat + " " + lon);
+		
 		mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lon),
 				16));
 
@@ -195,6 +201,9 @@ public class LocationActivity extends SpikaFragmentActivity {
 		new GetAdressNameAsync(LocationActivity.this).execute(lat, lon);
 
 		mGpsTracker = new GPSTracker(this);
+		
+		Log.e("can get location", "" + mGpsTracker.canGetLocation());
+		
 		if (mGpsTracker.canGetLocation()) {
 			double myLat = mGpsTracker.getLatitude();
 			double myLon = mGpsTracker.getLongitude();
