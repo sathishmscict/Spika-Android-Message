@@ -108,7 +108,7 @@ public class RecentActivityActivity extends SideBarActivity {
 
 		if (!pushHandledOnNewIntent) {
 			if (getIntent().getBooleanExtra(Const.PUSH_INTENT, false)) {
-				pushHandledOnNewIntent = false;
+				pushHandledOnNewIntent = true;
 				Intent pushIntent = getIntent();
 				pushIntent.setClass(this, WallActivity.class);
 				startActivity(pushIntent);
