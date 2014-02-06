@@ -202,7 +202,8 @@ public class SignInActivity extends Activity {
 
 				if (isEmailValid(mEtSendPasswordEmail.getText().toString())) 
 				{
-					CouchDB.findUserByEmailAsync(mEtSendPasswordEmail.getText().toString(), new GetUserByEmailListener(), SignInActivity.this, true);
+					mSendPasswordDialog.show(getString(R.string.confirm_email)
+							+ "\n" + mEtSendPasswordEmail.getText().toString());
 				} else {
 
 					final HookUpDialog dialog = new HookUpDialog(
@@ -504,7 +505,6 @@ public class SignInActivity extends Activity {
 	
 	private class SendPasswordListener implements ResultListener<Void>
 	{
-
 		@Override
 		public void onResultsSucceded(Void result) {
 			final HookUpAlertDialog emailSentDialog = new HookUpAlertDialog(
@@ -514,28 +514,6 @@ public class SignInActivity extends Activity {
 
 		@Override
 		public void onResultsFail() {
-		}
-		
-	}
-	
-	private class GetUserByEmailListener implements ResultListener<User>
-	{
-		@Override
-		public void onResultsSucceded(User result) {
-			User mUserByEmail = result;
-			if (mUserByEmail != null) {
-				mSendPasswordEmail = mEtSendPasswordEmail.getText().toString();
-				mSendPasswordDialog.show(getString(R.string.confirm_email)
-						+ "\n" + mSendPasswordEmail);
-			} else {
-				final HookUpDialog dialog = new HookUpDialog(
-						SignInActivity.this);
-				dialog.showOnlyOK(getString(R.string.email_notexists));
-			}
-		}
-		
-		@Override
-		public void onResultsFail() {	
 		}
 	}
 }
