@@ -43,7 +43,7 @@
 
     <Button
         android:id="@+id/btnContacts"
-        android:layout_width="95dp"
+        android:layout_width="110dp"
         android:layout_height="match_parent"
         android:layout_alignParentRight="true"
         android:background="@drawable/positive_selector"
