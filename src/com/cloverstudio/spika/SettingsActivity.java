@@ -97,7 +97,7 @@ public class SettingsActivity extends SideBarActivity {
 
 					@Override
 					public void onClick(View v) {
-						CouchDB.sendPassword(UsersManagement.getLoginUser().getEmail(), new SendPasswordListener() , SettingsActivity.this, true);
+						CouchDB.sendPassword(SpikaApp.getPreferences().getUserEmail(), new SendPasswordListener() , SettingsActivity.this, true);
 						mSendPasswordDialog.dismiss();
 					}
 				});
@@ -122,7 +122,7 @@ public class SettingsActivity extends SideBarActivity {
 			public void onClick(View v) {
 //				mPasswordDialog.show(mPassword);
 				mSendPasswordDialog.show(getString(R.string.confirm_email)
-						+ "\n" + UsersManagement.getLoginUser().getEmail());
+						+ "\n" + SpikaApp.getPreferences().getUserEmail());
 
 			}
 		});

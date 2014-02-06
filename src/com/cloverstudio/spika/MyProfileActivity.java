@@ -385,7 +385,7 @@ public class MyProfileActivity extends SideBarActivity {
 				.getAvatarThumbFileId();
 		mNewAvatarId = mUserAvatarId;
 		mUserOnlineStatus = UsersManagement.getLoginUser().getOnlineStatus();
-		mUserEmail = UsersManagement.getLoginUser().getEmail();
+		mUserEmail = SpikaApp.getPreferences().getUserEmail();
 		mNewOnlineStatus = mUserOnlineStatus;
 	}
 
@@ -412,7 +412,7 @@ public class MyProfileActivity extends SideBarActivity {
 			mNewAvatarId = mUserAvatarId;
 			mUserOnlineStatus = UsersManagement.getLoginUser()
 					.getOnlineStatus();
-			mUserEmail = UsersManagement.getLoginUser().getEmail();
+			mUserEmail = SpikaApp.getPreferences().getUserEmail();
 			mNewOnlineStatus = mUserOnlineStatus;
 		}
 
