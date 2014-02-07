@@ -25,6 +25,8 @@
 package com.cloverstudio.spika.couchdb.model;
 
 import java.io.Serializable;
+
+import com.cloverstudio.spika.utils.Const;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -90,11 +92,12 @@ public class Message implements Comparable<Message>, Serializable{
     @Expose private String mEmoticonImageUrl;
     @SerializedName("message_url")
     @Expose private String mMessageUrl;
-	
+    @SerializedName(Const.AVATAR_THUMB_FILE_ID)
+    @Expose private String mAvatarFileId;
 	
 	private int mCommentCount = 0;
 	
-	private String mUserAvatarFileId;
+	
 	
 	public Message() {}
 		
@@ -348,12 +351,13 @@ public class Message implements Comparable<Message>, Serializable{
 		this.mVoiceFileId = mVoiceFileId;
 	}
 
-	public String getUserAvatarFileId() {
-		return mUserAvatarFileId;
+	public String getAvatarFileId() {
+		if (mAvatarFileId == null) mAvatarFileId = "";
+		return mAvatarFileId;
 	}
 
-	public void setUserAvatarFileId(String mUserAvatarFileId) {
-		this.mUserAvatarFileId = mUserAvatarFileId;
+	public void setAvatarFileId(String mUserAvatarFileId) {
+		this.mAvatarFileId = mUserAvatarFileId;
 	}
 
 	public String getEmoticonImageUrl() {

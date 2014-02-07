@@ -555,7 +555,7 @@ public class WallMessagesAdapter extends BaseAdapter {
 		holder.tvMessageBodyToMe.setVisibility(View.GONE);
 		
 		
-		Utils.displayImage(m.getUserAvatarFileId(), holder.btnAvatarToMe,
+		Utils.displayImage(m.getAvatarFileId(), holder.btnAvatarToMe,
 					holder.pbLoadingAvatarToMe, ImageLoader.SMALL,
 					R.drawable.user_stub, false);
 

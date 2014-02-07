@@ -1232,21 +1232,12 @@ public class CouchDBHelper {
 
 				}
 
-				if (message == null) {
-					continue;
-					
-				} else {
-				    
-				    String avatarFileId = CouchDB.getFromMemCache(message.getFromUserId());
-				    
-				    if(avatarFileId == null){
-                        avatarFileId = CouchDB.findAvatarFileId(message.getFromUserId());
-                        CouchDB.saveToMemCache(message.getFromUserId(),avatarFileId);
-				    }else{
-				        Log.d("test",avatarFileId);
-				    }
-
-					message.setUserAvatarFileId(avatarFileId);
+				if (message == null) 
+				{
+					continue;	
+				} 
+				else 
+				{
 					messages.add(message);
 				}
 			}
@@ -1426,6 +1417,12 @@ public class CouchDBHelper {
 			message.setEmoticonImageUrl("");
 		}
 
+		try {
+			message.setAvatarFileId(json.getString(Const.AVATAR_THUMB_FILE_ID));
+		} catch (JSONException e) {
+			message.setAvatarFileId("");
+		}
+		
 		if (image || video || voice) {
 			message.setCommentCount(CouchDB.getCommentCount(message.getId()));
 		}
