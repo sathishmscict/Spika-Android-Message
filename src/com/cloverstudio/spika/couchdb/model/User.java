@@ -126,6 +126,7 @@ public class User {
 	}
 
 	public String getName() {
+		if (mName == null) mName = "";
 		return mName;
 	}
 
@@ -134,6 +135,7 @@ public class User {
 	}
 
 	public String getId() {
+		if (mId == null) mId = "0";
 		return mId;
 	}
 
