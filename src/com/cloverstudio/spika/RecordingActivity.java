@@ -139,7 +139,7 @@ public class RecordingActivity extends SpikaActivity {
 		tvTitle.setText("VOICE");
 
 		ImageView ivAvatar = (ImageView) findViewById(R.id.ivAvatarVoice);
-		LayoutHelper.scaleWidthAndHeightRelativeLayout(this, 5f, ivAvatar);
+		LayoutHelper.scaleWidthAndHeight(this, 5f, ivAvatar);
 		Utils.displayImage(UsersManagement.getLoginUser().getAvatarFileId(),
 				ivAvatar, ImageLoader.SMALL, R.drawable.user_stub, false);
 

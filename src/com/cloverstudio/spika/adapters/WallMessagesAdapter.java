@@ -31,9 +31,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
+import android.view.animation.AnimationUtils;
+import android.view.animation.TranslateAnimation;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -43,6 +49,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cloverstudio.spika.LocationActivity;
 import com.cloverstudio.spika.MyProfileActivity;
@@ -144,9 +151,9 @@ public class WallMessagesAdapter extends BaseAdapter {
 						.findViewById(R.id.ivForLocationOrVoiceFromMe);
 				holder.pbLoadingForImageFromMe = (ProgressBar) v
 						.findViewById(R.id.pbLoadingForImageFromMe);
-				LayoutHelper.scaleWidthAndHeightRelativeLayout(mActivity, 2.4f,
+				LayoutHelper.scaleWidthAndHeight(mActivity, 2.4f,
 						holder.ivPhotoFromMe);
-				LayoutHelper.scaleWidthAndHeightRelativeLayout(mActivity, 5f,
+				LayoutHelper.scaleWidthAndHeight(mActivity, 5f,
 						holder.btnAvatarMe);
 
 				holder.rlToMe = (RelativeLayout) v
@@ -179,21 +186,30 @@ public class WallMessagesAdapter extends BaseAdapter {
 						.findViewById(R.id.ivForLocationOrVoiceToMe);
 				holder.pbLoadingForImageToMe = (ProgressBar) v
 						.findViewById(R.id.pbLoadingForImageToMe);
-				LayoutHelper.scaleWidthAndHeightRelativeLayout(mActivity, 2.4f,
+				holder.contentViewForWidth = v.findViewById(R.id.llMessageFromMe);
+				holder.contentViewForHeight = v.findViewById(R.id.rlForBackgroundFromMe);
+				holder.deleteButton = (ImageView) v.findViewById(R.id.deleteButton);
+				LayoutHelper.scaleWidthAndHeight(mActivity, 2.4f,
 						holder.ivPhotoToMe);
-				LayoutHelper.scaleWidthAndHeightRelativeLayout(mActivity, 5f,
+				LayoutHelper.scaleWidthAndHeight(mActivity, 5f,
 						holder.btnAvatarToMe);
+				
 				v.setTag(holder);
 			} else {
 				holder = (ViewHolder) convertView.getTag();
+				
 			}
+			
+			holder.rlFromMe.clearAnimation();
+			holder.deleteButton.clearAnimation();
 
 			holder.liNews.setVisibility(View.GONE);
 			holder.rlFromMe.setVisibility(View.GONE);
 			holder.rlToMe.setVisibility(View.GONE);
 			holder.rlMyPhotoComments.setVisibility(View.GONE);
 			holder.rlPhotoComments.setVisibility(View.GONE);
-
+			holder.deleteButton.setVisibility(View.GONE);
+		
 			holder.ivPhotoToMe.setImageBitmap(null);
 			holder.ivPhotoFromMe.setImageBitmap(null);
 			
@@ -216,6 +232,8 @@ public class WallMessagesAdapter extends BaseAdapter {
 			}
 
 		} catch (Exception e) {
+			
+			e.printStackTrace();
 
 			Logger.error("WallMessagesAdapter",
 					"Error on inflating wall messages!");
@@ -255,6 +273,9 @@ public class WallMessagesAdapter extends BaseAdapter {
 		public TextView tvPhotoComments;
 		public ImageView ivForLocationOrVoiceToMe;
 		public ProgressBar pbLoadingForImageToMe;
+		public View contentViewForWidth;
+		public View contentViewForHeight;
+		public ImageView deleteButton;
 
 	}
 
@@ -364,7 +385,7 @@ public class WallMessagesAdapter extends BaseAdapter {
         }
     }
     
-    private void showMessageFromMe(final Message m, ViewHolder holder) {
+    private void showMessageFromMe(final Message m, final ViewHolder holder) {
 
 		holder.rlFromMe.setVisibility(View.VISIBLE);
 		holder.ivPhotoFromMe.setVisibility(View.VISIBLE);
@@ -430,8 +451,8 @@ public class WallMessagesAdapter extends BaseAdapter {
 		} else if (m.getMessageType().equals(Const.IMAGE)) {
 			
 			holder.rlImageFromMe.setVisibility(View.VISIBLE);
-			holder.rlFromMe.setClickable(false);
-			holder.ivPhotoFromMe.setOnClickListener(getPhotoListener(m));
+			holder.rlFromMe.setOnClickListener(getPhotoListener(m));
+//			holder.ivPhotoFromMe.setOnClickListener(getPhotoListener(m));
 
 			Utils.displayImage(m.getImageFileId(), holder.ivPhotoFromMe,
 					holder.pbLoadingForImageFromMe, ImageLoader.SMALL,
@@ -460,7 +481,7 @@ public class WallMessagesAdapter extends BaseAdapter {
 //					.getItem(m.getBody()).getBitmap());
 //			holder.pbLoadingForImageFromMe.setVisibility(View.GONE);
 
-			holder.ivPhotoFromMe.setOnClickListener(null);
+//			holder.ivPhotoFromMe.setOnClickListener(null);
 			holder.tvMessageBodyFromMe.setVisibility(View.GONE);
 			holder.rlFromMe.setOnClickListener(null);
 
@@ -545,6 +566,29 @@ public class WallMessagesAdapter extends BaseAdapter {
 		}
 
 		holder.tvMessageSubTextFromMe.setText(setSubText(m));
+		holder.rlFromMe.setOnLongClickListener(new OnLongClickListener() {
+			
+			@Override
+			public boolean onLongClick(View v) {
+				
+				int contentWidth = holder.contentViewForWidth.getWidth() + holder.btnAvatarMe.getWidth();				
+				int screenWidthHalf = (int) (mActivity.getResources().getDisplayMetrics().widthPixels * 0.5f);
+				int translateX = contentWidth - (int) (screenWidthHalf * 0.9f);
+								
+				Animation animationIn = AnimationUtils.loadAnimation(mActivity, R.anim.slide_in_right_on_delete);
+				holder.deleteButton.getLayoutParams().width = screenWidthHalf;
+				holder.deleteButton.getLayoutParams().height = holder.contentViewForHeight.getHeight();
+				holder.deleteButton.setVisibility(View.VISIBLE);
+				holder.deleteButton.startAnimation(animationIn);
+				
+				TranslateAnimation animationOut = new TranslateAnimation(0, translateX, 0, 0);
+				animationOut.setFillAfter(true);
+				animationOut.setDuration(200);
+				holder.rlFromMe.startAnimation(animationOut);
+								
+				return true;
+			}
+		});
 	}
 
 	private void showMessageToMe(final Message m, ViewHolder holder) {
@@ -719,5 +763,4 @@ public class WallMessagesAdapter extends BaseAdapter {
 
 		holder.tvMessageSubTextToMe.setText(setSubText(m));
 	}
-
 }

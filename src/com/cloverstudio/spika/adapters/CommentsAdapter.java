@@ -123,7 +123,7 @@ public class CommentsAdapter extends ArrayAdapter<Comment> implements
 					tvSubTextFromMe.setText(getSubTextDateAndUser(comment));
 					ImageButton btnAvatarMe = (ImageButton) v
 							.findViewById(R.id.btnAvatarMe);
-					LayoutHelper.scaleWidthAndHeightRelativeLayout(mContext,
+					LayoutHelper.scaleWidthAndHeight(mContext,
 							5f, btnAvatarMe);
 
 					Utils.displayImage(UsersManagement.getLoginUser()
@@ -141,7 +141,7 @@ public class CommentsAdapter extends ArrayAdapter<Comment> implements
 					tvSubTextToMe.setText(getSubTextDateAndUser(comment));
 					ImageButton btnAvatarToMe = (ImageButton) v
 							.findViewById(R.id.btnAvatarToMe);
-					LayoutHelper.scaleWidthAndHeightRelativeLayout(mContext,
+					LayoutHelper.scaleWidthAndHeight(mContext,
 							5f, btnAvatarToMe);
 
 //					String avatarFileId = null;

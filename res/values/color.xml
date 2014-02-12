@@ -59,4 +59,6 @@
     
     <color name="dim_background">#80323232</color>
     
+    <color name="delete_pink">#E81A57</color>
+    
 </resources>

@@ -238,7 +238,7 @@ public class LocationActivity extends SpikaFragmentActivity {
 
 	private void setAvatarAndName(boolean isMe) {
 		ImageView ivAvatar = (ImageView) findViewById(R.id.ivAvatarLocation);
-		LayoutHelper.scaleWidthAndHeightRelativeLayout(this, 5f, ivAvatar);
+		LayoutHelper.scaleWidthAndHeight(this, 5f, ivAvatar);
 
 		TextView tvNameOfUser = (TextView) findViewById(R.id.tvNameOfUserLocation);
 		

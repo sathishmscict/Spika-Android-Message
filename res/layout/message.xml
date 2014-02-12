@@ -2,8 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clipToPadding="false" >
-	
+    android:clipToPadding="false">
+    
     <LinearLayout
         android:orientation="vertical"
         android:id="@+id/liNewsLayout"
@@ -138,7 +138,9 @@
                         android:layout_centerInParent="true"
                         android:background="@color/loading_background"
                         android:contentDescription="@null"
-                        android:scaleType="fitCenter" />
+                        android:scaleType="fitCenter"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false" />
 
                     <ProgressBar
                         android:id="@+id/pbLoadingForImageToMe"
@@ -207,14 +209,25 @@
         </RelativeLayout>
     </RelativeLayout>
 
+    <ImageView
+       	android:id="@+id/deleteButton"
+       	android:layout_width="wrap_content"
+       	android:layout_height="wrap_content"
+       	android:layout_marginTop="10dp"
+       	android:src="@drawable/delete"
+       	android:background="@color/delete_pink"
+       	android:contentDescription="@null"
+       	android:scaleType="fitCenter"
+       	android:visibility="visible" />
+    
     <RelativeLayout
         android:id="@+id/rlFromMeLayout"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="15dp"
         android:clipToPadding="false"
         android:visibility="gone" >
-
+        
         <RelativeLayout
             android:id="@+id/llMessageFromMe"
             android:layout_width="wrap_content"
@@ -225,7 +238,7 @@
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:paddingTop="10dp" >
-
+            
             <ImageView
                 android:id="@+id/ivForLocationOrVoiceFromMe"
                 android:layout_width="wrap_content"
@@ -263,7 +276,9 @@
                         android:layout_centerInParent="true"
                         android:background="@color/loading_background"
                         android:contentDescription="@null"
-                        android:scaleType="fitCenter" />
+                        android:scaleType="fitCenter" 
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"/>
 
                     <ProgressBar
                         android:id="@+id/pbLoadingForImageFromMe"
@@ -338,18 +353,25 @@
             android:layout_alignParentRight="true"
             android:layout_marginRight="5dp"
             android:layout_marginTop="10dp"
-            android:gravity="center" >
+            android:gravity="center"
+            android:visibility="visible">
 
-            <ImageButton
-                android:id="@+id/btnAvatarMe"
+            <LinearLayout 
+                android:orientation="horizontal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:background="@color/loading_background"
-                android:contentDescription="@null"
-                android:scaleType="fitCenter"
-                android:visibility="visible" />
-
+                android:layout_centerInParent="true">
+                
+                <ImageButton
+	                android:id="@+id/btnAvatarMe"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:background="@color/loading_background"
+	                android:contentDescription="@null"
+	                android:scaleType="fitCenter"
+	                android:visibility="visible" />
+            </LinearLayout>
+            
             <ProgressBar
                 android:id="@+id/pbLoadingAvatarMe"
                 style="@style/CustomProgressBar"
@@ -359,5 +381,4 @@
                 android:visibility="visible" />
         </RelativeLayout>
     </RelativeLayout>
-
 </RelativeLayout>

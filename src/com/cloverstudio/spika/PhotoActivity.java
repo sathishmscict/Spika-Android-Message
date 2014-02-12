@@ -146,7 +146,7 @@ public class PhotoActivity extends SpikaActivity {
 						mMessage.getImageFileId(), mIvPhotoImage, mPbLoading,
 						ImageLoader.LARGE, R.drawable.image_stub, false);
 			
-			LayoutHelper.scaleWidthAndHeightRelativeLayout(this, 5f,
+			LayoutHelper.scaleWidthAndHeight(this, 5f,
 					mBtnAvatarUser);
 
 			CouchDB.findAvatarAndDisplay(mMessage.getFromUserId(), mBtnAvatarUser, this);

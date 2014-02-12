@@ -111,7 +111,7 @@ public class VoiceActivity extends SpikaActivity {
 
 	private void setInitHeaderAndAvatar() {
 		ImageView ivAvatar = (ImageView) findViewById(R.id.ivAvatarVoice);
-		LayoutHelper.scaleWidthAndHeightRelativeLayout(this, 5f, ivAvatar);
+		LayoutHelper.scaleWidthAndHeight(this, 5f, ivAvatar);
 
 		TextView tvTitle = (TextView) findViewById(R.id.tvTitle);
 		tvTitle.setText("VOICE");

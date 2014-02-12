@@ -124,7 +124,7 @@ public class VideoActivity extends SpikaActivity {
 		findViewById(R.id.btnSend).setVisibility(View.GONE);
 
 		ImageView ivAvatar = (ImageView) findViewById(R.id.ivAvatarVideo);
-		LayoutHelper.scaleWidthAndHeightRelativeLayout(this, 5f, ivAvatar);
+		LayoutHelper.scaleWidthAndHeight(this, 5f, ivAvatar);
 
 		TextView tvTitle = (TextView) findViewById(R.id.tvTitle);
 		tvTitle.setText("VIDEO");
