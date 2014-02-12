@@ -25,6 +25,7 @@
 package com.cloverstudio.spika.utils;
 
 import android.content.Context;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout.LayoutParams;
 
@@ -45,10 +46,8 @@ public class LayoutHelper {
 	 */
 	public static void scaleWidthAndHeightRelativeLayout(Context context, float koef, ImageView imageView) {
 		int screenWidth = context.getResources().getDisplayMetrics().widthPixels;
-		LayoutParams params = (LayoutParams) imageView.getLayoutParams();
-		params.width = (int) (screenWidth / koef);
-		params.height = (int) (screenWidth / koef);
-		imageView.setLayoutParams(params);
+		imageView.getLayoutParams().width = (int) (screenWidth / koef);
+		imageView.getLayoutParams().height = (int) (screenWidth / koef);
 	}
 
 	/**

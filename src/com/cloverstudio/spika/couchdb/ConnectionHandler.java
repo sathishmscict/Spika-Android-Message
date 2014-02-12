@@ -600,11 +600,11 @@ public class ConnectionHandler {
 		HttpEntity httpEntity = httpResponse.getEntity();
 		InputStream is = httpEntity.getContent();
 
-		if (httpResponse.getStatusLine().getStatusCode() > 400)
-		{
-			if (httpResponse.getStatusLine().getStatusCode() == 500) throw new SpikaException(ConnectionHandler.getError(entity.getContent()));
-			throw new IOException(httpResponse.getStatusLine().getReasonPhrase());
-		}
+//		if (httpResponse.getStatusLine().getStatusCode() > 400)
+//		{
+//			if (httpResponse.getStatusLine().getStatusCode() == 500) throw new SpikaException(ConnectionHandler.getError(entity.getContent()));
+//			throw new IOException(httpResponse.getStatusLine().getReasonPhrase());
+//		}
 		
 		// BufferedReader reader = new BufferedReader(new
 		// InputStreamReader(is, "iso-8859-1"), 8);
