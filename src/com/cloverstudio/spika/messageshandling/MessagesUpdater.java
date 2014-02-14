@@ -56,6 +56,12 @@ public class MessagesUpdater {
 			getMessagesAsync(regularRefresh);
 		}
 	}
+	
+	public static void reload () {
+		gIsLoading = true;
+		gRegularRefresh = true;
+		new SpikaAsyncTask<Void, Void, ArrayList<Message>>(new GetMessages(), new GetMessagesAfterReload(), WallActivity.getInstance(), true).execute();
+	}
 
 	private static void getMessagesAsync (boolean reguralRefresh) {
 		gIsLoading = true;
@@ -100,6 +106,20 @@ public class MessagesUpdater {
 
 			if (WallActivity.getInstance() != null)
 				WallActivity.getInstance().checkMessagesCount();
+		}
+
+		@Override
+		public void onResultsFail() {			
+		}
+	}
+	
+	private static class GetMessagesAfterReload implements ResultListener<ArrayList<Message>> {
+
+		@Override
+		public void onResultsSucceded(ArrayList<Message> result) {
+			gIsLoading = false;
+			WallActivity.gCurrentMessages = result;
+			WallActivity.getInstance().setWallMessages();
 		}
 
 		@Override

@@ -92,8 +92,13 @@ public class Message implements Comparable<Message>, Serializable{
     @Expose private String mEmoticonImageUrl;
     @SerializedName("message_url")
     @Expose private String mMessageUrl;
+    
     @SerializedName(Const.AVATAR_THUMB_FILE_ID)
     @Expose private String mAvatarFileId;
+    @SerializedName(Const.DELETE_TYPE)
+    @Expose private int mDeleteType = 0;
+    @SerializedName(Const.DELETE_AT)
+    @Expose private int mDelete = 0;
 	
 	private int mCommentCount = 0;
 	
@@ -375,5 +380,22 @@ public class Message implements Comparable<Message>, Serializable{
     public void setMessageUrl(String messageUrl) {
         this.mMessageUrl = messageUrl;
     }
-    
+
+	public int getDelete() {
+		return mDelete;
+	}
+
+	public void setDelete(int mDelete) {
+		this.mDelete = mDelete;
+	}
+
+	public int getDeleteType() {
+		return mDeleteType;
+	}
+
+	public void setDeleteType(int mDeleteType) {
+		this.mDeleteType = mDeleteType;
+	}
+	
+	
 }

@@ -49,7 +49,6 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.cloverstudio.spika.LocationActivity;
 import com.cloverstudio.spika.MyProfileActivity;
@@ -60,6 +59,7 @@ import com.cloverstudio.spika.UserProfileActivity;
 import com.cloverstudio.spika.VideoActivity;
 import com.cloverstudio.spika.VoiceActivity;
 import com.cloverstudio.spika.couchdb.model.Message;
+import com.cloverstudio.spika.dialog.DeleteMessageDialog;
 import com.cloverstudio.spika.lazy.ImageLoader;
 import com.cloverstudio.spika.management.UsersManagement;
 import com.cloverstudio.spika.utils.Const;
@@ -188,7 +188,10 @@ public class WallMessagesAdapter extends BaseAdapter {
 						.findViewById(R.id.pbLoadingForImageToMe);
 				holder.contentViewForWidth = v.findViewById(R.id.llMessageFromMe);
 				holder.contentViewForHeight = v.findViewById(R.id.rlForBackgroundFromMe);
-				holder.deleteButton = (ImageView) v.findViewById(R.id.deleteButton);
+				holder.deleteButton = (ImageButton) v.findViewById(R.id.deleteButton);
+				holder.deleteTimerFromMe = (ImageView) v.findViewById(R.id.deleteFromMe);
+				holder.deleteTimerToMe = (ImageView) v.findViewById(R.id.deleteToMe);
+				
 				LayoutHelper.scaleWidthAndHeight(mActivity, 2.4f,
 						holder.ivPhotoToMe);
 				LayoutHelper.scaleWidthAndHeight(mActivity, 5f,
@@ -209,6 +212,8 @@ public class WallMessagesAdapter extends BaseAdapter {
 			holder.rlMyPhotoComments.setVisibility(View.GONE);
 			holder.rlPhotoComments.setVisibility(View.GONE);
 			holder.deleteButton.setVisibility(View.GONE);
+			holder.deleteTimerFromMe.setVisibility(View.GONE);
+			holder.deleteTimerToMe.setVisibility(View.GONE);
 		
 			holder.ivPhotoToMe.setImageBitmap(null);
 			holder.ivPhotoFromMe.setImageBitmap(null);
@@ -275,8 +280,9 @@ public class WallMessagesAdapter extends BaseAdapter {
 		public ProgressBar pbLoadingForImageToMe;
 		public View contentViewForWidth;
 		public View contentViewForHeight;
-		public ImageView deleteButton;
-
+		public ImageButton deleteButton;
+		public ImageView deleteTimerFromMe;
+		public ImageView deleteTimerToMe;
 	}
 
 	private String setSubText(Message message) {
@@ -571,24 +577,47 @@ public class WallMessagesAdapter extends BaseAdapter {
 			@Override
 			public boolean onLongClick(View v) {
 				
-				int contentWidth = holder.contentViewForWidth.getWidth() + holder.btnAvatarMe.getWidth();				
+				final int contentWidth = holder.contentViewForWidth.getWidth() + holder.btnAvatarMe.getWidth();				
 				int screenWidthHalf = (int) (mActivity.getResources().getDisplayMetrics().widthPixels * 0.5f);
-				int translateX = contentWidth - (int) (screenWidthHalf * 0.9f);
+				final int translateX = contentWidth - (int) (screenWidthHalf * 0.95f);
 								
-				Animation animationIn = AnimationUtils.loadAnimation(mActivity, R.anim.slide_in_right_on_delete);
 				holder.deleteButton.getLayoutParams().width = screenWidthHalf;
 				holder.deleteButton.getLayoutParams().height = holder.contentViewForHeight.getHeight();
 				holder.deleteButton.setVisibility(View.VISIBLE);
-				holder.deleteButton.startAnimation(animationIn);
+				holder.deleteButton.setClickable(true);
+				
+				Animation animationIn = AnimationUtils.loadAnimation(mActivity, R.anim.slide_in_right_on_delete);
 				
 				TranslateAnimation animationOut = new TranslateAnimation(0, translateX, 0, 0);
 				animationOut.setFillAfter(true);
 				animationOut.setDuration(200);
+				
+				holder.rlFromMe.setClickable(false);
+				holder.btnAvatarMe.setClickable(false);
+				
+				animationIn.setAnimationListener(new AnimationListener() {
+					@Override
+					public void onAnimationStart(Animation animation) {
+					}
+					@Override
+					public void onAnimationRepeat(Animation animation) {
+					}
+					@Override
+					public void onAnimationEnd(Animation animation) {
+						holder.deleteButton.setOnClickListener(new OnClickListener() {
+							@Override
+							public void onClick(View v) {
+								new DeleteMessageDialog(mActivity, m.getId(), m.getDeleteType()).show();
+							}
+						});
+					}
+				});
+				holder.deleteButton.startAnimation(animationIn);
 				holder.rlFromMe.startAnimation(animationOut);
-								
 				return true;
 			}
 		});
+		if (m.getDeleteType() != 0) holder.deleteTimerFromMe.setVisibility(View.VISIBLE);
 	}
 
 	private void showMessageToMe(final Message m, ViewHolder holder) {
@@ -762,5 +791,6 @@ public class WallMessagesAdapter extends BaseAdapter {
 		}
 
 		holder.tvMessageSubTextToMe.setText(setSubText(m));
+		if (m.getDeleteType() != 0) holder.deleteTimerToMe.setVisibility(View.VISIBLE);
 	}
 }

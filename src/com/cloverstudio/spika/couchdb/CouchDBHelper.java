@@ -1423,6 +1423,18 @@ public class CouchDBHelper {
 			message.setAvatarFileId("");
 		}
 		
+		try {
+			message.setDeleteType(json.getInt(Const.DELETE_TYPE));
+		} catch (JSONException e) {
+			message.setDeleteType(0);
+		}
+		
+		try {
+			message.setDelete(json.getInt(Const.DELETE_AT));
+		} catch (JSONException e) {
+			message.setDelete(0);
+		}
+		
 		if (image || video || voice) {
 			message.setCommentCount(CouchDB.getCommentCount(message.getId()));
 		}

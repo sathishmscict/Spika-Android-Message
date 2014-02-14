@@ -1888,12 +1888,7 @@ public class CouchDB {
 		}
     }
 
-    /**
-     * Update message from group
-     * 
-     * @param m
-     * @return
-     */
+    
     //TODO: NEW API ????
 //    public static boolean updateMessageForGroup(Message m) {
 //        boolean isSuccess = true;
@@ -1955,6 +1950,41 @@ public class CouchDB {
 //        return isSuccess;
 //    }
  
+    //****************** DELETE MESSAGE ****************************
+    
+    public static void deleteMessageAsync (String messageId, String deleteType, ResultListener<Void> resultListener, Context context, boolean showProgressBar) {
+    	new SpikaAsyncTask<Void, Void, Void>(new DeleteMessage(messageId, deleteType), resultListener, context, showProgressBar).execute();
+    }
+    
+    private static void deleteMessage (String messageId, String deleteType) throws JSONException, ClientProtocolException, IllegalStateException, IOException, SpikaException {
+    	JSONObject jsonObj = new JSONObject();
+        
+        jsonObj.put(Const.MESSAGE_ID, messageId);
+        jsonObj.put(Const.DELETE_TYPE, deleteType);
+                
+        ConnectionHandler.postJsonObjectForString(Const.SET_DELETE, jsonObj, UsersManagement.getLoginUser().getId(), UsersManagement.getLoginUser().getToken());
+    }
+    
+    private static class DeleteMessage implements Command<Void> {
+
+    	String messageId;
+    	String deleteType;
+    	
+    	public DeleteMessage (String messageId, String deleteType) {
+    		this.messageId = messageId;
+    		this.deleteType = deleteType;
+    	}
+    	
+		@Override
+		public Void execute() throws JSONException, IOException, SpikaException {
+			deleteMessage(messageId, deleteType);
+			return null;
+		}
+    }
+    
+    
+    
+    
     //****************** CREATE COMMENT ****************************
     
     /**

@@ -100,8 +100,9 @@
             android:orientation="vertical"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
-            android:paddingTop="10dp" >
-
+            android:paddingTop="10dp"
+            >
+            
             <ImageView
                 android:id="@+id/ivForLocationOrVoiceToMe"
                 android:layout_width="wrap_content"
@@ -206,19 +207,20 @@
                 android:textColor="@color/light_gray_subtext"
                 android:textSize="12sp"
                 android:visibility="visible" />
+            
+            <ImageView
+                android:id="@+id/deleteToMe"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignRight="@+id/rlForBackgroundToMe"
+                android:layout_alignBottom="@+id/rlForBackgroundToMe"
+                android:layout_marginBottom="-4dp"
+                android:layout_marginRight="-8dp"
+                android:background="@drawable/delete_timer"
+                android:contentDescription="@null"
+                android:visibility="gone" />
         </RelativeLayout>
     </RelativeLayout>
-
-    <ImageView
-       	android:id="@+id/deleteButton"
-       	android:layout_width="wrap_content"
-       	android:layout_height="wrap_content"
-       	android:layout_marginTop="10dp"
-       	android:src="@drawable/delete"
-       	android:background="@color/delete_pink"
-       	android:contentDescription="@null"
-       	android:scaleType="fitCenter"
-       	android:visibility="visible" />
     
     <RelativeLayout
         android:id="@+id/rlFromMeLayout"
@@ -344,6 +346,18 @@
                     android:text="4"
                     android:textColor="@android:color/white" />
             </RelativeLayout>
+            
+            <ImageView
+                android:id="@+id/deleteFromMe"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/rlForBackgroundFromMe"
+                android:layout_alignBottom="@+id/rlForBackgroundFromMe"
+                android:layout_marginBottom="-4dp"
+                android:layout_marginLeft="-8dp"
+                android:background="@drawable/delete_timer"
+                android:contentDescription="@null" 
+                android:visibility="gone"/>
         </RelativeLayout>
 
         <RelativeLayout
@@ -381,4 +395,16 @@
                 android:visibility="visible" />
         </RelativeLayout>
     </RelativeLayout>
+    
+    <ImageButton
+       	android:id="@+id/deleteButton"
+       	android:layout_width="wrap_content"
+       	android:layout_height="wrap_content"
+       	android:layout_marginTop="10dp"
+       	android:src="@drawable/delete"
+       	android:background="@color/delete_pink"
+       	android:contentDescription="@null"
+       	android:scaleType="fitCenter"
+       	android:visibility="visible" />
+    
 </RelativeLayout>

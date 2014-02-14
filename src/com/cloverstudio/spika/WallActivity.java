@@ -32,6 +32,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
@@ -340,7 +341,6 @@ public class WallActivity extends SideBarActivity {
 			setWallMessages();
 			gIsRefreshUserProfile = false;
 		}
-
 	}
 
 	public void checkMessagesCount() {
@@ -563,7 +563,7 @@ public class WallActivity extends SideBarActivity {
 
 	}
 
-	private void setWallMessages() {
+	public void setWallMessages() {
 		if (gCurrentMessages == null) {
 			gCurrentMessages = new ArrayList<Message>();
 		}

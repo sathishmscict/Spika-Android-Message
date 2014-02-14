@@ -80,6 +80,7 @@ public class Const {
     public static final String UNWATCH_GROUP			= "unWatchGroup";
     public static final String ADD_CONTACT				= "addContact";
     public static final String REMOVE_CONTACT			= "removeContact";
+    public static final String SET_DELETE				= "setDelete";
     
 	/* User constants */
 	public static final String FAVORITE_GROUPS = "favorite_groups";
@@ -136,6 +137,8 @@ public class Const {
 	public static final String TO_GROUP_ID = "to_group_id";
 	public static final String TO_GROUP_NAME = "to_group_name";
 	public static final String USER_IMAGE_URL = "user_image_url";
+	public static final String DELETE_TYPE = "delete_type";
+	public static final String DELETE_AT = "delete_at";
 	
 	/* Group constants */
 	public static final String GROUP = "group";
