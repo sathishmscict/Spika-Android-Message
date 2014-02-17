@@ -38,6 +38,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cloverstudio.spika.GroupsActivity;
+import com.cloverstudio.spika.InformationActivity;
 import com.cloverstudio.spika.MyProfileActivity;
 import com.cloverstudio.spika.R;
 import com.cloverstudio.spika.RecentActivityActivity;
@@ -75,6 +76,7 @@ public class SideBarActivity extends SpikaActivity {
 	private RelativeLayout mRlUsers;
 	private RelativeLayout mRlGroups;
 	private RelativeLayout mRlProfile;
+	private RelativeLayout mRlInformation;
 	private RelativeLayout mRlSettings;
 	private RelativeLayout mRlLogout;
 	private RelativeLayout mRlPrivateWall;
@@ -85,10 +87,12 @@ public class SideBarActivity extends SpikaActivity {
 	private final int BUTTON_USERS = 1000;
 	private final int BUTTON_GROUPS = 1001;
 	private final int BUTTON_PROFILE = 1002;
+	private final int BUTTON_INFORMATION = 1007;
 	private final int BUTTON_SETTINGS = 1003;
 	private final int BUTTON_LOGOUT = 1004;
 	private final int BUTTON_PRIVATE_WALL = 1005;
 	private final int NOTIFICATIONS = 1006;
+	
 
 	public static SideBarActivity sInstance = null;
 
@@ -243,6 +247,10 @@ public class SideBarActivity extends SpikaActivity {
 		mRlProfile.setOnClickListener(new SideMenuButtonListener(
 				getComponentName(), BUTTON_PROFILE));
 
+		mRlInformation = (RelativeLayout) findViewById(R.id.rlInformation);
+		mRlInformation.setOnClickListener(new SideMenuButtonListener(
+				getComponentName(), BUTTON_INFORMATION));
+		
 		mRlSettings = (RelativeLayout) findViewById(R.id.rlSettings);
 		mRlSettings.setOnClickListener(new SideMenuButtonListener(
 				getComponentName(), BUTTON_SETTINGS));
@@ -336,6 +344,11 @@ public class SideBarActivity extends SpikaActivity {
 						MyProfileActivity.class);
 				nextActivity = MyProfileActivity.class;
 				break;
+			case BUTTON_INFORMATION:
+				intent = new Intent(SideBarActivity.this,
+						InformationActivity.class);
+				nextActivity = InformationActivity.class;
+				break;
 			case BUTTON_SETTINGS:
 				intent = new Intent(SideBarActivity.this,
 						SettingsActivity.class);
@@ -412,6 +425,7 @@ public class SideBarActivity extends SpikaActivity {
 		mRlUsers = null;
 		mRlGroups = null;
 		mRlProfile = null;
+		mRlInformation = null;
 		mRlSettings = null;
 		mRlLogout = null;
 		mRlPrivateWall = null;

@@ -242,7 +242,48 @@
                         android:layout_width="match_parent"
                         android:layout_height="2dp"
                         android:background="@color/sidemenu_divider" />
+                    
+                    <RelativeLayout
+                        android:id="@+id/rlInformation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/sidemenu_button_selector"
+                        android:clipToPadding="false"
+                        android:paddingBottom="13dp"
+                        android:paddingLeft="20dp"
+                        android:paddingTop="20dp" >
 
+                        <ImageView
+                            android:id="@+id/ivInformation"
+                            android:layout_width="35dp"
+                            android:layout_height="17dp"
+                            android:adjustViewBounds="true"
+                            android:background="@null"
+                            android:contentDescription="@null"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/information_icon"
+                            android:clipToPadding="false" />
+
+                        <com.cloverstudio.spika.view.MyriadProTextView
+                            android:id="@+id/tvInformation"
+                            android:layout_width="wrap_content"
+                            android:layout_height="21dp"
+                            android:layout_marginLeft="30dp"
+                            android:layout_toRightOf="@+id/ivInformation"
+                            android:gravity="bottom"
+                            android:text="@string/information"
+                            android:textColor="@color/side_bar_light_gray"
+                            android:textSize="18sp"
+                            android:layout_alignBaseline="@+id/ivInformation"
+                            android:clipToPadding="false" />
+                    </RelativeLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="2dp"
+                        android:background="@color/sidemenu_divider" />
+                    
                     <RelativeLayout
                         android:id="@+id/rlSettings"
                         android:layout_width="match_parent"

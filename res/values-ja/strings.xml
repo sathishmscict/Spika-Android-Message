@@ -21,6 +21,7 @@
     <string name="users">ユーザー</string>
     <string name="groups">グループ</string>
     <string name="profile">プロフィール</string>
+    <string name="information">インフォメーション</string>
     <string name="settings">設定</string>
     <string name="logout">ログアウト</string>
     <string name="search">検索</string>
@@ -109,6 +110,7 @@
     <string name="CHAT_ACTIVITY">未読メッセージ</string>
     <string name="GROUPS_ACTIVITY">新規グループ投稿</string>
     <string name="USERS_ACTIVITY">USERS ACTIVITY</string>
+    <string name="INFORMATION">インフォメーション</string>
     <string name="SETTINGS">設定</string>
     <string name="delete_group_message">グループを削除してもよろしいでしょうか？</string>
     <string name="no_internet_connection">インターネット接続を確認して下さい。</string>

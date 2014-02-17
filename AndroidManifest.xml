@@ -172,6 +172,11 @@
             android:launchMode="singleTask" >
         </activity>
         <activity
+            android:name="com.cloverstudio.spika.InformationActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask" >
+        </activity>
+        <activity
             android:name="com.cloverstudio.spika.SettingsActivity"
             android:screenOrientation="portrait"
             android:launchMode="singleTask" >
