@@ -577,6 +577,13 @@ public class WallMessagesAdapter extends BaseAdapter {
 			@Override
 			public boolean onLongClick(View v) {
 				
+				if (holder.deleteButton.getVisibility() == View.VISIBLE) {
+					holder.deleteButton.setVisibility(View.GONE);
+					holder.deleteButton.clearAnimation();
+					holder.rlFromMe.clearAnimation();
+					return true;
+				}
+				
 				final int contentWidth = holder.contentViewForWidth.getWidth() + holder.btnAvatarMe.getWidth();				
 				int screenWidthHalf = (int) (mActivity.getResources().getDisplayMetrics().widthPixels * 0.5f);
 				final int translateX = contentWidth - (int) (screenWidthHalf * 0.95f);
@@ -607,6 +614,7 @@ public class WallMessagesAdapter extends BaseAdapter {
 						holder.deleteButton.setOnClickListener(new OnClickListener() {
 							@Override
 							public void onClick(View v) {
+								WallMessagesAdapter.this.notifyDataSetChanged();
 								new DeleteMessageDialog(mActivity, m.getId(), m.getDeleteType()).show();
 							}
 						});
