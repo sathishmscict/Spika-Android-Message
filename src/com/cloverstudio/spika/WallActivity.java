@@ -26,12 +26,15 @@ package com.cloverstudio.spika;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ExecutionException;
 
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -129,6 +132,9 @@ public class WallActivity extends SideBarActivity {
 	private boolean mPushHandledOnNewIntent = false;
 	private HookUpAlertDialog mDeletedGroupDialog;
 
+	private ReloadTimerTask timerTask;
+	private Timer timer;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -139,6 +145,8 @@ public class WallActivity extends SideBarActivity {
 		initialization();
 		onClickListeners();
 
+		timerTask = new ReloadTimerTask();
+		timer = new Timer();
 	}
 
 	@Override
@@ -157,6 +165,13 @@ public class WallActivity extends SideBarActivity {
 	public void onResume() {
 		super.onResume();
 
+		Log.e("RESUME", "TIMERS!");
+		timer.schedule(timerTask, 5 * 1000, 5 * 1000);
+		
+		if (checkTimersIfReloadNeeded()) {
+			return;
+		}
+		
 		if (!mPushHandledOnNewIntent) {
 			if (getIntent().getBooleanExtra(Const.PUSH_INTENT, false)) {
 				mPushHandledOnNewIntent = false;
@@ -177,9 +192,25 @@ public class WallActivity extends SideBarActivity {
 			setTitle();
 
 		}
-
 	}
 
+	private boolean checkTimersIfReloadNeeded () {
+		int myUTC = (int) (System.currentTimeMillis() / 1000);
+		
+		if (gCurrentMessages != null) {
+			for (Message message : gCurrentMessages) {
+				if (message.getDelete() != 0) {
+					if (message.getDelete() < myUTC) {
+						Log.e("*** RELOAD ***", " " + myUTC + " " + message.getDelete());
+						MessagesUpdater.reload();
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+	
 	private void setTitle() {
 
 		if (UsersManagement.getToUser() != null) {
@@ -710,4 +741,27 @@ public class WallActivity extends SideBarActivity {
 		}
 	}
 
+	private class ReloadTimerTask extends TimerTask {
+		@Override
+		public void run() {
+			runOnUiThread(new Runnable() {
+	            @Override
+	            public void run() {
+	            	checkTimersIfReloadNeeded();
+	            }
+			});
+		}
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		
+		Log.e("PAUSE", "TIMERS!");
+		
+		if (timerTask != null) timerTask.cancel();
+		if (timer != null) timer.cancel();
+	}
+	
+	
 }

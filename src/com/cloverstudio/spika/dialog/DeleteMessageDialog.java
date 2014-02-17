@@ -1,11 +1,9 @@
 package com.cloverstudio.spika.dialog;
 
 import com.cloverstudio.spika.R;
-import com.cloverstudio.spika.WallActivity;
 import com.cloverstudio.spika.couchdb.CouchDB;
 import com.cloverstudio.spika.couchdb.ResultListener;
 import com.cloverstudio.spika.messageshandling.MessagesUpdater;
-import com.cloverstudio.spika.utils.LayoutHelper;
 
 import android.app.Activity;
 import android.app.Dialog;
