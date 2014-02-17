@@ -145,8 +145,6 @@ public class WallActivity extends SideBarActivity {
 		initialization();
 		onClickListeners();
 
-		timerTask = new ReloadTimerTask();
-		timer = new Timer();
 	}
 
 	@Override
@@ -166,6 +164,8 @@ public class WallActivity extends SideBarActivity {
 		super.onResume();
 
 		Log.e("RESUME", "TIMERS!");
+		timerTask = new ReloadTimerTask();
+		timer = new Timer();
 		timer.schedule(timerTask, 5 * 1000, 5 * 1000);
 		
 		if (checkTimersIfReloadNeeded()) {
