@@ -36,7 +36,8 @@ public class Const {
 	public static final boolean IS_DEBUG = true;
 
 	/* CouchDB credentials */
-	public static final String BASE_URL                	= "http://127.0.0.1/api/";
+	public static final String BASE_URL                	= "http://localhost:8080/wwwroot/api/";
+	public static final String INFORMATION_URL			= "http://localhost:8080/wwwroot/page/information";
 	public static final String SUPPORT_USER				= "1";
 	public static final String API_URL                 	= BASE_URL;
 	public static final String AUTH_URL                	= BASE_URL + "auth?";
