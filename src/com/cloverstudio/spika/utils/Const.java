@@ -37,7 +37,7 @@ public class Const {
 
 	/* Change here */
 	public static final String BASE_URL                	= "http://localhost:8080/wwwroot/api/";
-	public static final String INFORMATION_URL			= "http://localhost:8080/wwwroot/page/information";
+	public static final String INFORMATION_URL			= "http://localhost:8080/wwwroot/page/information/";
 	/* End Change here */
 	
 	public static final String SUPPORT_USER				= "1";
