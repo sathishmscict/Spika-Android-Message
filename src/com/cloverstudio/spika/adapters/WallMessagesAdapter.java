@@ -27,6 +27,7 @@ package com.cloverstudio.spika.adapters;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -59,6 +60,7 @@ import com.cloverstudio.spika.UserProfileActivity;
 import com.cloverstudio.spika.VideoActivity;
 import com.cloverstudio.spika.VoiceActivity;
 import com.cloverstudio.spika.couchdb.model.Message;
+import com.cloverstudio.spika.dialog.DeleteInformationDialog;
 import com.cloverstudio.spika.dialog.DeleteMessageDialog;
 import com.cloverstudio.spika.lazy.ImageLoader;
 import com.cloverstudio.spika.management.UsersManagement;
@@ -625,7 +627,15 @@ public class WallMessagesAdapter extends BaseAdapter {
 				return true;
 			}
 		});
-		if (m.getDeleteType() != 0) holder.deleteTimerFromMe.setVisibility(View.VISIBLE);
+		if (m.getDeleteType() != 0) {
+			holder.deleteTimerFromMe.setVisibility(View.VISIBLE);
+			holder.deleteTimerFromMe.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					new DeleteMessageDialog(mActivity, m.getId(), m.getDeleteType()).show();
+				}
+			});
+		}
 	}
 
 	private void showMessageToMe(final Message m, ViewHolder holder) {
@@ -799,6 +809,14 @@ public class WallMessagesAdapter extends BaseAdapter {
 		}
 
 		holder.tvMessageSubTextToMe.setText(setSubText(m));
-		if (m.getDeleteType() != 0) holder.deleteTimerToMe.setVisibility(View.VISIBLE);
+		if (m.getDeleteType() != 0) {
+			holder.deleteTimerToMe.setVisibility(View.VISIBLE);
+			holder.deleteTimerToMe.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					new DeleteInformationDialog(mActivity, m.getDelete(), m.getDeleteType()).show();
+				}
+			});
+		}
 	}
 }

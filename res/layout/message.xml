@@ -190,7 +190,6 @@
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="4dp"
-                    android:text="4"
                     android:textColor="@android:color/white" />
             </RelativeLayout>
 
@@ -208,15 +207,18 @@
                 android:textSize="12sp"
                 android:visibility="visible" />
             
-            <ImageView
+            <ImageButton
                 android:id="@+id/deleteToMe"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignRight="@+id/rlForBackgroundToMe"
                 android:layout_alignBottom="@+id/rlForBackgroundToMe"
+                android:paddingTop="15dp"
+                android:paddingLeft="15dp"
                 android:layout_marginBottom="-4dp"
                 android:layout_marginRight="-8dp"
-                android:background="@drawable/delete_timer"
+                android:src="@drawable/delete_timer"
+                android:background="@null"
                 android:contentDescription="@null"
                 android:visibility="gone" />
         </RelativeLayout>
@@ -343,19 +345,21 @@
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="4dp"
-                    android:text="4"
                     android:textColor="@android:color/white" />
             </RelativeLayout>
             
-            <ImageView
+            <ImageButton
                 android:id="@+id/deleteFromMe"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignLeft="@+id/rlForBackgroundFromMe"
                 android:layout_alignBottom="@+id/rlForBackgroundFromMe"
+                android:paddingRight="15dp"
+                android:paddingTop="15dp"
                 android:layout_marginBottom="-4dp"
                 android:layout_marginLeft="-8dp"
-                android:background="@drawable/delete_timer"
+                android:src="@drawable/delete_timer"
+                android:background="@null"
                 android:contentDescription="@null" 
                 android:visibility="gone"/>
         </RelativeLayout>
