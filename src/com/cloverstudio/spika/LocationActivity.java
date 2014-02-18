@@ -30,7 +30,9 @@ import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Address;
@@ -58,6 +60,8 @@ import com.cloverstudio.spika.messageshandling.SendMessageAsync;
 import com.cloverstudio.spika.utils.Const;
 import com.cloverstudio.spika.utils.LayoutHelper;
 import com.cloverstudio.spika.utils.Utils;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
@@ -99,8 +103,9 @@ public class LocationActivity extends SpikaFragmentActivity {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.activity_location);
-
 		mExtras = getIntent().getExtras();
+		
+		if (checkGooglePlayServicesForUpdate()) return;
 
 		mTypeOfLocation = mExtras.getString(Const.LOCATION);
 		mLatitude = mExtras.getDouble(Const.LATITUDE);
@@ -122,6 +127,18 @@ public class LocationActivity extends SpikaFragmentActivity {
 		setOnClickListener();
 
 	}
+	
+	private boolean checkGooglePlayServicesForUpdate () {
+		int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
+		if (status == ConnectionResult.SUCCESS) {
+			return false;
+		}else{
+			Dialog d = GooglePlayServicesUtil.getErrorDialog(status, this, 1337);
+			d.setCancelable(false);
+			d.show();
+			return true;
+		}
+	} 
 
 	private void initialization() {
 		mBtnBack = (Button) findViewById(R.id.btnBack);
@@ -277,7 +294,7 @@ public class LocationActivity extends SpikaFragmentActivity {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		mGpsTracker.stopUsingGPS();
+		if (mGpsTracker != null) mGpsTracker.stopUsingGPS();
 	}
 
 	class GetAdressNameAsync extends SpikaAsync<Double, Void, Void> {
@@ -422,5 +439,11 @@ public class LocationActivity extends SpikaFragmentActivity {
 						"Getting location failed", Toast.LENGTH_SHORT).show();
 			}
 		}
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		finish();
 	}
 }
