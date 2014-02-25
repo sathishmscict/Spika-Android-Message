@@ -55,7 +55,6 @@ import com.cloverstudio.spika.extendables.SpikaFragmentActivity;
 import com.cloverstudio.spika.lazy.ImageLoader;
 import com.cloverstudio.spika.management.GPSTracker;
 import com.cloverstudio.spika.management.UsersManagement;
-import com.cloverstudio.spika.messageshandling.FindAvatarFileIdAsync;
 import com.cloverstudio.spika.messageshandling.SendMessageAsync;
 import com.cloverstudio.spika.utils.Const;
 import com.cloverstudio.spika.utils.LayoutHelper;
@@ -274,21 +273,10 @@ public class LocationActivity extends SpikaFragmentActivity {
 			String idOfUser = mExtras.getString("idOfUser");
 			String nameOfUser = mExtras.getString("nameOfUser");
 			
-			CouchDB.findAvatarAndDisplay(idOfUser, ivAvatar, this);
+			CouchDB.findAvatarIdAndDisplay(idOfUser, ivAvatar, this);
 			
-//			try {
-//				avatarId = new FindAvatarFileIdAsync(this).execute(idOfUser).get();
-//			} catch (InterruptedException e) {
-//				e.printStackTrace();
-//			} catch (ExecutionException e) {
-//				e.printStackTrace();
-//			}
 			tvNameOfUser.setText(nameOfUser.toUpperCase() + "'S LOCATION");
 		}
-//		
-//		Utils.displayImage(avatarId,
-//					ivAvatar, ImageLoader.SMALL, R.drawable.user_stub, false);
-
 	}
 	
 	@Override

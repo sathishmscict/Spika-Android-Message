@@ -55,7 +55,6 @@ import com.cloverstudio.spika.couchdb.model.Message;
 import com.cloverstudio.spika.extendables.SpikaActivity;
 import com.cloverstudio.spika.lazy.ImageLoader;
 import com.cloverstudio.spika.management.CommentManagement;
-import com.cloverstudio.spika.messageshandling.FindAvatarFileIdAsync;
 import com.cloverstudio.spika.messageshandling.GetCommentsAsync;
 import com.cloverstudio.spika.messageshandling.RefreshCommentHandler;
 import com.cloverstudio.spika.messageshandling.SendMessageAsync;
@@ -124,18 +123,7 @@ public class VoiceActivity extends SpikaActivity {
 		String idOfUser = mExtras.getString("idOfUser");
 		String nameOfUser = mExtras.getString("nameOfUser");
 
-		CouchDB.findAvatarAndDisplay(idOfUser, ivAvatar, this);
-		
-//		String avatarId = null;
-//		try {
-//			avatarId = new FindAvatarFileIdAsync(this).execute(idOfUser).get();
-//		} catch (InterruptedException e) {
-//			e.printStackTrace();
-//		} catch (ExecutionException e) {
-//			e.printStackTrace();
-//		}
-//
-//		Utils.displayImage(avatarId, ivAvatar, ImageLoader.SMALL, R.drawable.user_stub, false);
+		CouchDB.findAvatarIdAndDisplay(idOfUser, ivAvatar, this);
 
 		if (mMessage.getBody().equals(null) || mMessage.getBody().equals("")) {
 			tvNameOfUser.setText(nameOfUser.toUpperCase(Locale.getDefault())

@@ -48,7 +48,6 @@ import com.cloverstudio.spika.couchdb.model.Comment;
 import com.cloverstudio.spika.dialog.HookUpProgressDialog;
 import com.cloverstudio.spika.lazy.ImageLoader;
 import com.cloverstudio.spika.management.UsersManagement;
-import com.cloverstudio.spika.messageshandling.FindAvatarFileIdAsync;
 import com.cloverstudio.spika.utils.LayoutHelper;
 import com.cloverstudio.spika.utils.Utils;
 
@@ -144,21 +143,7 @@ public class CommentsAdapter extends ArrayAdapter<Comment> implements
 					LayoutHelper.scaleWidthAndHeight(mContext,
 							5f, btnAvatarToMe);
 
-//					String avatarFileId = null;
-//					try {
-//						avatarFileId = new FindAvatarFileIdAsync(mContext).execute(
-//								comment.getUserId()).get();
-//						
-//					} catch (InterruptedException e) {
-//						e.printStackTrace();
-//					} catch (ExecutionException e) {
-//						e.printStackTrace();
-//					}
-//
-//					Utils.displayImage(avatarFileId, btnAvatarToMe,
-//							ImageLoader.SMALL, R.drawable.user_stub, false);
-
-					CouchDB.findAvatarAndDisplay(comment.getUserId(), btnAvatarToMe, mContext);
+					CouchDB.findAvatarIdAndDisplay(comment.getUserId(), btnAvatarToMe, mContext);
 					
 					rlToMe.setVisibility(View.VISIBLE);
 				}

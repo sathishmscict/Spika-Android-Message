@@ -52,7 +52,6 @@ import com.cloverstudio.spika.couchdb.model.Message;
 import com.cloverstudio.spika.extendables.SpikaActivity;
 import com.cloverstudio.spika.lazy.ImageLoader;
 import com.cloverstudio.spika.management.CommentManagement;
-import com.cloverstudio.spika.messageshandling.FindAvatarFileIdAsync;
 import com.cloverstudio.spika.messageshandling.GetCommentsAsync;
 import com.cloverstudio.spika.messageshandling.RefreshCommentHandler;
 import com.cloverstudio.spika.messageshandling.SendMessageAsync;
@@ -149,42 +148,15 @@ public class PhotoActivity extends SpikaActivity {
 			LayoutHelper.scaleWidthAndHeight(this, 5f,
 					mBtnAvatarUser);
 
-			CouchDB.findAvatarAndDisplay(mMessage.getFromUserId(), mBtnAvatarUser, this);
-			
-//			String avatarFileId = null;
-//			try {
-//				avatarFileId = new FindAvatarFileIdAsync(this).execute(mMessage
-//						.getFromUserId()).get();
-//			} catch (InterruptedException e) {
-//				e.printStackTrace();
-//			} catch (ExecutionException e) {
-//				e.printStackTrace();
-//			}
-//			
-//			Utils.displayImage(avatarFileId,
-//						mBtnAvatarUser, ImageLoader.SMALL, R.drawable.user_stub, false);
-			
-//			getAvatarAsync();
+			CouchDB.findAvatarIdAndDisplay(mMessage.getFromUserId(), mBtnAvatarUser, this);
 
 			mTvPostedBy.setText(getSubTextDateAndUser(mMessage));
 		}
 	}
 	
 	void getAvatarAsync () {
-		CouchDB.findAvatarAndDisplay(mMessage.getFromUserId(), mBtnAvatarUser, this);
-//		CouchDB.findAvatarByIdAsync(mMessage.getFromUserId(), new FindAvatarCompleted(), this, true);
+		CouchDB.findAvatarIdAndDisplay(mMessage.getFromUserId(), mBtnAvatarUser, this);
 	}
-	
-//	private class FindAvatarCompleted implements ResultListener<String>{
-//		@Override
-//		public void onResultsSucceded(String result) {
-//			Utils.displayImage(result, mBtnAvatarUser, ImageLoader.SMALL, R.drawable.user_stub, false);
-//		}
-//
-//		@Override
-//		public void onResultsFail() {			
-//		}
-//	}
 
 	private void onClickListeners() {
 

@@ -192,9 +192,12 @@ public class NotificationsAdapter extends BaseAdapter implements
 			}
 			if (mTargetType.equals(Const.GROUP)) {
 				stubId = R.drawable.group_stub;
-			}
-			Utils.displayImage(notificationMessage.getUserAvatarFileId(),
-					holder.ivImage, holder.pbLoading, ImageLoader.SMALL, stubId, false);
+			}			
+			
+			CouchDB.findAvatarIdAndDisplay(notificationMessage.getFromUserId(), stubId, holder.ivImage, mActivity);
+			
+//			Utils.displayImage(notificationMessage.getUserAvatarFileId(),
+//					holder.ivImage, holder.pbLoading, ImageLoader.SMALL, stubId, false);
 
 			holder.tvMessage.setText(notificationMessage.getMessage());
 			v.setOnClickListener(this);

@@ -59,7 +59,6 @@ import com.cloverstudio.spika.extendables.SpikaActivity;
 import com.cloverstudio.spika.lazy.ImageLoader;
 import com.cloverstudio.spika.management.CommentManagement;
 import com.cloverstudio.spika.management.UsersManagement;
-import com.cloverstudio.spika.messageshandling.FindAvatarFileIdAsync;
 import com.cloverstudio.spika.messageshandling.GetCommentsAsync;
 import com.cloverstudio.spika.messageshandling.RefreshCommentHandler;
 import com.cloverstudio.spika.messageshandling.SendMessageAsync;
@@ -146,23 +145,12 @@ public class VideoActivity extends SpikaActivity {
 
 		String avatarId = null;
 		if (extras.getBoolean("videoFromUser")) {
-			CouchDB.findAvatarAndDisplay(idOfUser, ivAvatar, this);
-//			try {
-//				avatarId = new FindAvatarFileIdAsync(this).execute(idOfUser)
-//						.get();
-//			} catch (InterruptedException e) {
-//				e.printStackTrace();
-//			} catch (ExecutionException e) {
-//				e.printStackTrace();
-//			}
+			CouchDB.findAvatarIdAndDisplay(idOfUser, ivAvatar, this);
 		} else {
 			avatarId = UsersManagement.getLoginUser().getAvatarFileId();
 			Utils.displayImage(avatarId, ivAvatar, ImageLoader.SMALL,
 					R.drawable.user_stub, false);
 		}
-
-//		Utils.displayImage(avatarId, ivAvatar, ImageLoader.SMALL,
-//				R.drawable.user_stub, false);
 
 		if (mMessage.getBody().equals(null) || mMessage.getBody().equals("")) {
 			tvNameOfUserVideo.setText(nameOfUser.toUpperCase(Locale.getDefault()) + "'S VIDEO");

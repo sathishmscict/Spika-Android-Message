@@ -482,8 +482,8 @@ public class CouchDBHelper {
 				notificationMessage = sGsonExpose.fromJson(
 						messageJson.toString(), NotificationMessage.class);
 				notificationMessage.setTargetId(targetId);
-				notificationMessage.setUserAvatarFileId(CouchDB
-						.findAvatarFileId(notificationMessage.getFromUserId()));
+//				notificationMessage.setUserAvatarFileId(CouchDB
+//						.findAvatarFileId(notificationMessage.getFromUserId()));
 				messages.add(notificationMessage);
 			} catch (JSONException e) {
 				e.printStackTrace();
@@ -821,7 +821,7 @@ public class CouchDBHelper {
 				return null;
 			}
 
-			ok = json.getBoolean(Const.OK);
+			ok = json.getInt(Const.OK) == 1 ? true : false;
 			id = json.getString(Const.ID);
 		}
 

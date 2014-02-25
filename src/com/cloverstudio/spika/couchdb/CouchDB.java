@@ -787,10 +787,6 @@ public class CouchDB {
 		
     }
     
-    public static void findAvatarByIdAsync (String userId, ResultListener<String> resultListener, Context context, boolean showProgressBar) {
-    	new SpikaAsyncTask<Void, Void, String>(new FindAvatarFileId(userId), resultListener, context, showProgressBar).execute();
-    }
-    
     private static class FindAvatarFileId implements Command<String>
     {
     	String userId;
@@ -806,21 +802,31 @@ public class CouchDB {
 		}
     }
     
-    public static void findAvatarAndDisplay (String userId, ImageView view, Context context) {
-    	findAvatarByIdAsync(userId, new FindAvatarResultListener(view), context, false);
+    public static void findAvatarByIdAsync (String userId, ResultListener<String> resultListener, Context context, boolean showProgressBar) {
+    	new SpikaAsyncTask<Void, Void, String>(new FindAvatarFileId(userId), resultListener, context, showProgressBar).execute();
+    }
+    
+    public static void findAvatarIdAndDisplay (String userId, int stubId, ImageView view, Context context) {
+    	findAvatarByIdAsync(userId, new FindAvatarResultListener(view, stubId), context, false);
+    }
+    
+    public static void findAvatarIdAndDisplay (String userId, ImageView view, Context context) {
+    	findAvatarIdAndDisplay (userId, R.drawable.user_stub, view, context);
     }
     
     private static class FindAvatarResultListener implements ResultListener<String> {
     	
     	ImageView view;
+    	int stubId;
     	
-    	public FindAvatarResultListener(ImageView view) {
+    	public FindAvatarResultListener(ImageView view, int stubId) {
 			this.view = view;
+			this.stubId = stubId;
 		}
     	
 		@Override
 		public void onResultsSucceded(String result) {
-			Utils.displayImage(result, view, ImageLoader.SMALL, R.drawable.user_stub, false);
+			Utils.displayImage(result, view, ImageLoader.SMALL, stubId, false);
 		}
 		@Override
 		public void onResultsFail() {			
