@@ -99,6 +99,8 @@ public class Message implements Comparable<Message>, Serializable{
     @Expose private int mDeleteType = 0;
     @SerializedName(Const.DELETE_AT)
     @Expose private int mDelete = 0;
+    @SerializedName(Const.READ_AT)
+    @Expose private int mReadAt = 0;
 	
 	private int mCommentCount = 0;
 	
@@ -396,6 +398,12 @@ public class Message implements Comparable<Message>, Serializable{
 	public void setDeleteType(int mDeleteType) {
 		this.mDeleteType = mDeleteType;
 	}
-	
-	
+
+	public int getReadAt() {
+		return mReadAt;
+	}
+
+	public void setReadAt(int mReadAt) {
+		this.mReadAt = mReadAt;
+	}
 }

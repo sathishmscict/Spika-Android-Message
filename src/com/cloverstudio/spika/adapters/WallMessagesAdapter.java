@@ -193,6 +193,7 @@ public class WallMessagesAdapter extends BaseAdapter {
 				holder.deleteButton = (ImageButton) v.findViewById(R.id.deleteButton);
 				holder.deleteTimerFromMe = (ImageView) v.findViewById(R.id.deleteFromMe);
 				holder.deleteTimerToMe = (ImageView) v.findViewById(R.id.deleteToMe);
+				holder.unread = (ImageView) v.findViewById(R.id.unread);
 				
 				LayoutHelper.scaleWidthAndHeight(mActivity, 2.4f,
 						holder.ivPhotoToMe);
@@ -216,6 +217,7 @@ public class WallMessagesAdapter extends BaseAdapter {
 			holder.deleteButton.setVisibility(View.GONE);
 			holder.deleteTimerFromMe.setVisibility(View.GONE);
 			holder.deleteTimerToMe.setVisibility(View.GONE);
+			holder.unread.setVisibility(View.GONE);
 		
 			holder.ivPhotoToMe.setImageBitmap(null);
 			holder.ivPhotoFromMe.setImageBitmap(null);
@@ -285,6 +287,7 @@ public class WallMessagesAdapter extends BaseAdapter {
 		public ImageButton deleteButton;
 		public ImageView deleteTimerFromMe;
 		public ImageView deleteTimerToMe;
+		public ImageView unread;
 	}
 
 	private String setSubText(Message message) {
@@ -395,6 +398,8 @@ public class WallMessagesAdapter extends BaseAdapter {
     
     private void showMessageFromMe(final Message m, final ViewHolder holder) {
 
+    	Log.e("begin message", m.getBody() + " " + m.getReadAt() + " " + m.getMessageType());
+    	
 		holder.rlFromMe.setVisibility(View.VISIBLE);
 		holder.ivPhotoFromMe.setVisibility(View.VISIBLE);
 		holder.tvMessageBodyFromMe.setVisibility(View.GONE);
@@ -635,6 +640,13 @@ public class WallMessagesAdapter extends BaseAdapter {
 					new DeleteMessageDialog(mActivity, m.getId(), m.getDeleteType()).show();
 				}
 			});
+		}
+		
+		Log.e("message", m.getBody() + " " + m.getReadAt() + " " + m.getMessageType());
+		if (m.getReadAt() == 0) {
+			holder.unread.setVisibility(View.VISIBLE);
+		} else {
+			holder.unread.setVisibility(View.GONE);
 		}
 	}
 

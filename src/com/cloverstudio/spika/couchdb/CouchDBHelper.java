@@ -1435,6 +1435,12 @@ public class CouchDBHelper {
 			message.setDelete(0);
 		}
 		
+		try {
+			message.setReadAt(json.getInt(Const.READ_AT));
+		} catch (JSONException e) {
+			message.setReadAt(0);
+		}
+		
 		if (image || video || voice) {
 			message.setCommentCount(CouchDB.getCommentCount(message.getId()));
 		}
