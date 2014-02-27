@@ -36,7 +36,6 @@ import android.widget.Toast;
 import com.cloverstudio.spika.R;
 import com.cloverstudio.spika.adapters.RecentActivityAdapter;
 import com.cloverstudio.spika.couchdb.model.ActivitySummary;
-import com.cloverstudio.spika.couchdb.model.RecentActivity;
 import com.cloverstudio.spika.dialog.HookUpDialog;
 import com.cloverstudio.spika.extendables.SideBarActivity;
 import com.cloverstudio.spika.management.UsersManagement;
@@ -142,15 +141,7 @@ public class RecentActivityActivity extends SideBarActivity {
 
 		if (summary != null) {
 
-            int count = 0;
-
-            for(int i = 0; i < summary.getRecentActivityList().size() ; i++){
-                RecentActivity recentActivity = summary.getRecentActivityList().get(i);
-                count += recentActivity.getNotificationCount();
-
-            }
-
-            if(count > 0){
+            if(summary.getRecentActivityList().size() > 0){
                 mNoActivitiesView.setVisibility(View.GONE);
             }else{
                 mNoActivitiesView.setVisibility(View.VISIBLE);
