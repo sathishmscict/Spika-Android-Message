@@ -397,8 +397,6 @@ public class WallMessagesAdapter extends BaseAdapter {
     }
     
     private void showMessageFromMe(final Message m, final ViewHolder holder) {
-
-    	Log.e("begin message", m.getBody() + " " + m.getReadAt() + " " + m.getMessageType());
     	
 		holder.rlFromMe.setVisibility(View.VISIBLE);
 		holder.ivPhotoFromMe.setVisibility(View.VISIBLE);
@@ -642,7 +640,6 @@ public class WallMessagesAdapter extends BaseAdapter {
 			});
 		}
 		
-		Log.e("message", m.getBody() + " " + m.getReadAt() + " " + m.getMessageType());
 		if (m.getReadAt() == 0) {
 			holder.unread.setVisibility(View.VISIBLE);
 		} else {
