@@ -194,10 +194,8 @@ public class NotificationsAdapter extends BaseAdapter implements
 				stubId = R.drawable.group_stub;
 			}			
 			
-			CouchDB.findAvatarIdAndDisplay(notificationMessage.getFromUserId(), stubId, holder.ivImage, mActivity);
-			
-//			Utils.displayImage(notificationMessage.getUserAvatarFileId(),
-//					holder.ivImage, holder.pbLoading, ImageLoader.SMALL, stubId, false);
+			Utils.displayImage(notificationMessage.getUserAvatarFileId(),
+					holder.ivImage, holder.pbLoading, ImageLoader.SMALL, stubId, false);
 
 			holder.tvMessage.setText(notificationMessage.getMessage());
 			v.setOnClickListener(this);

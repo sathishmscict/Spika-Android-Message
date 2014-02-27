@@ -49,10 +49,12 @@ public class NotificationMessage {
 	@Expose private String mMessage;
 	@SerializedName("user_image_url")
 	@Expose private String mUserImageUrl;
+	@SerializedName("avatar_thumb_file_id")
+	@Expose private String mUserAvatarFileId;
 	
 	private String mTargetId;
 	private int mCount;
-	private String mUserAvatarFileId;
+	
 
 	public NotificationMessage() {
 	}
