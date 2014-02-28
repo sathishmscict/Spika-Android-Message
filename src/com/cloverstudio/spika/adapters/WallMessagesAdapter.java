@@ -27,12 +27,10 @@ package com.cloverstudio.spika.adapters;
 import java.util.ArrayList;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -640,7 +638,7 @@ public class WallMessagesAdapter extends BaseAdapter {
 			});
 		}
 		
-		if (m.getReadAt() == 0) {
+		if ((m.getReadAt() == 0) && (m.getMessageTargetType().equals(Const.USER))) {
 			holder.unread.setVisibility(View.VISIBLE);
 		} else {
 			holder.unread.setVisibility(View.GONE);

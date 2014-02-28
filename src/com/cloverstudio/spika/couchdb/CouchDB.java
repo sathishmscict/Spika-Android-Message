@@ -2101,6 +2101,26 @@ public class CouchDB {
      * @throws IOException 
      * @throws ClientProtocolException 
      */
+    
+    public static void getCommentsCountAsync (final Message message, Context context) {
+	    if ((message.getMessageType().equals(Const.IMAGE)) || (message.getMessageType().equals(Const.VOICE)) || (message.getMessageType().equals(Const.VIDEO))) {
+	    	
+	    	ResultListener<Void> resultListener = new ResultListener<Void>() {
+				
+				@Override
+				public void onResultsSucceded(Void result) {
+					if (WallActivity.gMessagesAdapter != null) WallActivity.gMessagesAdapter.notifyDataSetChanged();					
+				}
+				
+				@Override
+				public void onResultsFail() {					
+				}
+			};
+	    	
+	    	new SpikaAsyncTask<Void, Void, Void>(new GetCommentCount(message), resultListener, context, false).execute();
+		}	
+    }
+    
     public static int getCommentCount(String messageId) throws ClientProtocolException, IOException, JSONException, SpikaException {
 
         try {
@@ -2114,6 +2134,24 @@ public class CouchDB {
         
         return CouchDBHelper.getCommentCount(json);
     }
+    
+    private static class GetCommentCount implements Command<Void> {
+
+    	Message message;
+    	
+    	public GetCommentCount (Message message) {
+    		this.message = message;
+    	}
+    	
+		@Override
+		public Void execute() throws JSONException, IOException,
+				SpikaException {
+			
+			message.setCommentCount(getCommentCount(message.getId()));
+			return null;
+		}
+    }
+    
 
     public static String getAuthUrl() {
         return sAuthUrl;

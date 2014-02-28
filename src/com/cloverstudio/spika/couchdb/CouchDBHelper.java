@@ -1441,9 +1441,9 @@ public class CouchDBHelper {
 			message.setReadAt(0);
 		}
 		
-		if (image || video || voice) {
-			message.setCommentCount(CouchDB.getCommentCount(message.getId()));
-		}
+//		if (image || video || voice) {
+//			message.setCommentCount(CouchDB.getCommentCount(message.getId()));
+//		}
 
 		return message;
 	}
