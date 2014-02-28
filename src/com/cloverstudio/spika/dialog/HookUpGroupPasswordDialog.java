@@ -49,6 +49,8 @@ public class HookUpGroupPasswordDialog extends Dialog {
 	private Button mBtnOk;
 	private Button mBtnCancel;
 	private String mCurrentPassword;
+	private String mGroupId;
+	private boolean mIsSubscribe;
     private Activity mActivity;
 	private static final String WRONG_PASSWORD = "";
 	private static final String PASSWORD_SUCCESS = "Success";
@@ -74,7 +76,11 @@ public class HookUpGroupPasswordDialog extends Dialog {
 				if (passwordsResult.equals(PASSWORD_SUCCESS)) {
 
 					if (activity instanceof GroupProfileActivity) {
-						((GroupProfileActivity) activity).redirect();
+						if (mIsSubscribe) {
+							((GroupProfileActivity) activity).addToFavoritesAsync(mGroupId);
+						} else {
+							((GroupProfileActivity) activity).redirect();
+						}
 						HookUpGroupPasswordDialog.this.dismiss();
 					}
 
@@ -109,12 +115,20 @@ public class HookUpGroupPasswordDialog extends Dialog {
 		if (!currentPass.equals(mCurrentPassword)) {
 			return mActivity.getString(R.string.wrongpassword);
 		}
+		SpikaApp.getPreferences().savePasswordForGroup(mGroupId, mCurrentPassword);
 		return PASSWORD_SUCCESS;
 	}
 
-	public void show(String currentPassword) {
+	
+	
+	public void show(String groupId, String currentPassword, boolean isSubscribe) {
 		mCurrentPassword = currentPassword;
+		mGroupId = groupId;
+		mIsSubscribe = isSubscribe;
 		super.show();
 	}
 
+	public void show(String groupId, String currentPassword) {
+		show(groupId, currentPassword, false);
+	}
 }
