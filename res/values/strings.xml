@@ -236,11 +236,13 @@
     <string name="NO">NO</string>
 
     <string name="delete_the_message">Delete the message</string>
+    <string name="delete_information_title">This message is deleted</string>
     <string name="dont_delete">Don\'t delete</string>
     <string name="delete_now">Delete now</string>
     <string name="delete_in_5_min">In 5 min</string>
     <string name="delete_after_1_day">After 1 day</string>
     <string name="delete_after_a_week">After a week</string>
     <string name="delete_after_user_sees_it">When user sees it</string>
+    <string name="delete_close">OK</string>
     
 </resources>

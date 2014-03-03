@@ -25,7 +25,7 @@ public class DeleteMessageDialog extends Dialog implements View.OnClickListener 
 	Context context;
 	
 	public DeleteMessageDialog(Activity activity, String messageId, int oldDeleteType) {
-		super(activity, android.R.style.Theme_Translucent_NoTitleBar_Fullscreen);
+		super(activity, android.R.style.Theme_Translucent_NoTitleBar);
 		setContentView(R.layout.dialog_delete_message);
 				
 		context = activity;

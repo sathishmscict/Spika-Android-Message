@@ -39,6 +39,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.preference.Preference;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -83,6 +84,7 @@ import com.cloverstudio.spika.management.SettingsManager;
 import com.cloverstudio.spika.management.UsersManagement;
 import com.cloverstudio.spika.utils.Const;
 import com.cloverstudio.spika.utils.Logger;
+import com.cloverstudio.spika.utils.Preferences;
 import com.cloverstudio.spika.utils.Utils;
 
 /**
@@ -505,7 +507,17 @@ public class GroupProfileActivity extends SpikaActivity {
 				} else {
 
 					if (UsersManagement.getLoginUser().canAddFavorite()) {
-						addToFavoritesAsync(mGroup.getId());
+						if (mGroup.getPassword() != null && !mGroup.getPassword().equals("")) {
+							String savedPassword = SpikaApp.getPreferences().getSavedPasswordForGroup(mGroup.getId());
+							String groupPassword = mGroup.getPassword();
+							if (!groupPassword.equals(savedPassword)) {
+								new HookUpGroupPasswordDialog(GroupProfileActivity.this).show(mGroup.getId(), mGroup.getPassword(), true);
+							} else {
+								addToFavoritesAsync(mGroup.getId());
+							}
+						} else {
+							addToFavoritesAsync(mGroup.getId());
+						}
 					} else {
 						alertDialog
 								.show(getString(R.string.max_favorites_alert));
@@ -805,7 +817,7 @@ public class GroupProfileActivity extends SpikaActivity {
 		}
 	}
 
-	private void addToFavoritesAsync (String groupId) {
+	public void addToFavoritesAsync (String groupId) {
 		CouchDB.addFavoriteGroupAsync(groupId, new AddToFavoritesFinish(), GroupProfileActivity.this, true);
 	}
 	
@@ -988,8 +1000,14 @@ public class GroupProfileActivity extends SpikaActivity {
 
 		if (group.getPassword() != null && !group.getPassword().equals("")
 				&& !userOwnsGroup) {
-			new HookUpGroupPasswordDialog(GroupProfileActivity.this).show(group
-					.getPassword());
+			String savedPassword = SpikaApp.getPreferences().getSavedPasswordForGroup(group.getId());
+			String groupPassword = group.getPassword();
+			
+			if (!groupPassword.equals(savedPassword)) {
+				new HookUpGroupPasswordDialog(GroupProfileActivity.this).show(group.getId(), group.getPassword());
+			} else {
+				redirect();
+			}
 		} else {
 			redirect();
 		}

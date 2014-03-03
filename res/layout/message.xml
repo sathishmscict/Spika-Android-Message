@@ -322,6 +322,20 @@
                 android:visibility="visible"
                 android:layout_marginTop="2dp" />
 
+            <ImageView
+                android:id="@+id/unread"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:gravity="right"
+                android:paddingBottom="3dp"
+                android:layout_alignRight="@id/rlForBackgroundFromMe"
+                android:layout_alignBottom="@id/messageSubTextFromMe"
+                android:src="@drawable/icon_unread"
+                android:background="@null"
+                android:contentDescription="@null" 
+                android:visibility="gone"/>
+            
             <RelativeLayout
                 android:id="@+id/rlMyPhotoComments"
                 android:layout_width="wrap_content"

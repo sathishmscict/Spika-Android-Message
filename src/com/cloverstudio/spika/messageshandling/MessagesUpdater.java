@@ -28,6 +28,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import org.json.JSONException;
 
+import android.util.Log;
+
 import com.cloverstudio.spika.WallActivity;
 import com.cloverstudio.spika.couchdb.Command;
 import com.cloverstudio.spika.couchdb.CouchDB;
@@ -99,6 +101,9 @@ public class MessagesUpdater {
 
 			if (gIsLoading) {
 				UpdateMessagesInListView.updateListView(result);
+				for (Message message : result) {
+					CouchDB.getCommentsCountAsync(message, WallActivity.getInstance());
+				}
 			}
 
 			gIsLoading = false;

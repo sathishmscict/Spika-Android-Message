@@ -57,7 +57,6 @@ public class GetCommentsAsync extends SpikaAsync<String, Void, List<Comment>> {
 	private List<Comment> mComments;
 	private CommentsAdapter mCommentsAdapter;
 	private ListView mCommentListView;
-	private RefreshCommentHandler mRefreshCommentHandler;
 	private boolean mFirstTime;
 
 	public GetCommentsAsync(Context context, Message message,
@@ -74,14 +73,13 @@ public class GetCommentsAsync extends SpikaAsync<String, Void, List<Comment>> {
 	public GetCommentsAsync(Context context, Message message,
 			List<Comment> comments, CommentsAdapter commentsAdapter,
 			ListView commentListView,
-			RefreshCommentHandler refreshCommentHandler, boolean firstTime) {
+			boolean firstTime) {
 		super(context);
 		mContext = context;
 		mMessage = message;
 		mComments = comments;
 		mCommentsAdapter = commentsAdapter;
 		mCommentListView = commentListView;
-		mRefreshCommentHandler = refreshCommentHandler;
 		mFirstTime=firstTime;
 	}
 
@@ -99,9 +97,6 @@ public class GetCommentsAsync extends SpikaAsync<String, Void, List<Comment>> {
 	@Override
 	protected void onPostExecute(List<Comment> result) {
 		super.onPostExecute(result);
-		
-		if (mRefreshCommentHandler != null)
-			mRefreshCommentHandler.setComments(result);
 
 		if (result.size() > mComments.size() || mFirstTime) {
 			mComments = result;
@@ -121,9 +116,6 @@ public class GetCommentsAsync extends SpikaAsync<String, Void, List<Comment>> {
 			((VideoActivity) mContext).setMessageFromAsync(mMessage);
 		} else if (mContext instanceof PhotoActivity) {
 			((PhotoActivity) mContext).setMessageFromAsync(mMessage);
-			
 		}
-
 	}
-
 }

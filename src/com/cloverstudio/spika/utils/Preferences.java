@@ -48,6 +48,7 @@ public class Preferences {
 	private static final String SHOW_TUTORIAL_BOOT = "show_tutorial_BOOT";
 	private static final String WATCHING_GROUP_ID = "watching_group_id";
 	private static final String WATCHING_GROUP_REV = "watching_group_rev";
+	private static final String GROUP_PASSWORD = "GROUP_PASSWORD";
 
 	private SharedPreferences sharedPreferences;
 
@@ -176,5 +177,14 @@ public class Preferences {
         return sharedPreferences.getString(USER_ID, "");
     }
 
-
+    public void savePasswordForGroup (String groupId, String password) {
+    	SharedPreferences.Editor editor = sharedPreferences.edit();
+    	editor.putString(GROUP_PASSWORD + groupId, password);
+    	editor.commit();
+    }
+    
+    public String getSavedPasswordForGroup (String groupId) {
+    	return sharedPreferences.getString(GROUP_PASSWORD + groupId, "");
+    }
+    
 }

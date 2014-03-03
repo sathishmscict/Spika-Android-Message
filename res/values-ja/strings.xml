@@ -233,4 +233,13 @@
     <string name="YES">はい</string>
     <string name="NO">いいえ</string>
     
+    <string name="delete_the_message">メッセージの削除</string>
+    <string name="delete_information_title">削除予定のメッセージです</string>
+    <string name="dont_delete">削除しない</string>
+    <string name="delete_now">今すぐ削除</string>
+    <string name="delete_in_5_min">5分後</string>
+    <string name="delete_after_1_day">１日後</string>
+    <string name="delete_after_a_week">１週間後</string>
+    <string name="delete_after_user_sees_it">相手ユーザーが見たら</string>
+    <string name="delete_close">決定</string>
 </resources>

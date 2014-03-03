@@ -17,7 +17,7 @@
         android:textSize="18sp"
         android:textStyle="bold"
         android:background="@drawable/positive_selector"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
     <com.cloverstudio.spika.view.MyriadProTextView
         android:id="@+id/tvTitle"
