@@ -27,7 +27,6 @@ package com.cloverstudio.spika;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Locale;
-import java.util.concurrent.ExecutionException;
 
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -60,8 +59,6 @@ import com.cloverstudio.spika.lazy.ImageLoader;
 import com.cloverstudio.spika.management.CommentManagement;
 import com.cloverstudio.spika.management.UsersManagement;
 import com.cloverstudio.spika.messageshandling.GetCommentsAsync;
-import com.cloverstudio.spika.messageshandling.RefreshCommentHandler;
-import com.cloverstudio.spika.messageshandling.SendMessageAsync;
 import com.cloverstudio.spika.utils.LayoutHelper;
 import com.cloverstudio.spika.utils.Utils;
 
@@ -96,8 +93,6 @@ public class VideoActivity extends SpikaActivity {
 
 	private Message mMessage;
 	private ListView mLvComments;
-
-	private RefreshCommentHandler mRefreshCommentHandler;
 
 	private CommentsAdapter mCommentsAdapter;
 
@@ -244,11 +239,8 @@ public class VideoActivity extends SpikaActivity {
 
 		mComments = new ArrayList<Comment>();
 
-		mRefreshCommentHandler = new RefreshCommentHandler(VideoActivity.this,
-				mMessage, mComments, mCommentsAdapter, mLvComments, 5000);
-		mRefreshCommentHandler.startRefreshing();
 		new GetCommentsAsync(VideoActivity.this, mMessage, mComments,
-				mCommentsAdapter, mLvComments, mRefreshCommentHandler, true)
+				mCommentsAdapter, mLvComments, true)
 				.execute(mMessage.getId());
 		scrollListViewToBottom();
 
@@ -283,17 +275,10 @@ public class VideoActivity extends SpikaActivity {
 
 	private void onPlay(int playPauseStop) {
 		if (playPauseStop == 0) {
-			mRefreshCommentHandler.stopRefreshing();
 			startPlaying();
-
 		} else if (playPauseStop == 1) {
-
-			mRefreshCommentHandler.stopRefreshing();
 			pausePlaying();
-
 		} else {
-
-			mRefreshCommentHandler.startRefreshing();
 			stopPlaying();
 
 		}
@@ -395,22 +380,14 @@ public class VideoActivity extends SpikaActivity {
 		}
 		return dir;
 	}
-	
-	@Override
-	protected void onDestroy() {
-		mRefreshCommentHandler.stopRefreshing();
-		super.onDestroy();
-	}
 
 	private class CreateCommentFinish implements ResultListener<String> {
 
 		@Override
 		public void onResultsSucceded(String commentId) {
 			if (commentId != null) {
-//				new SendMessageAsync(VideoActivity.this, SendMessageAsync.TYPE_VIDEO).execute(mMessage, false, true);
 				new GetCommentsAsync(VideoActivity.this, mMessage, mComments,
-						mCommentsAdapter, mLvComments, mRefreshCommentHandler,
-						true).execute(mMessage.getId());
+						mCommentsAdapter, mLvComments, false).execute(mMessage.getId());
 			}
 		}
 

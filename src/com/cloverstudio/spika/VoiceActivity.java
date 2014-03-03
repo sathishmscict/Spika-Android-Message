@@ -29,7 +29,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.ExecutionException;
 
 import android.graphics.Typeface;
 import android.media.MediaPlayer;
@@ -53,11 +52,8 @@ import com.cloverstudio.spika.couchdb.ResultListener;
 import com.cloverstudio.spika.couchdb.model.Comment;
 import com.cloverstudio.spika.couchdb.model.Message;
 import com.cloverstudio.spika.extendables.SpikaActivity;
-import com.cloverstudio.spika.lazy.ImageLoader;
 import com.cloverstudio.spika.management.CommentManagement;
 import com.cloverstudio.spika.messageshandling.GetCommentsAsync;
-import com.cloverstudio.spika.messageshandling.RefreshCommentHandler;
-import com.cloverstudio.spika.messageshandling.SendMessageAsync;
 import com.cloverstudio.spika.utils.LayoutHelper;
 import com.cloverstudio.spika.utils.Utils;
 
@@ -82,8 +78,6 @@ public class VoiceActivity extends SpikaActivity {
 	private ImageView mStopSound;
 
 	private Message mMessage;
-
-	private RefreshCommentHandler mRefreshCommentHandler;
 
 	private Bundle mExtras;
 
@@ -165,11 +159,8 @@ public class VoiceActivity extends SpikaActivity {
 
 		mComments = new ArrayList<Comment>();
 
-		mRefreshCommentHandler = new RefreshCommentHandler(VoiceActivity.this,
-				mMessage, mComments, mCommentsAdapter, mLvComments, 5000);
-		mRefreshCommentHandler.startRefreshing();
 		new GetCommentsAsync(VoiceActivity.this, mMessage, mComments,
-				mCommentsAdapter, mLvComments, mRefreshCommentHandler, true).execute(mMessage.getId());
+				mCommentsAdapter, mLvComments, true).execute(mMessage.getId());
 		scrollListViewToBottom();
 
 		Button btnSendComment = (Button) findViewById(R.id.btnSendComment);
@@ -352,21 +343,14 @@ public class VoiceActivity extends SpikaActivity {
 
 		return dir;
 	}
-
-	@Override
-	protected void onDestroy() {
-		mRefreshCommentHandler.stopRefreshing();
-		super.onDestroy();
-	}
 	
 	private class CreateCommentFinish implements ResultListener<String> {
 
 		@Override
 		public void onResultsSucceded(String commentId) {
 			if (commentId != null) {
-//				new SendMessageAsync(VoiceActivity.this, SendMessageAsync.TYPE_VOICE).execute(mMessage, false, true);
 				new GetCommentsAsync(VoiceActivity.this, mMessage, mComments,
-						mCommentsAdapter, mLvComments, mRefreshCommentHandler, true).execute(mMessage.getId());
+						mCommentsAdapter, mLvComments, false).execute(mMessage.getId());
 			}
 		}
 

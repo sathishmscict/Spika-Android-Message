@@ -26,7 +26,6 @@ package com.cloverstudio.spika;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -53,8 +52,6 @@ import com.cloverstudio.spika.extendables.SpikaActivity;
 import com.cloverstudio.spika.lazy.ImageLoader;
 import com.cloverstudio.spika.management.CommentManagement;
 import com.cloverstudio.spika.messageshandling.GetCommentsAsync;
-import com.cloverstudio.spika.messageshandling.RefreshCommentHandler;
-import com.cloverstudio.spika.messageshandling.SendMessageAsync;
 import com.cloverstudio.spika.utils.LayoutHelper;
 import com.cloverstudio.spika.utils.Utils;
 
@@ -79,8 +76,6 @@ public class PhotoActivity extends SpikaActivity {
 	private Button mBtnBack;
 	private ProgressBar mPbLoading;
 
-	private RefreshCommentHandler mRefreshCommentHandler;
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -92,19 +87,9 @@ public class PhotoActivity extends SpikaActivity {
 		onClickListeners();
 
 		mComments = new ArrayList<Comment>();
-		mRefreshCommentHandler = new RefreshCommentHandler(this, mMessage,
-				mComments, mCommentsAdapter, mLvComments, 5000);
 		new GetCommentsAsync(PhotoActivity.this, mMessage, mComments,
-				mCommentsAdapter, mLvComments, mRefreshCommentHandler, true).execute(mMessage.getId());
+				mCommentsAdapter, mLvComments, true).execute(mMessage.getId());
 		scrollListViewToBottom();
-		mRefreshCommentHandler.startRefreshing();
-
-	}
-
-	@Override
-	public void onBackPressed() {
-		super.onBackPressed();
-		Utils.hideKeyboard(PhotoActivity.this);
 	}
 	
 	private void scrollListViewToBottom() {
@@ -198,20 +183,13 @@ public class PhotoActivity extends SpikaActivity {
 		return subText;
 	}
 
-	@Override
-	protected void onDestroy() {
-		mRefreshCommentHandler.stopRefreshing();
-		super.onDestroy();
-	}
-	
 	private class CreateCommentFinish implements ResultListener<String> {
 
 		@Override
 		public void onResultsSucceded(String commentId) {
 			if (commentId != null) {
-//				new SendMessageAsync(PhotoActivity.this, SendMessageAsync.TYPE_PHOTO).execute(mMessage, false, true);
 				new GetCommentsAsync(PhotoActivity.this, mMessage, mComments,
-						mCommentsAdapter, mLvComments, mRefreshCommentHandler, true).execute(mMessage.getId());
+						mCommentsAdapter, mLvComments, false).execute(mMessage.getId());
 			} else {
 				Toast.makeText(PhotoActivity.this, "Error with creating comment", Toast.LENGTH_SHORT).show();
 			}

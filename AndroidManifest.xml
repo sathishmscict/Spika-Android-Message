@@ -129,7 +129,7 @@
         <activity
             android:name="com.cloverstudio.spika.PhotoActivity"
             android:screenOrientation="portrait"
-            android:launchMode="singleTop" >
+            android:launchMode="singleTask" >
         </activity>
         <activity
             android:name="com.cloverstudio.spika.CreateGroupActivity"
