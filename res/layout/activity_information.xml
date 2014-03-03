@@ -5,7 +5,7 @@
     tools:context=".InformationActivity" >
 
     <include layout="@layout/activity_sidebar" />
-    
+
     <RelativeLayout
         android:id="@+id/rlBody"
         android:layout_width="match_parent"
@@ -15,20 +15,13 @@
         android:clickable="true"
         android:descendantFocusability="beforeDescendants"
         android:focusableInTouchMode="true" >
-        
-        <WebView 
-	        android:id="@+id/web_view"
-	        android:layout_width="match_parent"
-	        android:layout_height="match_parent"/>
-    
-    	<ProgressBar 
-	        android:id="@+id/progress_information"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_gravity="center"
-	        android:visibility="visible"
-	        style="@android:style/Widget.ProgressBar.Small"/>
-        
+
+        <WebView
+            android:id="@+id/web_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/header" />
+
         <ImageView
             android:id="@+id/ivShadow"
             android:layout_width="match_parent"
@@ -65,6 +58,6 @@
 
             <include layout="@layout/header" />
         </RelativeLayout>
-        
     </RelativeLayout>
+
 </RelativeLayout>
