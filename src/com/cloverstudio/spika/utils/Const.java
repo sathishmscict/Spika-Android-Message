@@ -35,38 +35,35 @@ public class Const {
 	/* Debug/Production variables */
 	public static final boolean IS_DEBUG = true;
 
-	/* Change here */
-	public static final String BASE_URL                	= "http://localhost:8080/wwwroot/api/";
-	public static final String INFORMATION_URL			= "http://localhost:8080/wwwroot/page/information/";
-	/* End Change here */
+	
 	
 	public static final String SUPPORT_USER				= "1";
-	public static final String API_URL                 	= BASE_URL;
-	public static final String AUTH_URL                	= BASE_URL + "auth?";
-	public static final String SEARCH_USERS_URL        	= BASE_URL + "searchUsers?";
-	public static final String SEARCH_GROUPS_URL       	= BASE_URL + "searchGroups/name/";
-	public static final String FILE_UPLOADER_URL       	= BASE_URL + "fileuploader";
-    public static final String FILE_DOWNLOADER_URL     	= BASE_URL + "filedownloader?";
-    public static final String CHECKUNIQUE_URL         	= BASE_URL + "checkUnique?";
-    public static final String FIND_USER_BY_NAME       	= BASE_URL + "findUser/name/";
-    public static final String FIND_USER_BY_EMAIL      	= BASE_URL + "findUser/email/";
-    public static final String FIND_USER_BY_ID			= BASE_URL + "findUser/id/";
-    public static final String FIND_USERACTIVITY_SUMMARY= BASE_URL + "activitySummary";
-    public static final String GET_AVATAR_FILE_ID		= BASE_URL + "GetAvatarFileId/";
-    public static final String FIND_MESSAGE_BY_ID		= BASE_URL + "findMessageById/";
-    public static final String FIND_COMMENTS_BY_MESSAGE_ID	= BASE_URL + "comments/";
-    public static final String COMMENTS_COUNT			= BASE_URL + "commentsCount/";
-    public static final String FIND_USER_MESSAGES		= BASE_URL + "userMessages/";
-    public static final String FIND_GROUP_MESSAGES		= BASE_URL + "groupMessages/";
-    public static final String FIND_ALL_EMOTICONS		= BASE_URL + "Emoticons";
-    public static final String FIND_GROUP_BY_ID			= BASE_URL + "findGroup/id/";
-    public static final String FIND_GROUP_BY_NAME		= BASE_URL + "findGroup/name/";
-    public static final String FIND_GROUP_BY_CATEGORY_ID= BASE_URL + "findGroup/categoryId/";
-    public static final String FIND_GROUP_CATEGORIES	= BASE_URL + "findAllGroupCategory";
+	public static final String API_URL                 	= ConstServer.BASE_URL;
+	public static final String AUTH_URL                	= ConstServer.BASE_URL + "auth?";
+	public static final String SEARCH_USERS_URL        	= ConstServer.BASE_URL + "searchUsers?";
+	public static final String SEARCH_GROUPS_URL       	= ConstServer.BASE_URL + "searchGroups/name/";
+	public static final String FILE_UPLOADER_URL       	= ConstServer.BASE_URL + "fileuploader";
+    public static final String FILE_DOWNLOADER_URL     	= ConstServer.BASE_URL + "filedownloader?";
+    public static final String CHECKUNIQUE_URL         	= ConstServer.BASE_URL + "checkUnique?";
+    public static final String FIND_USER_BY_NAME       	= ConstServer.BASE_URL + "findUser/name/";
+    public static final String FIND_USER_BY_EMAIL      	= ConstServer.BASE_URL + "findUser/email/";
+    public static final String FIND_USER_BY_ID			= ConstServer.BASE_URL + "findUser/id/";
+    public static final String FIND_USERACTIVITY_SUMMARY= ConstServer.BASE_URL + "activitySummary";
+    public static final String GET_AVATAR_FILE_ID		= ConstServer.BASE_URL + "GetAvatarFileId/";
+    public static final String FIND_MESSAGE_BY_ID		= ConstServer.BASE_URL + "findMessageById/";
+    public static final String FIND_COMMENTS_BY_MESSAGE_ID	= ConstServer.BASE_URL + "comments/";
+    public static final String COMMENTS_COUNT			= ConstServer.BASE_URL + "commentsCount/";
+    public static final String FIND_USER_MESSAGES		= ConstServer.BASE_URL + "userMessages/";
+    public static final String FIND_GROUP_MESSAGES		= ConstServer.BASE_URL + "groupMessages/";
+    public static final String FIND_ALL_EMOTICONS		= ConstServer.BASE_URL + "Emoticons";
+    public static final String FIND_GROUP_BY_ID			= ConstServer.BASE_URL + "findGroup/id/";
+    public static final String FIND_GROUP_BY_NAME		= ConstServer.BASE_URL + "findGroup/name/";
+    public static final String FIND_GROUP_BY_CATEGORY_ID= ConstServer.BASE_URL + "findGroup/categoryId/";
+    public static final String FIND_GROUP_CATEGORIES	= ConstServer.BASE_URL + "findAllGroupCategory";
     
     
-    public static final String PASSWORDREMINDER_URL    	= BASE_URL + "resetPassword?";
-    public static final String UNREGISTER_PUSH_URL     	= BASE_URL + "unregistToken?";
+    public static final String PASSWORDREMINDER_URL    	= ConstServer.BASE_URL + "resetPassword?";
+    public static final String UNREGISTER_PUSH_URL     	= ConstServer.BASE_URL + "unregistToken?";
     public static final String DATABASE                	= "spika";
     
     public static final String CREATE_USER 				= "create_user";
@@ -142,6 +139,7 @@ public class Const {
 	public static final String USER_IMAGE_URL = "user_image_url";
 	public static final String DELETE_TYPE = "delete_type";
 	public static final String DELETE_AT = "delete_at";
+	public static final String READ_AT = "read_at";
 	
 	/* Group constants */
 	public static final String GROUP = "group";

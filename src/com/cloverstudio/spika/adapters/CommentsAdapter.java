@@ -26,7 +26,6 @@ package com.cloverstudio.spika.adapters;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import android.content.Context;
 import android.util.Log;
@@ -43,7 +42,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cloverstudio.spika.R;
-import com.cloverstudio.spika.couchdb.CouchDB;
 import com.cloverstudio.spika.couchdb.model.Comment;
 import com.cloverstudio.spika.dialog.HookUpProgressDialog;
 import com.cloverstudio.spika.lazy.ImageLoader;
@@ -143,7 +141,10 @@ public class CommentsAdapter extends ArrayAdapter<Comment> implements
 					LayoutHelper.scaleWidthAndHeight(mContext,
 							5f, btnAvatarToMe);
 
-					CouchDB.findAvatarIdAndDisplay(comment.getUserId(), btnAvatarToMe, mContext);
+					Utils.displayImage(comment.getAvatarId(), btnAvatarToMe, ImageLoader.SMALL,
+							R.drawable.user_stub, false);
+					
+//					CouchDB.findAvatarIdAndDisplay(comment.getUserId(), btnAvatarToMe, mContext);
 					
 					rlToMe.setVisibility(View.VISIBLE);
 				}

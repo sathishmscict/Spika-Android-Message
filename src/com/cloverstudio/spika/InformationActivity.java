@@ -10,7 +10,7 @@ import android.widget.ProgressBar;
 
 import com.cloverstudio.spika.extendables.SideBarActivity;
 import com.cloverstudio.spika.management.UsersManagement;
-import com.cloverstudio.spika.utils.Const;
+import com.cloverstudio.spika.utils.ConstServer;
 
 public class InformationActivity extends SideBarActivity {
 
@@ -29,7 +29,7 @@ public class InformationActivity extends SideBarActivity {
 		webView.getSettings().setJavaScriptEnabled(true);
 		webView.setWebChromeClient(new WebChromeClient());
 		webView.setWebViewClient(new MyWebViewClient());
-		webView.loadUrl(Const.INFORMATION_URL + UsersManagement.getLoginUser().getToken());
+		webView.loadUrl(ConstServer.INFORMATION_URL + UsersManagement.getLoginUser().getToken());
 	}
 	
 	private class MyWebViewClient extends WebViewClient {

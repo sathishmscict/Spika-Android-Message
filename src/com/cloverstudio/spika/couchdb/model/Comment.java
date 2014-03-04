@@ -26,6 +26,7 @@ package com.cloverstudio.spika.couchdb.model;
 
 import java.io.Serializable;
 
+import com.cloverstudio.spika.utils.Const;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -66,6 +67,8 @@ public class Comment implements Serializable{
 	@Expose private String mUserId;
 	@SerializedName("message_id")
 	@Expose private String mMessageId;
+	@SerializedName(Const.AVATAR_THUMB_FILE_ID)
+	@Expose private String mAvatarId;
 	
 	public Comment() { }
 
@@ -118,5 +121,12 @@ public class Comment implements Serializable{
 	public void setMessageId(String mMessageId) {
 		this.mMessageId = mMessageId;
 	}
-	
+
+	public String getAvatarId() {
+		return mAvatarId;
+	}
+
+	public void setAvatarId(String avatarId) {
+		this.mAvatarId = avatarId;
+	}
 }
