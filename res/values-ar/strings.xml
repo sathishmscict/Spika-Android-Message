@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">سبيكا</string>
+    <string name="hello_world">اهلا</string>
+    <string name="menu_settings">الخيارات</string>
+    <string name="SIGN_IN">تسجيل الدخول</string>
+    <string name="SIGN_UP">تسجيل عضوية</string>
+    <string name="forgot_password"><u>استعادة كلمة المرور</u></string>
+    <string name="WALL">االحائط</string>
+    <string name="CAMERA">الكاميرا</string>
+    <string name="GALLERY">الصور</string>
+    <string name="SAVE">حفظ</string>
+    <string name="OK">موافق</string>
+    <string name="CANCEL">الغاء</string>
+    <string name="REMOVE_PHOTO">حذف الصورة</string>
+    <string name="CREATE">انشاء</string>
+    <string name="ACCOUNT">الحساب</string>
+    <string name="NOTIFICATIONS">التنبيهات</string>
+    <string name="BACK">عودة</string>
+    <string name="users">المستخدمون</string>
+    <string name="groups">المجموعات</string>
+    <string name="profile">ملفي</string>
+    <string name="information">معلومات</string>
+    <string name="settings">اعدادات</string>
+    <string name="logout">خروج</string>
+    <string name="search">بحث</string>
+    <string name="SEARCH">بحث</string>
+    <string name="private_wall">حائط خاص</string>
+    <string name="NEW_GROUP">منطقة جديدة</string>
+    <string name="SEND">ارسال</string>
+    <string name="USE_PHOTO">استخدم صورة</string>
+    <string name="name">لاسم</string>
+    <string name="age">العمر</string>
+    <string name="password">كلمة المرور</string>
+    <string name="current_password">ادخل كلمة المرور الحالية</string>
+    <string name="new_password">ادخل كلمة مرور جديدة</string>
+    <string name="new_password_again">اعادة ادخال كلمة المرور</string>
+    <string name="description">الوصف</string>
+    <string name="username">اسم المستخدم</string>
+    <string name="group_name">اسم المجموعة</string>
+    <string name="USERNAME">اسم المستخدم :</string>
+    <string name="GROUP_NAME">اسم المنطقة :</string>
+    <string name="NAME">الاسم :</string>
+    <string name="PASSWORD">كلمة المرور :</string>
+    <string name="email">البريد</string>
+    <string name="GROUP">المنطقة</string>
+    <string name="GROUPS">المناطق</string>
+    <string name="USERS">المستخدمون</string>
+    <string name="MY_PROFILE">ملفي</string>
+    <string name="PROFILE">ملف</string>
+    <string name="CROP_IMAGE">قص صورة</string>
+    <string name="PHOTO">صورة</string>
+    <string name="LOCATION">المنطقة</string>
+    <string name="CHANGE_PASSWORD">تغيير كلمة المرور</string>
+    <string name="ADD_PASSWORD">إضافة كلمة مرور</string>
+    <string name="DELETE">حذف</string>
+    <string name="ADD_CONTACT">أضف الى قائمة الاصدقاء</string>
+    <string name="REMOVE_CONTACT">حذف من قائمة الاصدقاء</string>
+    <string name="LAST_LOGIN">آخر دخول :</string>
+    <string name="ABOUT">حول :</string>
+    <string name="BIRTHDAY">الميلاد :</string>
+    <string name="GENDER">الجنس :</string>
+    <string name="GROUP_OWNER">راعي المنطقة</string>
+    <string name="DESCRIPTION">االوصف :</string>
+    <string name="no_valid_email_password">خطأ في المعلومات</string>
+    <string name="user_already_exists">لديك عضوية مسبقا</string>
+    <string name="no_user_registered">لايوجد هذا الحساب ، يرجى التسجيل</string>
+    <string name="no_email_password">خطأ في المعلومات</string>
+    <string name="contact_added">تم اضافة الصديق</string>
+    <string name="contact_removed">تم حذف الصديق</string>
+    <string name="failed_to_update_contacts">خطأ في تحديث القائمة</string>
+    <string name="group_updated">تم تحديث المجموعة</string>
+    <string name="failed_to_update_group">لايمكن التحديث</string>
+    <string name="group_deleted">غير موجود</string>
+    <string name="failed_to_delete_group">لا يمكن الحذف</string>
+    <string name="ADD_TO_FAVORITES">تسجيل</string>
+    <string name="REMOVE_FROM_FAVORITES">الغاء التسجيل</string>
+    <string name="group_added">تم اضافة المجموعة</string>
+    <string name="group_removes">تم حذف المجموعة</string>
+    <string name="posted_less_than_a_minute_ago">اوضع قبل اقل من دقيقة</string>
+    <string name="posted">وضع</string>
+    <string name="posted_by">من طرف</string>
+    <string name="day_ago">قبل يوم من طرف</string>
+    <string name="days_ago">قبل ايام من طرف</string>
+    <string name="hour_ago">قبل ساعة من طرف</string>
+    <string name="hours_ago">قبل ساعات من طرف</string>
+    <string name="minute_ago">قبل دقيقة من طرف</string>
+    <string name="minutes_ago">قبل دقائق من طرف</string>
+    <string name="SEARCH_TERM">بحث عن عبارة</string>
+    <string name="create">إنشاء</string>
+    <string name="camera">الكاميرا</string>
+    <string name="gallery">الصور</string>
+    <string name="video">الفيديو</string>
+    <string name="emoji">الابتسامات</string>
+    <string name="location">المنطقة</string>
+    <string name="record">التسجيل</string>
+    <string name="MAIN_MENU">الرئيسية</string>
+    <string name="about">حول</string>
+    <string name="male">ذكر</string>
+    <string name="female">أنثى</string>
+    <string name="other">غير</string>
+    <string name="gender">الجنس</string>
+    <string name="birthday">تاريخ الميلاد</string>
+    <string name="when_is_your_birthday">أين ولدت ؟</string>
+    <string name="hookup_date_format">MMM dd, yyyy</string>
+    <string name="hookup_date_time_format">MMM dd, HH:mm</string>
+    <string name="loading">تحميل ...</string>
+    <string name="RECENT_ACTIVITY">آخر النشاطات</string>
+    <string name="CHAT_ACTIVITY">نشاطات المحادثة</string>
+    <string name="GROUPS_ACTIVITY">نشاطات المنطقة</string>
+    <string name="USERS_ACTIVITY">نشاطات المستخدمين</string>
+    <string name="INFORMATION">معلومات</string>
+    <string name="SETTINGS">خيارات</string>
+    <string name="delete_group_message">هل انت متاكد من حذف رسائل هذه المجموعة ؟</string>
+    <string name="no_internet_connection">لا يوجد اتصال انترنت</string>
+    <string name="NO_INTERNET_CONNECTION">لا يوجد اتصال انترنت</string>
+    <string name="can_not_connect_to_server">لايمكن الاتصال بالخادم</string>
+    <string name="an_internal_error_has_occurred">حصل خطأ تقني</string>
+    <string name="exit_app_message">هل تريد الخروج من البرنامج حقا ؟</string>
+    <string name="please_enter_server_url">الرجاء ادخال عنوان الخادم</string>
+    <string name="please_enter_passcode">الرجاء ادخال الباسكود الحالي</string>
+    <string name="please_enter_new_passcode">الرجاء ادخال الباسكود الجديد</string>
+    <string name="please_enter_new_passcode_again">الرجاء ادخال الباسكود مجددا</string>
+    <string name="server_url_hint">http:// ...</string>
+    <string name="CLEAR_CACHE">حذف الكاش</string>
+    <string name="passcode_protect">حماية الباسكود</string>
+    <string name="clear_cache_message">هل تريد حذف الكاش فعلا ؟</string>
+    <string name="FAIL">خطأ</string>
+    <string name="SUCCESS">تم</string>
+    <string name="EDIT">تعديل</string>
+    <string name="SHOW">عرض</string>
+
+    <string-array name="gender">
+        <item>ذكر</item>
+        <item>أنثى</item>
+        <item>بدون تحديد</item>
+    </string-array>
+    <string-array name="online_status">
+        <item>متواجد</item>
+        <item>متواجد</item>
+        <item>متواجد</item>
+        <item>غير متواجد</item>
+    </string-array>
+
+    <string name="online">متواجد</string>
+    <string name="away">متواجد</string>
+    <string name="busy">متواجد</string>
+    <string name="offline">غير متواجد</string>
+    <string name="tap_to_add_birthday">اضغط لتحديد التاريخ</string>
+    <string name="tap_to_add_gender">اضغط لاضافة الجنس</string>
+    <string name="tap_to_add_description">اضغط لاضافة الوصف</string>
+    <string name="tap_to_add_online_status">اضغط لاضافة الحالة</string>
+    <string name="tap_to_add_group_name">اضغط هنا لاضافة باسوورد المجموعة</string>
+    <string name="tap_to_add_password">اضغط لاضافة الباسوورد</string>
+    <string name="from">من</string>
+    <string name="to">إلى</string>
+    <string name="no_users">لا مستخدمين !</string>
+    <string name="SEND_PASSWORD">ارسال كلمة المرور</string>
+    <string name="FORGOT_PASSWORD">ارسال كلمة المرور</string>
+    <string name="send_password">ارسال كلمة المرور إلى :</string>
+    <string name="confirm_email">راجع بريدك فضلا .</string>
+    <string name="USER">المستخدم</string>
+    <string name="my_contacts">قائمة أصدقائي</string>
+    <string name="favorite_groups">المجموعات المفضلة</string>
+    <string name="create_group">انشاء مجموعة</string>
+    <string name="search_name_hint">ضع اسما ..</string>
+    <string name="EXPLORE">استكشاف</string>
+    <string name="explore">استكشاف</string>
+    <string name="pick_age_hint">حرك لتحديد السن</string>
+    <string name="all">الكل</string>
+    <string name="no_users_found">لا يوجد مستخدمون</string>
+    <string name="no_groups_found">لا توجد مجموعات</string>
+    <string name="no_users_in_contacts">لا يوجد أصدقاء</string>
+    <string name="no_groups_in_favorites">لا توجد مجموعات في مفضلتك</string>
+    <string name="no_wall_messages">لا رسائل بعد !</string>
+    <string name="MY_CONTACTS">قائمة أصدقائي</string>
+    <string name="FAVORITE_GROUPS">مناطقي المفضلة</string>
+    <string name="ONLINE_STATUS">الحالة :</string>
+    <string name="SHOW_PASSWORD">اظهار كلمة المرور :</string>
+    <string name="EMAIL">البريد الالكتروني :</string>
+    <string name="categories">الدول</string>
+    <string name="CATEGORIES">الدول</string>
+    <string name="CATEGORY">الدول :</string>
+    <string name="password_error_number_of_characters">يجب ان تكون كلمة المرور اكثر من 6</string>
+    <string name="password_error_invalid_characters">على كلمة المرور ان تحتوي ارقاما</string>
+    <string name="password_ok">كلمة المرور جيدة</string>
+    <string name="email_not_valid">البريد غير صحيح</string>
+    <string name="email_length">البريد مطلوب</string>
+    <string name="max_contacts_alert">لقد أضفت الحد الاعلى من الاصدقاء</string>
+    <string name="max_favorites_alert">لايمكنك اضافة منطقة</string>
+    <string name ="email_ok">البريد جيد</string>
+    <string name="name_error">على الاسم ان يحتوي اكثر من حرف</string>
+    <string name="name_ok">الاسم جيد</string>
+    <string name="no_camera">ليس لديك كاميرا</string>
+    <string name="username_and_email_taken">خطأ في اسم المستخدم و البريد</string>
+    <string name="username_taken">خطأ في اسم المستخدم</string>
+    <string name="email_taken">خطأ في البريد</string>
+    <string name="email_notexists">خطأ في البريد</string>
+    <string name="groupname_taken">اسم المجموعة قصير جدا</string>
+    <string name="email_sent">تم ارسال كلمة المرور لحسابك</string>
+    <string name="exceed_video_duration">على الفيديو ان يكون اقل من 30 ثانية</string>
+    <string name="exceed_voice_duration">على الصوت ان يكون اقل من 3 دقائق</string>
+    <string name="my_groups">مجموعاتي</string>
+    <string name="add_group">أضف مجموعة</string>
+    <string name="FAVORITES">المفضلات</string>
+    <string name="this_group_is_deleted_please_unsubscribe">الرجاء الغاء اشتراكك من هذه المجموعة</string>
+    <string name="this_group_is_deleted">تم حذف هذه المجموعة</string>
+    <string name="CLOSE">اغلاق</string>
+    <string name="invalid_token_message">عليك تسجيل الدخول من جديد</string>
+    <string name="OPEN_CONVERSATION">إبدأ المحادثة !</string>
+    <string name="enter_group_password">ادخل باسوورد المجموعة</string>
+    
+    <string name="tutorial_nocontact">ليس لديك اي اصدقاء الان . قم بالاضافة عن طريق قائمة : قائمة اصدقائي</string>
+    <string name="tutorial_nofavorite">لم تسجل في اي منطقة</string>
+    
+    <string name="OPEN_WEB">افتح المتصفح</string>
+    <string name="USER_SUPPORT">الاتصال بالدعم الفني</string>
+    <string name="logout_message">هل تريد تسجيل الخروج ؟</string>
+
+
+    <string name="tutorial_login">أهلا بك في تطبيق سبيكا</string>
+    <string name="tutorial_recent">سيتم عرض بعض التعليمات لانك تستخدم البرنامج لاول مرة</string>
+    <string name="tutorial_wall">هذه الشاشة تظهر جميع الرسائل غير المقروءة الخاصة بك. هي فارغة الان لكن سوف تكون كاملة من الرسائل من أصدقائك</string>
+    <string name="tutorial_users">يمكنك البحث عن طريق الاسم، استكشاف حسب نوع الجنس أو السن. أيضا، يمكنك إضافة أصدقاء إلى قائمة الاتصال بحيث يمكن أن تجد المحادثات معهم بسهولة أكبر</string>
+    <string name="tutorial_groups">هنا يمكنك أن تجد المجموعات التي تريد. الاشتراك في المجموعة المفضلة لديك وسيتم إعلامك كلما شخص على وظائف هذه المجموعة . يمكنك أيضا إنشاء مجموعة خاصة بك</string>
+    <string name="tutorial_group_add">يمكنك تأمين مجموعتك بكلمة مرور الناس وذلك فقط تقاسمها مع يمكن الوصول إلى الجدار.</string>
+    <string name="tutorial_userprofile">يمكنك إضافة أصدقائك إلى جهات الاتصال، ولكن كن حذرا، عدد من الاتصالات يقتصر على 20</string>
+    <string name="tutorial_groupprofile">يمكنك الاشتراك في مجموعة وسوف تحصل على إخطار عندما يقوم شخص ما وظائف على الجدار في تلك المجموعة، ولكن كن حذرا، عدد الاشتراكات مجموعة محدودة إلى 10</string>
+
+
+    <string name="no_recent_activities">لاتوجد اي نشاطات جديدة</string>
+    <string name="wrongpassword">خطأ في كلمة المرور</string>
+    
+    <string name="YES">نعم</string>
+    <string name="NO">لا</string>
+
+    <string name="delete_the_message">حذف الرسالة</string>
+    <string name="delete_information_title">تم حذف هذه الراسلة</string>
+    <string name="dont_delete">لا تحذف</string>
+    <string name="delete_now">حذف الآن</string>
+    <string name="delete_in_5_min">في 5 دقائق</string>
+    <string name="delete_after_1_day">بعد يوم</string>
+    <string name="delete_after_a_week">بعد اسبوع</string>
+    <string name="delete_after_user_sees_it">عندما يرى المستخدم عليه</string>
+    <string name="delete_close">موافق</string>
+    
+</resources>
