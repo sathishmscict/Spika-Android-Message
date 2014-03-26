@@ -40,9 +40,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.util.Log;
-import android.view.View;
 import android.widget.ImageView;
 
 import com.cloverstudio.spika.R;
@@ -54,6 +52,7 @@ import com.cloverstudio.spika.couchdb.model.Emoticon;
 import com.cloverstudio.spika.couchdb.model.Group;
 import com.cloverstudio.spika.couchdb.model.GroupCategory;
 import com.cloverstudio.spika.couchdb.model.GroupSearch;
+import com.cloverstudio.spika.couchdb.model.Member;
 import com.cloverstudio.spika.couchdb.model.Message;
 import com.cloverstudio.spika.couchdb.model.User;
 import com.cloverstudio.spika.couchdb.model.UserGroup;
@@ -67,7 +66,6 @@ import com.cloverstudio.spika.management.UsersManagement;
 import com.cloverstudio.spika.utils.Const;
 import com.cloverstudio.spika.utils.Logger;
 import com.cloverstudio.spika.utils.Utils;
-import com.google.gson.JsonObject;
 
 /**
  * CouchDB
@@ -1538,6 +1536,21 @@ public class CouchDB {
     }
 
 
+    
+  //************** FIND MEMBER BY GROUP ID *********************
+    
+    public static List<Member> findMembersByGroupId(String groupId, int count, int offset) throws ClientProtocolException, IOException, JSONException, SpikaException {
+        try {
+        	groupId = URLEncoder.encode(groupId, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return null;
+        }
+        JSONObject json = ConnectionHandler.getJsonObject(Const.FIND_MEMBERS + groupId + "/" + offset + "/" + count, UsersManagement.getLoginUser().getId());
+
+        return CouchDBHelper.parseMemberObjects(json);
+    }
+    
 
   //************** FIND MESSAGE BY ID **************************
     

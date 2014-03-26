@@ -35,15 +35,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.util.Log;
-
-import com.cloverstudio.spika.SpikaApp;
 import com.cloverstudio.spika.couchdb.model.ActivitySummary;
 import com.cloverstudio.spika.couchdb.model.Attachment;
 import com.cloverstudio.spika.couchdb.model.Comment;
 import com.cloverstudio.spika.couchdb.model.Emoticon;
 import com.cloverstudio.spika.couchdb.model.Group;
 import com.cloverstudio.spika.couchdb.model.GroupCategory;
+import com.cloverstudio.spika.couchdb.model.Member;
 import com.cloverstudio.spika.couchdb.model.Message;
 import com.cloverstudio.spika.couchdb.model.Notification;
 import com.cloverstudio.spika.couchdb.model.NotificationMessage;
@@ -56,6 +54,7 @@ import com.cloverstudio.spika.utils.Const;
 import com.cloverstudio.spika.utils.Logger;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
 
 /**
  * CouchDBHelper
@@ -1115,6 +1114,33 @@ public class CouchDBHelper {
 		}
 
 		return groupCategories;
+	}
+	
+	public static List<Member> parseMemberObjects(JSONObject jsonData) throws JSONException {
+		// Get total member
+		int totalMember = jsonData.getInt("count");
+		Member.setTotalMember(totalMember);
+		
+		// Get list member
+		List<Member> listMembers = null;
+		JSONArray jsonArray = jsonData.getJSONArray("users");
+		if (jsonArray != null) {
+			listMembers = new ArrayList<Member>();
+			for (int i = 0; i < jsonArray.length(); i++) {
+				JSONObject row = jsonArray.getJSONObject(i);
+				try {
+					String id = row.getString("_id");
+					String name = row.getString("name");
+					String image = row.getString("avatar_thumb_file_id");
+					String online = row.getString("online_status");
+					Member member = new Member(id, name, image, online);
+					listMembers.add(member);
+				} catch (JSONException e) {
+				}
+			}
+		}
+
+		return listMembers;
 	}
 
 	/**

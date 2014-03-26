@@ -210,6 +210,7 @@
     <string name="invalid_token_message">再ログインに失敗しました。もう一度ログインを行ってください。</string>
     <string name="OPEN_CONVERSATION">チャットする</string>
     <string name="enter_group_password">グループのパスワードを入力して下さい。</string>
+    <string name="MEMBER">MEMBERS</string>
     
     <string name="tutorial_nocontact">現在コンタクトリストが空です。お気に入りのユーザーを追加すればここから簡単にチャットが開始出来ます。</string>
     <string name="tutorial_nofavorite">お気に入りに登録されたグループがありません。\nグループをお気に入りに追加すると、グループの情報の更新状況を確認出来ます。</string>

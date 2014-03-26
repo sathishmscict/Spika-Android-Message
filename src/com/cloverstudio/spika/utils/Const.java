@@ -60,6 +60,7 @@ public class Const {
     public static final String FIND_GROUP_BY_NAME		= ConstServer.BASE_URL + "findGroup/name/";
     public static final String FIND_GROUP_BY_CATEGORY_ID= ConstServer.BASE_URL + "findGroup/categoryId/";
     public static final String FIND_GROUP_CATEGORIES	= ConstServer.BASE_URL + "findAllGroupCategory";
+    public static final String FIND_MEMBERS				= ConstServer.BASE_URL + "groupUsers/";
     
     
     public static final String PASSWORDREMINDER_URL    	= ConstServer.BASE_URL + "resetPassword?";
