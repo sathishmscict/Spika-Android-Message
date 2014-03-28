@@ -245,4 +245,6 @@
     <string name="delete_after_user_sees_it">بعد أن يراها المستخدم</string>
     <string name="delete_close">موافق</string>
     
+    <string name="select_server">حدد الخادم</string>
+    <string name="add_server">URL مخصص</string>
 </resources>

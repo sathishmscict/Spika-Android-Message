@@ -244,5 +244,5 @@
     <string name="delete_close">決定</string>
     
     <string name="select_server">サーバーを選択</string>
-	<string name="add_server">サーバーを追加</string>
+	<string name="add_server">URLを設定</string>
 </resources>
