@@ -159,7 +159,7 @@
     <string name="SEND_PASSWORD">ارسال كلمة المرور</string>
     <string name="FORGOT_PASSWORD">ارسال كلمة المرور</string>
     <string name="send_password">ارسال كلمة المرور إلى :</string>
-    <string name="confirm_email">فضلاً تحقق من البريد وإفتح الرابط.</string>>
+    <string name="confirm_email">فضلاً تحقق من البريد وإفتح الرابط.</string>
     <string name="USER">المستخدم</string>
     <string name="my_contacts">قائمة أصدقائي</string>
     <string name="favorite_groups">المجموعات المفضلة</string>
@@ -226,7 +226,7 @@
     <string name="tutorial_groups">هنا يمكنك أن تجد المجموعات التي تريدها. اشترك في المجموعة المفضلة لديك وسيتم إعلامك كلما قام شخص بالنشر على حائط المجموعة. يمكنك أيضا إنشاء مجموعة خاصة بك.</string>
     <string name="tutorial_group_add">يمكنك تأمين مجموعتك بكلمة مرور، فقط الأشخاص الذي شاركتهم تصريح الدخول يمكنهم النشر. ايضاً، مجموعتك سيتم إضافتها تلقائياً في قائمة المشتركين. إحرص على عدم تجاوز الحد المسموح!</string>
     <string name="tutorial_userprofile">يمكنك إضافة أصدقائك إلى جهات الاتصال، ولكن كن حريصاً فجهات الإتصال محدوده حتى 20 جهة.</string>
-    <string name="tutorial_groupprofile">لقد قمت بالإشتراك بالمجموعة. سوف تحصل على إشعار عندما يقوم شخص بالنشر على حائط المجموعة، ولكن اعلم ان عدد اشتراكات المجموعات محدوده الى 10 اشتراكات.</string>g>
+    <string name="tutorial_groupprofile">لقد قمت بالإشتراك بالمجموعة. سوف تحصل على إشعار عندما يقوم شخص بالنشر على حائط المجموعة، ولكن اعلم ان عدد اشتراكات المجموعات محدوده الى 10 اشتراكات.</string>
 
 
     <string name="no_recent_activities">لاتوجد اي نشاطات جديدة</string>

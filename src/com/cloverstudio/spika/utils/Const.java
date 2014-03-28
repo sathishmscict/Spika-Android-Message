@@ -24,6 +24,7 @@
 
 package com.cloverstudio.spika.utils;
 
+
 /**
  * Const
  * 
@@ -38,32 +39,35 @@ public class Const {
 	
 	
 	public static final String SUPPORT_USER				= "1";
-	public static final String API_URL                 	= ConstServer.BASE_URL;
-	public static final String AUTH_URL                	= ConstServer.BASE_URL + "auth?";
-	public static final String SEARCH_USERS_URL        	= ConstServer.BASE_URL + "searchUsers?";
-	public static final String SEARCH_GROUPS_URL       	= ConstServer.BASE_URL + "searchGroups/name/";
-	public static final String FILE_UPLOADER_URL       	= ConstServer.BASE_URL + "fileuploader";
-    public static final String FILE_DOWNLOADER_URL     	= ConstServer.BASE_URL + "filedownloader?";
-    public static final String CHECKUNIQUE_URL         	= ConstServer.BASE_URL + "checkUnique?";
-    public static final String FIND_USER_BY_NAME       	= ConstServer.BASE_URL + "findUser/name/";
-    public static final String FIND_USER_BY_EMAIL      	= ConstServer.BASE_URL + "findUser/email/";
-    public static final String FIND_USER_BY_ID			= ConstServer.BASE_URL + "findUser/id/";
-    public static final String FIND_USERACTIVITY_SUMMARY= ConstServer.BASE_URL + "activitySummary";
-    public static final String GET_AVATAR_FILE_ID		= ConstServer.BASE_URL + "GetAvatarFileId/";
-    public static final String FIND_MESSAGE_BY_ID		= ConstServer.BASE_URL + "findMessageById/";
-    public static final String FIND_COMMENTS_BY_MESSAGE_ID	= ConstServer.BASE_URL + "comments/";
-    public static final String COMMENTS_COUNT			= ConstServer.BASE_URL + "commentsCount/";
-    public static final String FIND_USER_MESSAGES		= ConstServer.BASE_URL + "userMessages/";
-    public static final String FIND_GROUP_MESSAGES		= ConstServer.BASE_URL + "groupMessages/";
-    public static final String FIND_ALL_EMOTICONS		= ConstServer.BASE_URL + "Emoticons";
-    public static final String FIND_GROUP_BY_ID			= ConstServer.BASE_URL + "findGroup/id/";
-    public static final String FIND_GROUP_BY_NAME		= ConstServer.BASE_URL + "findGroup/name/";
-    public static final String FIND_GROUP_BY_CATEGORY_ID= ConstServer.BASE_URL + "findGroup/categoryId/";
-    public static final String FIND_GROUP_CATEGORIES	= ConstServer.BASE_URL + "findAllGroupCategory";
+	public static final String API_FOLDER				= "api/";
+	public static final String INFORMATION_FOLDER		= "page/information/";
+//	public static final String API_URL                 	= ConstServer.BASE_URL;
+	public static final String AUTH_URL                	= "auth?";
+	public static final String SEARCH_USERS_URL        	= "searchUsers?";
+	public static final String SEARCH_GROUPS_URL       	= "searchGroups/name/";
+	public static final String FILE_UPLOADER_URL       	= "fileuploader";
+    public static final String FILE_DOWNLOADER_URL     	= "filedownloader?";
+//    public static final String CHECKUNIQUE_URL         	= /*ConstServer.BASE_URL + */"checkUnique?";
+    public static final String FIND_USER_BY_NAME       	= "findUser/name/";
+    public static final String FIND_USER_BY_EMAIL      	= "findUser/email/";
+    public static final String FIND_USER_BY_ID			= "findUser/id/";
+    public static final String FIND_USERACTIVITY_SUMMARY= "activitySummary";
+    public static final String GET_AVATAR_FILE_ID		= "GetAvatarFileId/";
+    public static final String FIND_MESSAGE_BY_ID		= "findMessageById/";
+    public static final String FIND_COMMENTS_BY_MESSAGE_ID	= "comments/";
+    public static final String COMMENTS_COUNT			= "commentsCount/";
+    public static final String FIND_USER_MESSAGES		= "userMessages/";
+    public static final String FIND_GROUP_MESSAGES		= "groupMessages/";
+    public static final String FIND_ALL_EMOTICONS		= "Emoticons";
+    public static final String FIND_GROUP_BY_ID			= "findGroup/id/";
+    public static final String FIND_GROUP_BY_NAME		= "findGroup/name/";
+    public static final String FIND_GROUP_BY_CATEGORY_ID= "findGroup/categoryId/";
+    public static final String FIND_GROUP_CATEGORIES	= "findAllGroupCategory";
+    public static final String DEFAULT_SERVER_NAME		= "Spika Official";
     
     
-    public static final String PASSWORDREMINDER_URL    	= ConstServer.BASE_URL + "resetPassword?";
-    public static final String UNREGISTER_PUSH_URL     	= ConstServer.BASE_URL + "unregistToken?";
+    public static final String PASSWORDREMINDER_URL    	= "resetPassword?";
+    public static final String UNREGISTER_PUSH_URL     	= "unregistToken?";
     public static final String DATABASE                	= "spika";
     
     public static final String CREATE_USER 				= "create_user";
@@ -81,6 +85,10 @@ public class Const {
     public static final String ADD_CONTACT				= "addContact";
     public static final String REMOVE_CONTACT			= "removeContact";
     public static final String SET_DELETE				= "setDelete";
+    
+    /* List Servers constants */
+    public static final String SERVER_NAME = "server_name";
+	public static final String SERVER_URL = "server_url";
     
 	/* User constants */
 	public static final String FAVORITE_GROUPS = "favorite_groups";

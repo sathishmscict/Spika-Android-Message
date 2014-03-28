@@ -44,9 +44,9 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.TranslateAnimation;
 
-import com.cloverstudio.spika.R;
 import com.cloverstudio.spika.lazy.FileDir;
 import com.cloverstudio.spika.lazy.ImageLoader;
+import com.cloverstudio.spika.utils.Const;
 import com.cloverstudio.spika.utils.Logger;
 import com.cloverstudio.spika.utils.Preferences;
 
@@ -66,6 +66,7 @@ public class SpikaApp extends Application {
 	private Preferences mPreferences;
 	public static boolean gOpenFromBackground;
 	private FileDir mFileDir;
+	private String mBaseUrl;
 
 	private TranslateAnimation mSlideOutLeft;
 	private TranslateAnimation mSlideOutRight;
@@ -164,6 +165,8 @@ public class SpikaApp extends Application {
 
 		String strUUID = UUID.randomUUID().toString();
 		Logger.debug("uuid", strUUID);
+		
+		mBaseUrl=mPreferences.getUserServerURL();
 	}
 
 	public static Typeface getTfMyriadPro() {
@@ -326,5 +329,27 @@ public class SpikaApp extends Application {
 	public static void setLocalBroadcastManager(
 			LocalBroadcastManager localBroadcastManager) {
 		sInstance.mLocalBroadcastManager = localBroadcastManager;
+	}
+	
+	public void setBaseUrl(String url, String name){
+		getPreferences().setUserServerURL(url);
+		if(name != null && !name.equals("")){
+			getPreferences().setUserServerName(name);
+		}else{
+			getPreferences().setUserServerName(url);
+		}
+		mBaseUrl=getPreferences().getUserServerURL();
+	}
+	
+	public String getBaseUrl(){
+		return mBaseUrl+"/";
+	}
+	
+	public String getBaseUrlWithApi(){
+		return mBaseUrl+"/"+Const.API_FOLDER;
+	}
+	
+	public String getBaseUrlWithSufix(String sufix){
+		return mBaseUrl+"/"+ Const.API_FOLDER +sufix;
 	}
 }

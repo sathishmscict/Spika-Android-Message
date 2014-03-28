@@ -6,13 +6,57 @@
     tools:context=".MainActivity" >
 
     <RelativeLayout
-        android:id="@+id/rlSignInForm"
+        android:id="@+id/rlServerField"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/rlSignInTitle"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:layout_marginTop="36dp" >
+        android:layout_marginTop="36dp"
+        android:padding="20dp"
+        android:background="@color/sign_in_gray" >
+
+        <ImageView
+            android:id="@+id/ivServerIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:contentDescription="@null"
+            android:src="@drawable/icon_server" />
+
+        <com.cloverstudio.spika.view.SimpleAutoFitTextView
+            android:id="@+id/tvServerSelect"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/ivServerIcon"
+            android:layout_toLeftOf="@+id/ivArrowIcon"
+            android:background="@null"
+            android:singleLine="true"
+            android:gravity="center|left"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:textColor="@android:color/white"
+            android:textSize="18sp" />
+
+        <ImageView
+            android:id="@+id/ivArrowIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:contentDescription="@null"
+            android:src="@drawable/icon_server_select" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rlSignInForm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rlServerField"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="20dp" >
 
         <LinearLayout
             android:id="@+id/llSignInBody"
@@ -31,24 +75,24 @@
                 android:layout_height="match_parent"
                 android:layout_margin="20dp"
                 android:layout_weight="1" >
-                
+
                 <ImageView
                     android:id="@+id/ivEmailIcon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/email_icon"
-                    android:contentDescription="@null"
                     android:layout_alignBottom="@+id/etSignInEmail"
-                    android:layout_marginBottom="2dp"/>
+                    android:layout_marginBottom="2dp"
+                    android:contentDescription="@null"
+                    android:src="@drawable/email_icon" />
 
                 <EditText
                     android:id="@+id/etSignInEmail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:background="@null"
-                    android:layout_toRightOf="@+id/ivEmailIcon"
                     android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@+id/ivEmailIcon"
+                    android:background="@null"
                     android:gravity="bottom"
                     android:hint="@string/email"
                     android:inputType="textEmailAddress"
@@ -66,24 +110,24 @@
                 android:layout_height="match_parent"
                 android:layout_margin="20dp"
                 android:layout_weight="1" >
-                
+
                 <ImageView
                     android:id="@+id/ivPasswordIcon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/password_icon"
-                    android:contentDescription="@null"
                     android:layout_alignBottom="@+id/etSignInPassword"
-                    android:layout_marginBottom="3dp"/>
+                    android:layout_marginBottom="3dp"
+                    android:contentDescription="@null"
+                    android:src="@drawable/password_icon" />
 
                 <EditText
                     android:id="@+id/etSignInPassword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:background="@null"
-                    android:layout_toRightOf="@+id/ivPasswordIcon"
                     android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@+id/ivPasswordIcon"
+                    android:background="@null"
                     android:gravity="bottom"
                     android:hint="@string/password"
                     android:inputType="textPassword"
@@ -109,28 +153,28 @@
                 android:layout_height="match_parent"
                 android:layout_margin="20dp"
                 android:layout_weight="1" >
-                
+
                 <ImageView
                     android:id="@+id/ivUserNameIcon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/username_icon"
+                    android:layout_alignBottom="@+id/etSignUpName"
                     android:contentDescription="@null"
-                    android:layout_alignBottom="@+id/etSignUpName"/>
+                    android:src="@drawable/username_icon" />
 
                 <EditText
                     android:id="@+id/etSignUpName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:background="@null"
-                    android:layout_toRightOf="@+id/ivUserNameIcon"
                     android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@+id/ivUserNameIcon"
+                    android:background="@null"
                     android:gravity="bottom"
                     android:hint="@string/username"
+                    android:singleLine="true"
                     android:textColor="@android:color/white"
-                    android:textSize="18sp"
-                    android:singleLine="true"/>
+                    android:textSize="18sp" />
             </RelativeLayout>
 
             <View
@@ -143,24 +187,24 @@
                 android:layout_height="match_parent"
                 android:layout_margin="20dp"
                 android:layout_weight="1" >
-                
+
                 <ImageView
                     android:id="@+id/ivEmailIcon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/email_icon"
-                    android:contentDescription="@null"
                     android:layout_alignBottom="@+id/etSignUpEmail"
-                    android:layout_marginBottom="2dp"/>
+                    android:layout_marginBottom="2dp"
+                    android:contentDescription="@null"
+                    android:src="@drawable/email_icon" />
 
                 <EditText
                     android:id="@+id/etSignUpEmail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:background="@null"
-                    android:layout_toRightOf="@+id/ivEmailIcon"
                     android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@+id/ivEmailIcon"
+                    android:background="@null"
                     android:gravity="bottom"
                     android:hint="@string/email"
                     android:inputType="textEmailAddress"
@@ -178,24 +222,24 @@
                 android:layout_height="match_parent"
                 android:layout_margin="20dp"
                 android:layout_weight="1" >
-                
+
                 <ImageView
                     android:id="@+id/ivPasswordIcon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/password_icon"
-                    android:contentDescription="@null"
                     android:layout_alignBottom="@+id/etSignUpPassword"
-                    android:layout_marginBottom="3dp"/>
+                    android:layout_marginBottom="3dp"
+                    android:contentDescription="@null"
+                    android:src="@drawable/password_icon" />
 
                 <EditText
                     android:id="@+id/etSignUpPassword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:background="@null"
-                    android:layout_toRightOf="@+id/ivPasswordIcon"
                     android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@+id/ivPasswordIcon"
+                    android:background="@null"
                     android:gravity="bottom"
                     android:hint="@string/password"
                     android:inputType="textPassword"
@@ -213,32 +257,32 @@
             android:focusable="true"
             android:focusableInTouchMode="true"
             android:orientation="vertical"
-            android:weightSum="2"
-            android:visibility="gone" >
+            android:visibility="gone"
+            android:weightSum="2" >
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dip"
                 android:layout_margin="20dp"
                 android:layout_weight="1" >
-                
+
                 <ImageView
                     android:id="@+id/ivEmailIcon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/email_icon"
-                    android:contentDescription="@null"
                     android:layout_alignBottom="@+id/etForgotPasswordEmail"
-                    android:layout_marginBottom="2dp"/>
+                    android:layout_marginBottom="2dp"
+                    android:contentDescription="@null"
+                    android:src="@drawable/email_icon" />
 
                 <EditText
                     android:id="@+id/etForgotPasswordEmail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:background="@null"
-                    android:layout_toRightOf="@+id/ivEmailIcon"
                     android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@+id/ivEmailIcon"
+                    android:background="@null"
                     android:gravity="bottom"
                     android:hint="@string/email"
                     android:inputType="textEmailAddress"
@@ -266,7 +310,7 @@
         android:layout_height="35dp"
         android:layout_below="@+id/rlSignInTitle"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="280dp"
+        android:layout_marginTop="355dp"
         android:background="@drawable/rounded_rect_positive_selector"
         android:gravity="center"
         android:text="@string/SEND_PASSWORD"
@@ -280,7 +324,7 @@
         android:layout_height="35dp"
         android:layout_below="@+id/rlSignInTitle"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="280dp"
+        android:layout_marginTop="355dp"
         android:background="@drawable/rounded_rect_positive_selector"
         android:gravity="center"
         android:text="@string/SIGN_IN"

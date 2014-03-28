@@ -32,7 +32,9 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.preference.Preference;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -54,7 +56,9 @@ import com.cloverstudio.spika.dialog.HookUpAlertDialog.ButtonType;
 import com.cloverstudio.spika.management.FileManagement;
 import com.cloverstudio.spika.management.UsersManagement;
 import com.cloverstudio.spika.utils.Const;
+import com.cloverstudio.spika.utils.ConstServer;
 import com.cloverstudio.spika.utils.Utils;
+import com.cloverstudio.spika.view.SimpleAutoFitTextView;
 
 /**
  * SignInActivity
@@ -64,6 +68,8 @@ import com.cloverstudio.spika.utils.Utils;
  */
 
 public class SignInActivity extends Activity {
+	
+	private static final int REQUEST_CODE_LIST_SERVERS = 11;
 
 	private EditText mEtSignInEmail;
 	private EditText mEtSignInPassword;
@@ -79,6 +85,7 @@ public class SignInActivity extends Activity {
 	private LinearLayout mLlSignIn;
 	private LinearLayout mLlSignUp;
 	private TextView mTvTitle;
+	private TextView mTvSelectServer;
 
 	private String mSignInEmail;
 	private String mSignInPassword;
@@ -154,6 +161,7 @@ public class SignInActivity extends Activity {
 		mEtSignUpEmail = (EditText) findViewById(R.id.etSignUpEmail);
 		mEtSignUpPassword = (EditText) findViewById(R.id.etSignUpPassword);
 		mEtSendPasswordEmail = (EditText) findViewById(R.id.etForgotPasswordEmail);
+		mTvSelectServer = (TextView) findViewById(R.id.tvServerSelect);
 		mBtnBack = (Button) findViewById(R.id.btnBack);
 		mBtnBack.setTypeface(SpikaApp.getTfMyriadProBold(), Typeface.BOLD);
 		mBtnBack.setOnClickListener(new OnClickListener() {
@@ -229,7 +237,17 @@ public class SignInActivity extends Activity {
 		mEtSignUpEmail.setTypeface(SpikaApp.getTfMyriadPro());
 		mEtSignUpPassword.setTypeface(SpikaApp.getTfMyriadPro());
 		mEtSendPasswordEmail.setTypeface(SpikaApp.getTfMyriadPro());
-
+		mTvSelectServer.setTypeface(SpikaApp.getTfMyriadPro());
+		
+		mTvSelectServer.setText(SpikaApp.getPreferences().getUserServerName());
+		findViewById(R.id.rlServerField).setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				startActivityForResult(new Intent(SignInActivity.this, ServersListActivity.class), REQUEST_CODE_LIST_SERVERS);
+			}
+		});
+		
 		getEmailAndPasswordFromIntent();
 		checkToken();
 
@@ -514,6 +532,20 @@ public class SignInActivity extends Activity {
 
 		@Override
 		public void onResultsFail() {
+		}
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if(requestCode == REQUEST_CODE_LIST_SERVERS){
+			if(resultCode == RESULT_OK){
+				if(data != null){
+					mTvSelectServer.setText(data.getStringExtra(Const.SERVER_NAME));
+					mTvSelectServer.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
+					((SimpleAutoFitTextView)mTvSelectServer).callOnMeasure();
+				}
+			}
 		}
 	}
 }

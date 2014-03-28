@@ -49,6 +49,8 @@ public class Preferences {
 	private static final String WATCHING_GROUP_ID = "watching_group_id";
 	private static final String WATCHING_GROUP_REV = "watching_group_rev";
 	private static final String GROUP_PASSWORD = "GROUP_PASSWORD";
+	private static final String USER_SERVER_URL = "USER_SERVER_URL";
+	private static final String USER_SERVER_NAME = "USER_SERVER_NAME";
 
 	private SharedPreferences sharedPreferences;
 
@@ -185,6 +187,26 @@ public class Preferences {
     
     public String getSavedPasswordForGroup (String groupId) {
     	return sharedPreferences.getString(GROUP_PASSWORD + groupId, "");
+    }
+    
+    public void setUserServerURL (String url) {
+    	SharedPreferences.Editor editor = sharedPreferences.edit();
+    	editor.putString(USER_SERVER_URL, url);
+    	editor.commit();
+    }
+    
+    public String getUserServerURL () {
+    	return sharedPreferences.getString(USER_SERVER_URL, ConstServer.BASE_URL);
+    }
+    
+    public void setUserServerName (String name) {
+    	SharedPreferences.Editor editor = sharedPreferences.edit();
+    	editor.putString(USER_SERVER_NAME, name);
+    	editor.commit();
+    }
+    
+    public String getUserServerName () {
+    	return sharedPreferences.getString(USER_SERVER_NAME, Const.DEFAULT_SERVER_NAME);
     }
     
 }
