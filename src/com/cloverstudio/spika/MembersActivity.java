@@ -29,7 +29,7 @@ import com.cloverstudio.spika.extendables.SpikaActivity;
  * Shows a list of members
  */
 public class MembersActivity extends SpikaActivity {
-	private static final int LOAD_MORE_COUNT = 10;
+	private static final int LOAD_MORE_COUNT = 20;
 
 	private LoadMoreListView listView;
 	private MembersAdapter adapter;
