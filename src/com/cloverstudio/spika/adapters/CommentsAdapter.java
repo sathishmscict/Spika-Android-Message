@@ -160,7 +160,7 @@ public class CommentsAdapter extends ArrayAdapter<Comment> implements
 	private String getSubTextDateAndUser(Comment comment) {
 		String subText = null;
 		long timeOfCreationOrUpdate = comment.getCreated();
-		subText = Utils.getFormattedDateTime(timeOfCreationOrUpdate) + " by "
+		subText = Utils.getFormattedDateTime(timeOfCreationOrUpdate) + " " + mContext.getString(R.string.posted_by) + " "
 				+ comment.getUserName();
 		return subText;
 	}
