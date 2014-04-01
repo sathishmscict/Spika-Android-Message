@@ -63,7 +63,8 @@ public class Const {
     public static final String FIND_GROUP_BY_NAME		= "findGroup/name/";
     public static final String FIND_GROUP_BY_CATEGORY_ID= "findGroup/categoryId/";
     public static final String FIND_GROUP_CATEGORIES	= "findAllGroupCategory";
-    public static final String DEFAULT_SERVER_NAME		= "Spika Official";
+    public static final String DEFAULT_SERVER_NAME		= "Spika Official";    
+    public static final String FIND_MEMBERS             = "groupUsers/";
     
     
     public static final String PASSWORDREMINDER_URL    	= "resetPassword?";

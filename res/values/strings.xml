@@ -210,6 +210,7 @@
     <string name="invalid_token_message">Token has expired.\nPlease login again.</string>
     <string name="OPEN_CONVERSATION">OPEN CONVERSATION</string>
     <string name="enter_group_password">Enter group password</string>
+    <string name="MEMBER">MEMBERS</string>
     
     <string name="tutorial_nocontact">You have no contacts yet! Add some friends to your contact so you can each them easy.</string>
     <string name="tutorial_nofavorite">You have no groups subscribed. Subscribe your favorite group and get notifications when someone post to wall.</string>

@@ -82,7 +82,7 @@
                 android:layout_height="wrap_content"
                 android:layout_width="0dip"
                 android:contentDescription="@null"
-                android:background="@drawable/messages_icon"
+                android:background="@drawable/no_messages_icon"
                 android:layout_weight="1"
                 android:layout_marginRight="17dp"
                 android:textColor="@color/hookup_alert"

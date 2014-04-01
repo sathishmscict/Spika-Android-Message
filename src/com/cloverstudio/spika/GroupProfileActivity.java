@@ -1012,6 +1012,12 @@ public class GroupProfileActivity extends SpikaActivity {
 			redirect();
 		}
 	}
+	
+	public void showMembers(View view) {
+		Intent membersIntent = new Intent(GroupProfileActivity.this, MembersActivity.class);
+		membersIntent.putExtra("group_id", mGroup.getId());
+		startActivity(membersIntent);
+	}
 
 	public void redirect() {
 

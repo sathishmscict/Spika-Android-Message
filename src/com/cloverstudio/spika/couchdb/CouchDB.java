@@ -52,6 +52,7 @@ import com.cloverstudio.spika.couchdb.model.Emoticon;
 import com.cloverstudio.spika.couchdb.model.Group;
 import com.cloverstudio.spika.couchdb.model.GroupCategory;
 import com.cloverstudio.spika.couchdb.model.GroupSearch;
+import com.cloverstudio.spika.couchdb.model.Member;
 import com.cloverstudio.spika.couchdb.model.Message;
 import com.cloverstudio.spika.couchdb.model.Server;
 import com.cloverstudio.spika.couchdb.model.User;
@@ -1541,6 +1542,21 @@ public class CouchDB {
     }
 
 
+    
+  //************** FIND MEMBER BY GROUP ID *********************
+    
+    public static List<Member> findMembersByGroupId(String groupId, int count, int offset) throws ClientProtocolException, IOException, JSONException, SpikaException {
+        try {
+        	groupId = URLEncoder.encode(groupId, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return null;
+        }
+        JSONObject json = ConnectionHandler.getJsonObject(SpikaApp.getInstance().getBaseUrlWithSufix(Const.FIND_MEMBERS) + groupId + "/" + offset + "/" + count, UsersManagement.getLoginUser().getId());
+
+        return CouchDBHelper.parseMemberObjects(json);
+    }
+    
 
   //************** FIND MESSAGE BY ID **************************
     

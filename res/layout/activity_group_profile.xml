@@ -65,12 +65,29 @@
                 android:text="@string/OPEN_CONVERSATION"
                 android:textColor="@android:color/white"
                 android:textSize="16sp" />
+            
+            <Button
+                android:id="@+id/btnMember"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_below="@+id/btnOpenWall"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/members_selector"
+                android:drawableRight="@drawable/arrow_white"
+                android:gravity="center"
+                android:paddingRight="10dp"
+                android:onClick="showMembers"
+                android:text="@string/MEMBER"
+                android:textColor="@android:color/white"
+                android:textSize="16sp" />
 
             <RelativeLayout
                 android:id="@+id/rlGroupInfoBody"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@+id/btnOpenWall"
+                android:layout_below="@+id/btnMember"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp" >
 
