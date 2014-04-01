@@ -175,7 +175,7 @@
     <string name="no_groups_in_favorites">لا توجد مجموعات في مفضلتك</string>
     <string name="no_wall_messages">لا رسائل بعد !</string>
     <string name="MY_CONTACTS">قائمة أصدقائي</string>
-    <string name="FAVORITE_GROUPS">مناطقي المفضلة</string>
+    <string name="FAVORITE_GROUPS">مجموعاتي</string>
     <string name="ONLINE_STATUS">الحالة :</string>
     <string name="SHOW_PASSWORD">اظهار كلمة المرور :</string>
     <string name="EMAIL">البريد الالكتروني :</string>
@@ -208,7 +208,7 @@
     <string name="this_group_is_deleted">تم حذف هذه المجموعة</string>
     <string name="CLOSE">اغلاق</string>
     <string name="invalid_token_message">عليك تسجيل الدخول من جديد</string>
-    <string name="OPEN_CONVERSATION">إبدأ المحادثة !</string>
+    <string name="OPEN_CONVERSATION">إبدأ المحادثة</string>
     <string name="enter_group_password">كلمة مرور المجموعة</string>
     
     <string name="tutorial_nocontact">ليس لديك جهات إتصال بعد! أضف بعض من الأصدقاء الى جهات الإتصال حتى تجعلها أسهل.</string>
@@ -245,6 +245,6 @@
     <string name="delete_after_user_sees_it">بعد أن يراها المستخدم</string>
     <string name="delete_close">موافق</string>
     
-    <string name="select_server">حدد الخادم</string>
-    <string name="add_server">URL مخصص</string>
+    <string name="select_server">حدد السيرفر</string>
+    <string name="add_server">رابط مخصص</string>
 </resources>
