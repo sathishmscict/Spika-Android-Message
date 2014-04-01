@@ -46,6 +46,7 @@ import com.cloverstudio.spika.couchdb.model.Message;
 import com.cloverstudio.spika.couchdb.model.Notification;
 import com.cloverstudio.spika.couchdb.model.NotificationMessage;
 import com.cloverstudio.spika.couchdb.model.RecentActivity;
+import com.cloverstudio.spika.couchdb.model.Server;
 import com.cloverstudio.spika.couchdb.model.User;
 import com.cloverstudio.spika.couchdb.model.UserGroup;
 import com.cloverstudio.spika.extendables.SideBarActivity;
@@ -1680,6 +1681,36 @@ public class CouchDBHelper {
 	public static Object appLogout(Object object, boolean isUserUpdateConflict, boolean isInvalidToken) {
 		SideBarActivity.appLogout(isUserUpdateConflict, true, isInvalidToken);
 		return object;
+	}
+	
+	/**
+	 * Parse server objects
+	 * 
+	 * @param json
+	 * @return
+	 * @throws JSONException 
+	 */
+	public static List<Server> parseServers(JSONArray json) throws JSONException {
+
+		List<Server> servers = null;
+
+		if (json != null) {
+			
+			servers = new ArrayList<Server>();
+
+			for (int i = 0; i < json.length(); i++) {
+
+				JSONObject row = json.getJSONObject(i);
+				
+				servers.add(sGsonExpose.fromJson(row.toString(), Server.class));
+
+			}
+		} else{
+			appLogout(null, false, false);
+			return null;
+		}
+
+		return servers;
 	}
 	
 

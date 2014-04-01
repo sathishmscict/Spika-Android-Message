@@ -54,6 +54,7 @@ import com.cloverstudio.spika.couchdb.model.GroupCategory;
 import com.cloverstudio.spika.couchdb.model.GroupSearch;
 import com.cloverstudio.spika.couchdb.model.Member;
 import com.cloverstudio.spika.couchdb.model.Message;
+import com.cloverstudio.spika.couchdb.model.Server;
 import com.cloverstudio.spika.couchdb.model.User;
 import com.cloverstudio.spika.couchdb.model.UserGroup;
 import com.cloverstudio.spika.couchdb.model.UserSearch;
@@ -64,6 +65,7 @@ import com.cloverstudio.spika.management.FileManagement;
 import com.cloverstudio.spika.management.SettingsManager;
 import com.cloverstudio.spika.management.UsersManagement;
 import com.cloverstudio.spika.utils.Const;
+import com.cloverstudio.spika.utils.ConstServer;
 import com.cloverstudio.spika.utils.Logger;
 import com.cloverstudio.spika.utils.Utils;
 
@@ -87,8 +89,8 @@ public class CouchDB {
 
         /* CouchDB credentials */
 
-        sUrl = Const.API_URL;
-        setAuthUrl(Const.AUTH_URL);
+        sUrl = SpikaApp.getInstance().getBaseUrlWithApi();
+        setAuthUrl(SpikaApp.getInstance().getBaseUrlWithSufix(Const.AUTH_URL));
         sCouchDB = this;
 
         new ConnectionHandler();
@@ -110,6 +112,10 @@ public class CouchDB {
         return sUrl;
     }
     
+    public static void setUrl(String url) {
+        sUrl = url;
+    }
+    
 //***** UPLOAD FILE ****************************
     
     /**
@@ -128,7 +134,7 @@ public class CouchDB {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         if (filePath != null && !filePath.equals("")) {
             params.add(new BasicNameValuePair(Const.FILE, filePath));
-            String fileId = ConnectionHandler.getIdFromFileUploader(Const.FILE_UPLOADER_URL, params);
+            String fileId = ConnectionHandler.getIdFromFileUploader(SpikaApp.getInstance().getBaseUrlWithSufix(Const.FILE_UPLOADER_URL), params);
             return fileId;
         }
         return null;
@@ -168,7 +174,7 @@ public class CouchDB {
      */
     public static File downloadFile(String fileId, File file) throws SpikaException, ClientProtocolException, IOException, IllegalStateException, JSONException {
 
-        ConnectionHandler.getFile(Const.FILE_DOWNLOADER_URL + Const.FILE + "=" + fileId, file,
+        ConnectionHandler.getFile(SpikaApp.getInstance().getBaseUrlWithSufix(Const.FILE_DOWNLOADER_URL) + Const.FILE + "=" + fileId, file,
                 UsersManagement.getLoginUser().getId(), UsersManagement.getLoginUser().getToken());
         return file;
     }
@@ -214,7 +220,7 @@ public class CouchDB {
      * @throws ClientProtocolException 
      */
     public static String unregisterPushToken(String userId) throws ClientProtocolException, IllegalStateException, IOException, SpikaException, JSONException {
-    	String result = ConnectionHandler.getString(Const.UNREGISTER_PUSH_URL + Const.USER_ID + "=" + userId,
+    	String result = ConnectionHandler.getString(SpikaApp.getInstance().getBaseUrlWithSufix(Const.UNREGISTER_PUSH_URL) + Const.USER_ID + "=" + userId,
                 UsersManagement.getLoginUser().getId());
         return result;
     }
@@ -374,7 +380,7 @@ public class CouchDB {
 			e1.printStackTrace();
 		}
 
-        final String url = Const.FIND_USER_BY_NAME + username;
+        final String url = SpikaApp.getInstance().getBaseUrlWithSufix(Const.FIND_USER_BY_NAME) + username;
 
         JSONObject jsonObject = ConnectionHandler.getJsonObject(url, null);
         
@@ -425,7 +431,7 @@ public class CouchDB {
 
         JSONObject json = null;
 
-        final String url = Const.FIND_USER_BY_EMAIL + email;
+        final String url = SpikaApp.getInstance().getBaseUrlWithSufix(Const.FIND_USER_BY_EMAIL) + email;
         User user = null;
         
         if (UsersManagement.getLoginUser() != null) {
@@ -479,7 +485,7 @@ public class CouchDB {
             return null;
         }
 
-        String url = Const.FIND_USER_BY_ID + id;
+        String url = SpikaApp.getInstance().getBaseUrlWithSufix(Const.FIND_USER_BY_ID) + id;
         JSONObject json = ConnectionHandler.getJsonObject(url, UsersManagement.getLoginUser().getId());
         User user = CouchDBHelper.parseSingleUserObjectWithoutRowParam(json);
         
@@ -639,10 +645,10 @@ public class CouchDB {
         	searchParams += "&status=" + userSearch.getOnlineStatus();
         }
         
-        Logger.error("Search", Const.SEARCH_USERS_URL + searchParams);
+        Logger.error("Search", SpikaApp.getInstance().getBaseUrlWithSufix(Const.SEARCH_USERS_URL) + searchParams);
 
-        JSONArray json = ConnectionHandler.getJsonArray(Const.SEARCH_USERS_URL + searchParams,
-                UsersManagement.getLoginUser().getId(), UsersManagement.getLoginUser().getToken());
+        JSONArray json = ConnectionHandler.getJsonArray(SpikaApp.getInstance().getBaseUrlWithSufix(Const.SEARCH_USERS_URL)
+        		+ searchParams, UsersManagement.getLoginUser().getId(), UsersManagement.getLoginUser().getToken());
 
         return CouchDBHelper.parseSearchUsersResult(json);
     }
@@ -688,7 +694,7 @@ public class CouchDB {
 			e1.printStackTrace();
 		}
 
-        final String URL = Const.FIND_GROUP_BY_NAME + groupname;
+        final String URL = SpikaApp.getInstance().getBaseUrlWithSufix(Const.FIND_GROUP_BY_NAME) + groupname;
 
         JSONObject jsonObject = ConnectionHandler.getJsonObject(URL, UsersManagement.getLoginUser().getId());
 
@@ -744,7 +750,7 @@ public class CouchDB {
             searchParams = groupSearch.getName();
         }
 
-        JSONArray json = ConnectionHandler.getJsonArray(Const.SEARCH_GROUPS_URL + searchParams,
+        JSONArray json = ConnectionHandler.getJsonArray(SpikaApp.getInstance().getBaseUrlWithSufix(Const.SEARCH_GROUPS_URL) + searchParams,
                 UsersManagement.getLoginUser().getId(), UsersManagement.getLoginUser().getToken());
 
         return CouchDBHelper.parseSearchGroupsResult(json);
@@ -780,7 +786,7 @@ public class CouchDB {
             return null;
         }
 
-        JSONObject json = ConnectionHandler.getJsonObject(Const.GET_AVATAR_FILE_ID + userId, UsersManagement.getLoginUser().getId());
+        JSONObject json = ConnectionHandler.getJsonObject(SpikaApp.getInstance().getBaseUrlWithSufix(Const.GET_AVATAR_FILE_ID) + userId, UsersManagement.getLoginUser().getId());
 		return CouchDBHelper.findAvatarFileId(json);
 		
     }
@@ -949,7 +955,7 @@ public class CouchDB {
      */
     public static List<Group> findAllGroups() throws ClientProtocolException, IOException, JSONException, SpikaException {
 
-        JSONObject json= ConnectionHandler.getJsonObject(Const.FIND_GROUP_BY_NAME, UsersManagement.getLoginUser().getId());
+        JSONObject json= ConnectionHandler.getJsonObject(SpikaApp.getInstance().getBaseUrlWithSufix(Const.FIND_GROUP_BY_NAME), UsersManagement.getLoginUser().getId());
         return CouchDBHelper.parseMultiGroupObjects(json);
     }
     
@@ -987,7 +993,7 @@ public class CouchDB {
             return null;
         }
 
-        JSONObject json = ConnectionHandler.getJsonObject(Const.FIND_GROUP_BY_ID + id, UsersManagement.getLoginUser().getId());
+        JSONObject json = ConnectionHandler.getJsonObject(SpikaApp.getInstance().getBaseUrlWithSufix(Const.FIND_GROUP_BY_ID) + id, UsersManagement.getLoginUser().getId());
 
         return CouchDBHelper.parseSingleGroupObjectWithoutRowParam(json);
     }
@@ -1035,7 +1041,7 @@ public class CouchDB {
             return null;
         }
 
-        String url = Const.FIND_GROUP_BY_NAME + name;
+        String url = SpikaApp.getInstance().getBaseUrlWithSufix(Const.FIND_GROUP_BY_NAME) + name;
 
         JSONObject json = ConnectionHandler.getJsonObject(url, UsersManagement.getLoginUser().getId());
 
@@ -1118,7 +1124,7 @@ public class CouchDB {
      * @throws ClientProtocolException 
      */
     private static ActivitySummary findUserActivitySummary(String id) throws ClientProtocolException, IOException, JSONException, SpikaException {
-        String url = Const.FIND_USERACTIVITY_SUMMARY;
+        String url = SpikaApp.getInstance().getBaseUrlWithSufix(Const.FIND_USERACTIVITY_SUMMARY);
         JSONObject json = ConnectionHandler.getJsonObject(url, id);
         return CouchDBHelper.parseSingleActivitySummaryObject(json);
     }
@@ -1455,7 +1461,7 @@ public class CouchDB {
         
         if(cachedJSON == null){
 
-        	JSONObject json = ConnectionHandler.getJsonObject(Const.FIND_GROUP_CATEGORIES, UsersManagement.getLoginUser().getId());
+        	JSONObject json = ConnectionHandler.getJsonObject(SpikaApp.getInstance().getBaseUrlWithSufix(Const.FIND_GROUP_CATEGORIES), UsersManagement.getLoginUser().getId());
         	
             CouchDB.saveToMemCache(groupCategoryCacheKey, json.toString());
             
@@ -1512,7 +1518,7 @@ public class CouchDB {
             return null;
         }
 
-        JSONObject json = ConnectionHandler.getJsonObject(Const.FIND_GROUP_BY_CATEGORY_ID + id, UsersManagement.getLoginUser().getId());
+        JSONObject json = ConnectionHandler.getJsonObject(SpikaApp.getInstance().getBaseUrlWithSufix(Const.FIND_GROUP_BY_CATEGORY_ID) + id, UsersManagement.getLoginUser().getId());
         
         return CouchDBHelper.parseMultiGroupObjects(json);
     }
@@ -1546,7 +1552,7 @@ public class CouchDB {
             e.printStackTrace();
             return null;
         }
-        JSONObject json = ConnectionHandler.getJsonObject(Const.FIND_MEMBERS + groupId + "/" + offset + "/" + count, UsersManagement.getLoginUser().getId());
+        JSONObject json = ConnectionHandler.getJsonObject(SpikaApp.getInstance().getBaseUrlWithSufix(Const.FIND_MEMBERS) + groupId + "/" + offset + "/" + count, UsersManagement.getLoginUser().getId());
 
         return CouchDBHelper.parseMemberObjects(json);
     }
@@ -1566,7 +1572,7 @@ public class CouchDB {
      */
     public static Message findMessageById(String id) throws ClientProtocolException, IOException, JSONException, SpikaException {
 
-        JSONObject json = ConnectionHandler.getJsonObject(Const.FIND_MESSAGE_BY_ID + id, UsersManagement.getLoginUser().getId());
+        JSONObject json = ConnectionHandler.getJsonObject(SpikaApp.getInstance().getBaseUrlWithSufix(Const.FIND_MESSAGE_BY_ID) + id, UsersManagement.getLoginUser().getId());
 
         return CouchDBHelper.findMessage(json);
     }
@@ -1630,10 +1636,10 @@ public class CouchDB {
 
         if (to_user != null) {
             _to = to_user.getId();
-            url = Const.FIND_USER_MESSAGES + _to + "/" + count + "/" + skip;
+            url = SpikaApp.getInstance().getBaseUrlWithSufix(Const.FIND_USER_MESSAGES) + _to + "/" + count + "/" + skip;
         } else if (to_group != null) {
         	_to = to_group.getId();
-            url = Const.FIND_GROUP_MESSAGES + _to + "/" + count + "/" + skip;
+            url = SpikaApp.getInstance().getBaseUrlWithSufix(Const.FIND_GROUP_MESSAGES) + _to + "/" + count + "/" + skip;
         }
 
         try {
@@ -2080,7 +2086,7 @@ public class CouchDB {
             return null;
         }
         
-        JSONObject json = ConnectionHandler.getJsonObject(Const.FIND_COMMENTS_BY_MESSAGE_ID + messageId + "/30/0", UsersManagement.getLoginUser().getId());
+        JSONObject json = ConnectionHandler.getJsonObject(SpikaApp.getInstance().getBaseUrlWithSufix(Const.FIND_COMMENTS_BY_MESSAGE_ID) + messageId + "/30/0", UsersManagement.getLoginUser().getId());
 
         return CouchDBHelper.parseMultiCommentObjects(json);
     }
@@ -2143,7 +2149,7 @@ public class CouchDB {
             return 0;
         }
 
-        JSONObject json = ConnectionHandler.getJsonObject(Const.COMMENTS_COUNT + messageId, UsersManagement.getLoginUser().getId());
+        JSONObject json = ConnectionHandler.getJsonObject(SpikaApp.getInstance().getBaseUrlWithSufix(Const.COMMENTS_COUNT) + messageId, UsersManagement.getLoginUser().getId());
         
         return CouchDBHelper.getCommentCount(json);
     }
@@ -2176,7 +2182,7 @@ public class CouchDB {
 
     private static void sendPassword(String email) throws ClientProtocolException, IllegalStateException, IOException, SpikaException, JSONException {
 
-    	final String URL = Const.PASSWORDREMINDER_URL + "email=" + email;
+    	final String URL = SpikaApp.getInstance().getBaseUrlWithSufix(Const.PASSWORDREMINDER_URL) + "email=" + email;
         ConnectionHandler.getString(URL, null);
     }
     
@@ -2334,7 +2340,7 @@ public class CouchDB {
      * @throws ClientProtocolException 
      */
     public static List<Emoticon> findAllEmoticons() throws ClientProtocolException, IOException, JSONException, SpikaException {
-        JSONObject json = ConnectionHandler.getJsonObject(Const.FIND_ALL_EMOTICONS, UsersManagement.getLoginUser().getId());
+        JSONObject json = ConnectionHandler.getJsonObject(SpikaApp.getInstance().getBaseUrlWithSufix(Const.FIND_ALL_EMOTICONS), UsersManagement.getLoginUser().getId());
         return CouchDBHelper.parseMultiEmoticonObjects(json);
     }
     
@@ -2353,4 +2359,33 @@ public class CouchDB {
 			}
 		}
     }
+    
+  //***** GET ALL SERVERS ****************************   
+    
+    /**
+     * @return List<Server>
+     * @throws JSONException
+     * @throws ClientProtocolException
+     * @throws IOException
+     * @throws IllegalStateException
+     * @throws SpikaException
+     */
+    
+    public static List<Server> findAllServers() throws ClientProtocolException, IOException, JSONException, SpikaException {
+        JSONArray json = ConnectionHandler.getJsonArray(ConstServer.LIST_SERVERS_URL, null, null);
+        return CouchDBHelper.parseServers(json);
+    }
+    
+    public static void findAllServersAsync(ResultListener<List<Server>> resultListener, Context context, boolean showProgressBar) {
+    	new SpikaAsyncTask<Void, Void, List<Server>>(new FindAllServers(), resultListener, context, showProgressBar).execute();
+    }
+    
+    public static class FindAllServers implements Command<List<Server>>
+    {
+		@Override
+		public List<Server> execute() throws JSONException, IOException, SpikaException {
+			return CouchDB.findAllServers();
+		}
+    }
+    
 }

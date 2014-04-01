@@ -9,13 +9,14 @@ import android.webkit.WebViewClient;
 import com.cloverstudio.spika.dialog.HookUpProgressDialog;
 import com.cloverstudio.spika.extendables.SideBarActivity;
 import com.cloverstudio.spika.management.UsersManagement;
+import com.cloverstudio.spika.utils.Const;
 import com.cloverstudio.spika.utils.ConstServer;
 
 public class InformationActivity extends SideBarActivity {
 
 	private WebView mWebView;
 	private HookUpProgressDialog mProgressDialog;
-	private String mUrl=ConstServer.INFORMATION_URL;
+	private String mUrl=SpikaApp.getInstance().getBaseUrl()+Const.INFORMATION_FOLDER;
 	
 	@SuppressLint("SetJavaScriptEnabled")
 	@Override

@@ -246,4 +246,7 @@
     <string name="delete_after_user_sees_it">When user sees it</string>
     <string name="delete_close">OK</string>
     
+    <string name="select_server">SELECET SERVER</string>
+    <string name="add_server">Custom URL</string>
+    
 </resources>

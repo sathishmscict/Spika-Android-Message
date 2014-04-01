@@ -243,4 +243,7 @@
     <string name="delete_after_a_week">１週間後</string>
     <string name="delete_after_user_sees_it">相手ユーザーが見たら</string>
     <string name="delete_close">決定</string>
+    
+    <string name="select_server">サーバーを選択</string>
+	<string name="add_server">URLを設定</string>
 </resources>

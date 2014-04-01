@@ -75,6 +75,9 @@ public class SpikaAsyncTask<Params, Progress, Result> extends AsyncTask<Params, 
 		} catch (SpikaException e) {
 			exception = e;
 			e.printStackTrace();
+		} catch (IllegalStateException e) {
+			exception = e;
+			e.printStackTrace();
 		} catch (NullPointerException e) {
 			exception = e;
 			e.printStackTrace();
