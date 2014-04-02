@@ -130,7 +130,7 @@
     <string name="SUCCESS">نجح</string>
     <string name="EDIT">تعديل</string>
     <string name="SHOW">عرض</string>
-
+    
     <string-array name="gender">
         <item>ذكر</item>
         <item>أنثى</item>
@@ -210,6 +210,7 @@
     <string name="invalid_token_message">عليك تسجيل الدخول من جديد</string>
     <string name="OPEN_CONVERSATION">إبدأ المحادثة !</string>
     <string name="enter_group_password">كلمة مرور المجموعة</string>
+    <string name="MEMBER">أعضاء</string>
     
     <string name="tutorial_nocontact">ليس لديك جهات إتصال بعد! أضف بعض من الأصدقاء الى جهات الإتصال حتى تجعلها أسهل.</string>
     <string name="tutorial_nofavorite">لاتوجد مجموعات قمت بالإشتراك بها. إشترك بمجموعتك المفضلة وأحصل على إشعارات عندما يقوم شخص ما بالإضافة على الحائط.</string>
