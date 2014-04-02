@@ -207,6 +207,7 @@ public class GroupProfileActivity extends SpikaActivity {
 			mRlControlButtons.setVisibility(View.GONE);
 			mTvGroupDescription.setVisibility(View.VISIBLE);
 			mEtGroupDescription.setVisibility(View.GONE);
+			mIvGroupImage.setEnabled(false);
 			if (mGroupDescription != null && !mGroupDescription.equals("")) {
 				mRlGroupDescription.setVisibility(View.VISIBLE);
 				mTvGroupDescription.setText(mGroupDescription);
