@@ -16,7 +16,7 @@
     <string name="REMOVE_PHOTO">写真の削除</string>
     <string name="CREATE">作成する</string>
     <string name="ACCOUNT">メニュー</string>
-    <string name="NOTIFICATIONS">未読通知</string>
+    <string name="NOTIFICATIONS">履歴</string>
     <string name="BACK">戻る</string>
     <string name="users">ユーザー</string>
     <string name="groups">グループ</string>
@@ -106,9 +106,9 @@
     <string name="hookup_date_format">yyyy/MM/dd</string>
     <string name="hookup_date_time_format">MM/dd HH:mm</string>
     <string name="loading">LOADING...</string>
-    <string name="RECENT_ACTIVITY">未読メッセージ</string>
-    <string name="CHAT_ACTIVITY">未読メッセージ</string>
-    <string name="GROUPS_ACTIVITY">新規グループ投稿</string>
+    <string name="RECENT_ACTIVITY">メッセージ履歴</string>
+    <string name="CHAT_ACTIVITY">メッセージ履歴</string>
+    <string name="GROUPS_ACTIVITY">グループ投稿履歴</string>
     <string name="USERS_ACTIVITY">USERS ACTIVITY</string>
     <string name="INFORMATION">インフォメーション</string>
     <string name="SETTINGS">設定</string>
