@@ -149,6 +149,7 @@ public class Const {
 	public static final String DELETE_TYPE = "delete_type";
 	public static final String DELETE_AT = "delete_at";
 	public static final String READ_AT = "read_at";
+	public static final String COMMENT_COUNT = "comment_count";
 	
 	/* Group constants */
 	public static final String GROUP = "group";

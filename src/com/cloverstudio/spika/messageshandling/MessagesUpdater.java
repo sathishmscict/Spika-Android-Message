@@ -102,15 +102,17 @@ public class MessagesUpdater {
 			if (gIsLoading) {
 				UpdateMessagesInListView.updateListView(result);
 				for (Message message : result) {
-					CouchDB.getCommentsCountAsync(message, WallActivity.getInstance());
+					//CouchDB.getCommentsCountAsync(message, WallActivity.getInstance());
 				}
 			}
 
 			gIsLoading = false;
 			gRegularRefresh = true;
 
-			if (WallActivity.getInstance() != null)
+			if (WallActivity.getInstance() != null){
 				WallActivity.getInstance().checkMessagesCount();
+				if (WallActivity.gMessagesAdapter != null) WallActivity.gMessagesAdapter.notifyDataSetChanged();	
+			}
 		}
 
 		@Override

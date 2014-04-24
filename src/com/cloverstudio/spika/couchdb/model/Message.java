@@ -102,7 +102,8 @@ public class Message implements Comparable<Message>, Serializable{
     @SerializedName(Const.READ_AT)
     @Expose private int mReadAt = 0;
 	
-	private int mCommentCount = 0;
+    @SerializedName("comment_count")
+    @Expose private int mCommentCount = 0;
 	
 	
 	

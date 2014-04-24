@@ -1468,6 +1468,14 @@ public class CouchDBHelper {
 			message.setReadAt(0);
 		}
 		
+		
+		try {
+			message.setCommentCount(json.getInt(Const.COMMENT_COUNT));
+		} catch (JSONException e) {
+			message.setCommentCount(0);
+		}
+		
+		
 //		if (image || video || voice) {
 //			message.setCommentCount(CouchDB.getCommentCount(message.getId()));
 //		}
