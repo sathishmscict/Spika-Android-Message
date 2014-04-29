@@ -171,8 +171,9 @@ public class CouchDB {
      * @throws ClientProtocolException 
      * @throws JSONException 
      * @throws IllegalStateException 
+     * @throws SpikaForbiddenException 
      */
-    public static File downloadFile(String fileId, File file) throws SpikaException, ClientProtocolException, IOException, IllegalStateException, JSONException {
+    public static File downloadFile(String fileId, File file) throws SpikaException, ClientProtocolException, IOException, IllegalStateException, JSONException, SpikaForbiddenException {
 
         ConnectionHandler.getFile(SpikaApp.getInstance().getBaseUrlWithSufix(Const.FILE_DOWNLOADER_URL) + Const.FILE + "=" + fileId, file,
                 UsersManagement.getLoginUser().getId(), UsersManagement.getLoginUser().getToken());
@@ -201,7 +202,7 @@ public class CouchDB {
 		}
 
 		@Override
-		public File execute() throws JSONException, IOException, SpikaException {
+		public File execute() throws JSONException, IOException, SpikaException, IllegalStateException, SpikaForbiddenException {
 			return downloadFile(fileId, file);
 		}
     }
@@ -218,8 +219,9 @@ public class CouchDB {
      * @throws IOException 
      * @throws IllegalStateException 
      * @throws ClientProtocolException 
+     * @throws SpikaForbiddenException 
      */
-    public static String unregisterPushToken(String userId) throws ClientProtocolException, IllegalStateException, IOException, SpikaException, JSONException {
+    public static String unregisterPushToken(String userId) throws ClientProtocolException, IllegalStateException, IOException, SpikaException, JSONException, SpikaForbiddenException {
     	String result = ConnectionHandler.getString(SpikaApp.getInstance().getBaseUrlWithSufix(Const.UNREGISTER_PUSH_URL) + Const.USER_ID + "=" + userId,
                 UsersManagement.getLoginUser().getId());
         return result;
@@ -238,7 +240,7 @@ public class CouchDB {
 		}
 
 		@Override
-		public String execute() throws JSONException, IOException, IllegalStateException, SpikaException {
+		public String execute() throws JSONException, IOException, IllegalStateException, SpikaException, SpikaForbiddenException {
 			return unregisterPushToken(userId);
 		}
     }
@@ -253,8 +255,9 @@ public class CouchDB {
      * @throws JSONException
      * @throws IllegalStateException
      * @throws SpikaException
+     * @throws SpikaForbiddenException 
      */
-    public static String auth(String email, String password) throws IOException, JSONException, IllegalStateException, SpikaException {
+    public static String auth(String email, String password) throws IOException, JSONException, IllegalStateException, SpikaException, SpikaForbiddenException {
 
         JSONObject jPost = new JSONObject();
 
@@ -300,7 +303,7 @@ public class CouchDB {
     	}
 
 		@Override
-		public String execute() throws JSONException, IOException, IllegalStateException, SpikaException {
+		public String execute() throws JSONException, IOException, IllegalStateException, SpikaException, SpikaForbiddenException {
 			return auth(email, password);
 		}
     }
@@ -317,8 +320,9 @@ public class CouchDB {
      * @throws IOException
      * @throws IllegalStateException
      * @throws SpikaException
+     * @throws SpikaForbiddenException 
      */
-    public static String createUser(String name, String email, String password) throws JSONException, ClientProtocolException, IOException, IllegalStateException, SpikaException {
+    public static String createUser(String name, String email, String password) throws JSONException, ClientProtocolException, IOException, IllegalStateException, SpikaException, SpikaForbiddenException {
 
     	JSONObject userJson = new JSONObject();
 
@@ -357,7 +361,7 @@ public class CouchDB {
     	}
 
 		@Override
-		public String execute() throws JSONException, IOException, IllegalStateException, SpikaException {
+		public String execute() throws JSONException, IOException, IllegalStateException, SpikaException, SpikaForbiddenException {
 			return createUser(name, email, password);
 		}
     }
@@ -371,8 +375,10 @@ public class CouchDB {
      * @throws IOException
      * @throws JSONException
      * @throws SpikaException
+     * @throws SpikaForbiddenException 
+     * @throws IllegalStateException 
      */
-    private static User findUserByName(String username) throws ClientProtocolException, IOException, JSONException, SpikaException {
+    private static User findUserByName(String username) throws ClientProtocolException, IOException, JSONException, SpikaException, IllegalStateException, SpikaForbiddenException {
     	
     	try {
     		username = URLEncoder.encode(username, "UTF-8");
@@ -403,7 +409,7 @@ public class CouchDB {
     	}
     	
 		@Override
-		public User execute() throws JSONException, IOException, SpikaException {
+		public User execute() throws JSONException, IOException, SpikaException, IllegalStateException, SpikaForbiddenException {
 			return findUserByName(username);
 		}
     }
@@ -419,8 +425,10 @@ public class CouchDB {
      * @throws JSONException 
      * @throws IOException 
      * @throws ClientProtocolException 
+     * @throws SpikaForbiddenException 
+     * @throws IllegalStateException 
      */
-	public static User findUserByEmail(String email) throws ClientProtocolException, IOException, JSONException, SpikaException {
+	public static User findUserByEmail(String email) throws ClientProtocolException, IOException, JSONException, SpikaException, IllegalStateException, SpikaForbiddenException {
         
         try {
             email = URLEncoder.encode(email, "UTF-8");
@@ -459,7 +467,7 @@ public class CouchDB {
     	}
 
 		@Override
-		public User execute() throws JSONException, IOException, SpikaException {
+		public User execute() throws JSONException, IOException, SpikaException, IllegalStateException, SpikaForbiddenException {
 			return findUserByEmail(email);
 		}
     }
@@ -475,8 +483,10 @@ public class CouchDB {
      * @throws SpikaException 
      * @throws IOException 
      * @throws ClientProtocolException 
+     * @throws SpikaForbiddenException 
+     * @throws IllegalStateException 
      */
-    public static User findUserById(String id) throws JSONException, ClientProtocolException, IOException, SpikaException {
+    public static User findUserById(String id) throws JSONException, ClientProtocolException, IOException, SpikaException, IllegalStateException, SpikaForbiddenException {
     	
         try {
             id = URLEncoder.encode(id, "UTF-8");
@@ -506,7 +516,7 @@ public class CouchDB {
     	}
     	
 		@Override
-		public User execute() throws JSONException, IOException, SpikaException {
+		public User execute() throws JSONException, IOException, SpikaException, IllegalStateException, SpikaForbiddenException {
 			return findUserById(id);
 		}
     }
@@ -526,8 +536,9 @@ public class CouchDB {
      * @throws ClientProtocolException 
      * @throws IOException 
      * @throws IllegalStateException 
+     * @throws SpikaForbiddenException 
      */
-    public static boolean updateUser(User user) throws JSONException, ClientProtocolException, IllegalStateException, IOException, SpikaException {
+    public static boolean updateUser(User user) throws JSONException, ClientProtocolException, IllegalStateException, IOException, SpikaException, SpikaForbiddenException {
 
         JSONObject userJson = new JSONObject();
         List<String> contactIds = new ArrayList<String>();
@@ -599,7 +610,7 @@ public class CouchDB {
     	}
 
 		@Override
-		public Boolean execute() throws JSONException, IOException, IllegalStateException, SpikaException {
+		public Boolean execute() throws JSONException, IOException, IllegalStateException, SpikaException, SpikaForbiddenException {
 			return updateUser(user);
 		}
     }
@@ -615,8 +626,10 @@ public class CouchDB {
      * @throws JSONException 
      * @throws IOException 
      * @throws ClientProtocolException 
+     * @throws SpikaForbiddenException 
+     * @throws IllegalStateException 
      */
-    public static List<User> searchUsers(UserSearch userSearch) throws ClientProtocolException, IOException, JSONException, SpikaException {
+    public static List<User> searchUsers(UserSearch userSearch) throws ClientProtocolException, IOException, JSONException, SpikaException, IllegalStateException, SpikaForbiddenException {
 
         String searchParams = "";
 
@@ -667,7 +680,7 @@ public class CouchDB {
     	}
 
 		@Override
-		public List<User> execute() throws JSONException, IOException, SpikaException {
+		public List<User> execute() throws JSONException, IOException, SpikaException, IllegalStateException, SpikaForbiddenException {
 			return searchUsers(userSearch);
 		}
     }
@@ -685,8 +698,10 @@ public class CouchDB {
      * @throws JSONException 
      * @throws IOException 
      * @throws ClientProtocolException 
+     * @throws SpikaForbiddenException 
+     * @throws IllegalStateException 
      */
-    public static Group getGroupByName(String groupname) throws ClientProtocolException, IOException, JSONException, SpikaException {
+    public static Group getGroupByName(String groupname) throws ClientProtocolException, IOException, JSONException, SpikaException, IllegalStateException, SpikaForbiddenException {
     	
     	try {
     		groupname = URLEncoder.encode(groupname, "UTF-8");
@@ -719,7 +734,7 @@ public class CouchDB {
     	}
     	
 		@Override
-		public Group execute() throws JSONException, IOException, SpikaException {
+		public Group execute() throws JSONException, IOException, SpikaException, IllegalStateException, SpikaForbiddenException {
 			return getGroupByName(groupname);
 		}
     }
@@ -735,8 +750,10 @@ public class CouchDB {
      * @throws JSONException 
      * @throws IOException 
      * @throws ClientProtocolException 
+     * @throws SpikaForbiddenException 
+     * @throws IllegalStateException 
      */
-    public static List<Group> searchGroups(GroupSearch groupSearch) throws ClientProtocolException, IOException, JSONException, SpikaException {
+    public static List<Group> searchGroups(GroupSearch groupSearch) throws ClientProtocolException, IOException, JSONException, SpikaException, IllegalStateException, SpikaForbiddenException {
 
         String searchParams = "";
 
@@ -770,14 +787,14 @@ public class CouchDB {
     	}
 
 		@Override
-		public List<Group> execute() throws JSONException, IOException, SpikaException {
+		public List<Group> execute() throws JSONException, IOException, SpikaException, IllegalStateException, SpikaForbiddenException {
 			return searchGroups(groupSearch);
 		}
     }
 
 //**************** FIND AVATAR FILE ID **************************
 
-    public static String findAvatarFileId(String userId) throws ClientProtocolException, IOException, JSONException, SpikaException {
+    public static String findAvatarFileId(String userId) throws ClientProtocolException, IOException, JSONException, SpikaException, IllegalStateException, SpikaForbiddenException {
 
         try {
             userId = URLEncoder.encode(userId, "UTF-8");
@@ -801,7 +818,7 @@ public class CouchDB {
     	}
 
 		@Override
-		public String execute() throws JSONException, IOException, SpikaException {
+		public String execute() throws JSONException, IOException, SpikaException, IllegalStateException, SpikaForbiddenException {
 			return findAvatarFileId(userId);
 		}
     }
@@ -846,8 +863,10 @@ public class CouchDB {
      * @throws JSONException
      * @throws IOException
      * @throws SpikaException
+     * @throws SpikaForbiddenException 
+     * @throws IllegalStateException 
      */
-    public static List<User> findUserContacts(String id) throws JSONException, IOException, SpikaException {
+    public static List<User> findUserContacts(String id) throws JSONException, IOException, SpikaException, IllegalStateException, SpikaForbiddenException {
     	
     	List<User> contacts = new ArrayList<User>();
     	
@@ -874,7 +893,7 @@ public class CouchDB {
     	}
 
 		@Override
-		public List<User> execute() throws JSONException, IOException, SpikaException {
+		public List<User> execute() throws JSONException, IOException, SpikaException, IllegalStateException, SpikaForbiddenException {
 	        return findUserContacts(id);
 		}
     }
@@ -895,13 +914,13 @@ public class CouchDB {
 		}
 
 		@Override
-		public Boolean execute() throws JSONException, IOException, SpikaException {
+		public Boolean execute() throws JSONException, IOException, SpikaException, IllegalStateException, SpikaForbiddenException {
 			addUser(userId);
 			return true;
 		}
     }
     
-    private static void addUser (String contactId) throws JSONException, ClientProtocolException, IllegalStateException, IOException, SpikaException {
+    private static void addUser (String contactId) throws JSONException, ClientProtocolException, IllegalStateException, IOException, SpikaException, SpikaForbiddenException {
     	User user = UsersManagement.getLoginUser();
     	
     	JSONObject jsonRequest = new JSONObject();
@@ -927,13 +946,13 @@ public class CouchDB {
 		}
 
 		@Override
-		public Boolean execute() throws JSONException, IOException, SpikaException {
+		public Boolean execute() throws JSONException, IOException, SpikaException, IllegalStateException, SpikaForbiddenException {
 			removeContact(userId);
 			return true;
 		}
     }
     
-    private static void removeContact (String contactId) throws JSONException, ClientProtocolException, IllegalStateException, IOException, SpikaException {
+    private static void removeContact (String contactId) throws JSONException, ClientProtocolException, IllegalStateException, IOException, SpikaException, SpikaForbiddenException {
     	User user = UsersManagement.getLoginUser();
     	
     	JSONObject jsonRequest = new JSONObject();
@@ -952,8 +971,10 @@ public class CouchDB {
      * @throws JSONException 
      * @throws IOException 
      * @throws ClientProtocolException 
+     * @throws SpikaForbiddenException 
+     * @throws IllegalStateException 
      */
-    public static List<Group> findAllGroups() throws ClientProtocolException, IOException, JSONException, SpikaException {
+    public static List<Group> findAllGroups() throws ClientProtocolException, IOException, JSONException, SpikaException, IllegalStateException, SpikaForbiddenException {
 
         JSONObject json= ConnectionHandler.getJsonObject(SpikaApp.getInstance().getBaseUrlWithSufix(Const.FIND_GROUP_BY_NAME), UsersManagement.getLoginUser().getId());
         return CouchDBHelper.parseMultiGroupObjects(json);
@@ -967,7 +988,7 @@ public class CouchDB {
     private static class FindAllGroups implements Command<List<Group>>
     {
 		@Override
-		public List<Group> execute() throws JSONException, IOException, SpikaException {
+		public List<Group> execute() throws JSONException, IOException, SpikaException, IllegalStateException, SpikaForbiddenException {
 			return findAllGroups();
 		}	
     }
@@ -981,9 +1002,11 @@ public class CouchDB {
      * @throws JSONException 
      * @throws IOException 
      * @throws ClientProtocolException 
+     * @throws SpikaForbiddenException 
+     * @throws IllegalStateException 
      */
 
-    public static Group findGroupById(String id) throws ClientProtocolException, IOException, JSONException, SpikaException {
+    public static Group findGroupById(String id) throws ClientProtocolException, IOException, JSONException, SpikaException, IllegalStateException, SpikaForbiddenException {
 
         try {
             id = URLEncoder.encode(id, "UTF-8");
@@ -1013,7 +1036,7 @@ public class CouchDB {
     	}
 
 		@Override
-		public Group execute() throws JSONException, IOException, SpikaException {
+		public Group execute() throws JSONException, IOException, SpikaException, IllegalStateException, SpikaForbiddenException {
 			return findGroupById(id);
 		}
     }
@@ -1029,9 +1052,11 @@ public class CouchDB {
      * @throws JSONException 
      * @throws IOException 
      * @throws ClientProtocolException 
+     * @throws SpikaForbiddenException 
+     * @throws IllegalStateException 
      */
     //TODO: it should be only one group.... or search by name??? 
-    public static List<Group> findGroupsByName(String name) throws ClientProtocolException, IOException, JSONException, SpikaException {
+    public static List<Group> findGroupsByName(String name) throws ClientProtocolException, IOException, JSONException, SpikaException, IllegalStateException, SpikaForbiddenException {
 
         try {
             name = URLEncoder.encode(name, "UTF-8");
@@ -1062,7 +1087,7 @@ public class CouchDB {
     	}
 
 		@Override
-		public List<Group> execute() throws JSONException, IOException, SpikaException {
+		public List<Group> execute() throws JSONException, IOException, SpikaException, IllegalStateException, SpikaForbiddenException {
 			return findGroupsByName(name);
 		}
     }
@@ -1078,8 +1103,10 @@ public class CouchDB {
      * @throws IOException 
      * @throws JSONException 
      * @throws ClientProtocolException 
+     * @throws SpikaForbiddenException 
+     * @throws IllegalStateException 
      */
-    public static List<Group> findUserFavoriteGroups(String id) throws ClientProtocolException, JSONException, IOException, SpikaException {
+    public static List<Group> findUserFavoriteGroups(String id) throws ClientProtocolException, JSONException, IOException, SpikaException, IllegalStateException, SpikaForbiddenException {
 
     	ArrayList<Group> groups = new ArrayList<Group>();
     	
@@ -1106,7 +1133,7 @@ public class CouchDB {
     	}
 
 		@Override
-		public List<Group> execute() throws JSONException, IOException, SpikaException {
+		public List<Group> execute() throws JSONException, IOException, SpikaException, IllegalStateException, SpikaForbiddenException {
 			return findUserFavoriteGroups(id);
 		}
     }
@@ -1122,8 +1149,10 @@ public class CouchDB {
      * @throws JSONException 
      * @throws IOException 
      * @throws ClientProtocolException 
+     * @throws SpikaForbiddenException 
+     * @throws IllegalStateException 
      */
-    private static ActivitySummary findUserActivitySummary(String id) throws ClientProtocolException, IOException, JSONException, SpikaException {
+    private static ActivitySummary findUserActivitySummary(String id) throws ClientProtocolException, IOException, JSONException, SpikaException, IllegalStateException, SpikaForbiddenException {
         String url = SpikaApp.getInstance().getBaseUrlWithSufix(Const.FIND_USERACTIVITY_SUMMARY);
         JSONObject json = ConnectionHandler.getJsonObject(url, id);
         return CouchDBHelper.parseSingleActivitySummaryObject(json);
@@ -1143,14 +1172,14 @@ public class CouchDB {
     	}
 
 		@Override
-		public ActivitySummary execute() throws JSONException, IOException, SpikaException {
+		public ActivitySummary execute() throws JSONException, IOException, SpikaException, IllegalStateException, SpikaForbiddenException {
 			return findUserActivitySummary(id);
 		}
     }
 
 // ************** CREATE GROUP ***********************   
     
-    public static String createGroup(Group group) throws JSONException, IllegalStateException, IOException, SpikaException {
+    public static String createGroup(Group group) throws JSONException, IllegalStateException, IOException, SpikaException, SpikaForbiddenException {
 
         JSONObject groupJson = new JSONObject();
 
@@ -1183,7 +1212,7 @@ public class CouchDB {
     	}
 
 		@Override
-		public String execute() throws JSONException, IOException, IllegalStateException, SpikaException {
+		public String execute() throws JSONException, IOException, IllegalStateException, SpikaException, SpikaForbiddenException {
 			return createGroup(group);
 		}
     }
@@ -1200,8 +1229,9 @@ public class CouchDB {
      * @throws JSONException 
      * @throws IllegalStateException 
      * @throws ClientProtocolException 
+     * @throws SpikaForbiddenException 
      */
-    public static boolean updateGroup(Group group) throws ClientProtocolException, IllegalStateException, JSONException, IOException, SpikaException {
+    public static boolean updateGroup(Group group) throws ClientProtocolException, IllegalStateException, JSONException, IOException, SpikaException, SpikaForbiddenException {
 
         JSONObject groupJson = new JSONObject();
 
@@ -1246,7 +1276,7 @@ public class CouchDB {
 		}
 
 		@Override
-		public Boolean execute() throws JSONException, IOException, IllegalStateException, SpikaException {
+		public Boolean execute() throws JSONException, IOException, IllegalStateException, SpikaException, SpikaForbiddenException {
 			return updateGroup(group);
 		}
     }
@@ -1262,8 +1292,10 @@ public class CouchDB {
      * @throws IOException 
      * @throws JSONException 
      * @throws ClientProtocolException 
+     * @throws SpikaForbiddenException 
+     * @throws IllegalStateException 
      */
-    public static void addFavoriteGroup(String groupId) throws ClientProtocolException, JSONException, IOException, SpikaException {
+    public static void addFavoriteGroup(String groupId) throws ClientProtocolException, JSONException, IOException, SpikaException, IllegalStateException, SpikaForbiddenException {
     	
     	JSONObject create = new JSONObject();
     	create.put(Const.GROUP_ID, groupId);
@@ -1285,7 +1317,7 @@ public class CouchDB {
 		}
 
 		@Override
-		public Boolean execute() throws JSONException, IOException, SpikaException {
+		public Boolean execute() throws JSONException, IOException, SpikaException, IllegalStateException, SpikaForbiddenException {
 			addFavoriteGroup(groupId);
 			return true;
 		}
@@ -1302,8 +1334,10 @@ public class CouchDB {
      * @throws IOException 
      * @throws JSONException 
      * @throws ClientProtocolException 
+     * @throws SpikaForbiddenException 
+     * @throws IllegalStateException 
      */
-    public static void removeFavoriteGroup(String groupId) throws ClientProtocolException, JSONException, IOException, SpikaException {
+    public static void removeFavoriteGroup(String groupId) throws ClientProtocolException, JSONException, IOException, SpikaException, IllegalStateException, SpikaForbiddenException {
 
     	JSONObject create = new JSONObject();
     	create.put(Const.GROUP_ID, groupId);
@@ -1325,7 +1359,7 @@ public class CouchDB {
 		}
 
 		@Override
-		public Boolean execute() throws JSONException, IOException, SpikaException {
+		public Boolean execute() throws JSONException, IOException, SpikaException, IllegalStateException, SpikaForbiddenException {
 			removeFavoriteGroup(groupId);
 			return true;
 		}
@@ -1333,7 +1367,7 @@ public class CouchDB {
 
 // **************** DELETE GROUP *********************************    
     
-    private static boolean deleteGroup(String id, String rev) throws JSONException, ClientProtocolException, IllegalStateException, IOException, SpikaException {
+    private static boolean deleteGroup(String id, String rev) throws JSONException, ClientProtocolException, IllegalStateException, IOException, SpikaException, SpikaForbiddenException {
 
     	JSONObject create = new JSONObject();
     	create.put(Const._ID, id);
@@ -1357,7 +1391,7 @@ public class CouchDB {
     	
 		@Override
 		public Boolean execute() throws JSONException, IOException,
-				SpikaException {
+				SpikaException, IllegalStateException, SpikaForbiddenException {
 			return deleteGroup(id, "");
 		}
     	
@@ -1373,10 +1407,12 @@ public class CouchDB {
      * @throws JSONException 
      * @throws IOException 
      * @throws ClientProtocolException 
+     * @throws SpikaForbiddenException 
+     * @throws IllegalStateException 
      */
     
     //TODO: is this needed???
-    private static List<UserGroup> findUserGroupByIds(String groupId, String userId) throws ClientProtocolException, IOException, JSONException, SpikaException {
+    private static List<UserGroup> findUserGroupByIds(String groupId, String userId) throws ClientProtocolException, IOException, JSONException, SpikaException, IllegalStateException, SpikaForbiddenException {
 
         String key = "[\"" + groupId + "\",\"" + userId + "\"]";
 
@@ -1405,9 +1441,11 @@ public class CouchDB {
      * @throws JSONException 
      * @throws IOException 
      * @throws ClientProtocolException 
+     * @throws SpikaForbiddenException 
+     * @throws IllegalStateException 
      */
     //TODO: is this needed????
-    public static List<UserGroup> findUserGroupsByGroupId(String groupId) throws ClientProtocolException, IOException, JSONException, SpikaException {
+    public static List<UserGroup> findUserGroupsByGroupId(String groupId) throws ClientProtocolException, IOException, JSONException, SpikaException, IllegalStateException, SpikaForbiddenException {
 
         String key = "\"" + groupId + "\"";
 
@@ -1439,7 +1477,7 @@ public class CouchDB {
 		}
 
 		@Override
-		public List<UserGroup> execute() throws JSONException, IOException, SpikaException {
+		public List<UserGroup> execute() throws JSONException, IOException, SpikaException, IllegalStateException, SpikaForbiddenException {
 			return findUserGroupsByGroupId(groupId);
 		}	
     }
@@ -1454,8 +1492,10 @@ public class CouchDB {
      * @throws JSONException 
      * @throws IOException 
      * @throws ClientProtocolException 
+     * @throws SpikaForbiddenException 
+     * @throws IllegalStateException 
      */
-    public static List<GroupCategory> findGroupCategories() throws ClientProtocolException, IOException, JSONException, SpikaException {
+    public static List<GroupCategory> findGroupCategories() throws ClientProtocolException, IOException, JSONException, SpikaException, IllegalStateException, SpikaForbiddenException {
 
         String cachedJSON = CouchDB.getFromMemCache(groupCategoryCacheKey);
         
@@ -1492,7 +1532,7 @@ public class CouchDB {
     private static class FindGroupCategories implements Command<List<GroupCategory>>
     {
 		@Override
-		public List<GroupCategory> execute() throws JSONException, IOException, SpikaException {
+		public List<GroupCategory> execute() throws JSONException, IOException, SpikaException, IllegalStateException, SpikaForbiddenException {
 			return findGroupCategories();
 		}
     }
@@ -1507,8 +1547,10 @@ public class CouchDB {
      * @throws JSONException 
      * @throws IOException 
      * @throws ClientProtocolException 
+     * @throws SpikaForbiddenException 
+     * @throws IllegalStateException 
      */
-    public static List<Group> findGroupByCategoryId(String id) throws ClientProtocolException, IOException, JSONException, SpikaException {
+    public static List<Group> findGroupByCategoryId(String id) throws ClientProtocolException, IOException, JSONException, SpikaException, IllegalStateException, SpikaForbiddenException {
 
         try {
             id = URLEncoder.encode(id, "UTF-8");
@@ -1536,7 +1578,7 @@ public class CouchDB {
 		}
 
 		@Override
-		public List<Group> execute() throws JSONException, IOException, SpikaException {
+		public List<Group> execute() throws JSONException, IOException, SpikaException, IllegalStateException, SpikaForbiddenException {
 			return findGroupByCategoryId(id);
 		}
     }
@@ -1545,7 +1587,7 @@ public class CouchDB {
     
   //************** FIND MEMBER BY GROUP ID *********************
     
-    public static List<Member> findMembersByGroupId(String groupId, int count, int offset) throws ClientProtocolException, IOException, JSONException, SpikaException {
+    public static List<Member> findMembersByGroupId(String groupId, int count, int offset) throws ClientProtocolException, IOException, JSONException, SpikaException, IllegalStateException, SpikaForbiddenException {
         try {
         	groupId = URLEncoder.encode(groupId, "UTF-8");
         } catch (UnsupportedEncodingException e) {
@@ -1569,8 +1611,10 @@ public class CouchDB {
      * @throws JSONException 
      * @throws IOException 
      * @throws ClientProtocolException 
+     * @throws SpikaForbiddenException 
+     * @throws IllegalStateException 
      */
-    public static Message findMessageById(String id) throws ClientProtocolException, IOException, JSONException, SpikaException {
+    public static Message findMessageById(String id) throws ClientProtocolException, IOException, JSONException, SpikaException, IllegalStateException, SpikaForbiddenException {
 
         JSONObject json = ConnectionHandler.getJsonObject(SpikaApp.getInstance().getBaseUrlWithSufix(Const.FIND_MESSAGE_BY_ID) + id, UsersManagement.getLoginUser().getId());
 
@@ -1590,7 +1634,7 @@ public class CouchDB {
     	}
 
 		@Override
-		public Message execute() throws JSONException, IOException, SpikaException {
+		public Message execute() throws JSONException, IOException, SpikaException, IllegalStateException, SpikaForbiddenException {
 			return findMessageById(id);
 		}
     }
@@ -1607,8 +1651,10 @@ public class CouchDB {
      * @throws JSONException 
      * @throws IOException 
      * @throws ClientProtocolException 
+     * @throws SpikaForbiddenException 
+     * @throws IllegalStateException 
      */
-    public static ArrayList<Message> findMessagesForUser(User from, int page) throws ClientProtocolException, IOException, JSONException, SpikaException {
+    public static ArrayList<Message> findMessagesForUser(User from, int page) throws ClientProtocolException, IOException, JSONException, SpikaException, IllegalStateException, SpikaForbiddenException {
 
         int skip = page * SettingsManager.sMessageCount;
         int count = 20;
@@ -1669,7 +1715,7 @@ public class CouchDB {
 
 		@Override
 		public ArrayList<Message> execute() throws JSONException, IOException,
-				SpikaException {
+				SpikaException, IllegalStateException, SpikaForbiddenException {
 			return findMessagesForUser(from, page);
 		}
     } 
@@ -1687,8 +1733,9 @@ public class CouchDB {
      * @throws IOException 
      * @throws IllegalStateException 
      * @throws ClientProtocolException 
+     * @throws SpikaForbiddenException 
      */
-    public static boolean sendMessageToUser(Message m) throws ClientProtocolException, IllegalStateException, IOException, JSONException, SpikaException {
+    public static boolean sendMessageToUser(Message m) throws ClientProtocolException, IllegalStateException, IOException, JSONException, SpikaException, SpikaForbiddenException {
 
         boolean isSuccess = true;
         JSONObject resultOfCouchDB = null;
@@ -1753,7 +1800,7 @@ public class CouchDB {
 
 		@Override
 		public Boolean execute() throws JSONException, IOException,
-				SpikaException {
+				SpikaException, IllegalStateException, SpikaForbiddenException {
 			return sendMessageToUser(m);
 		}
     }
@@ -1840,8 +1887,9 @@ public class CouchDB {
      * @throws IOException 
      * @throws IllegalStateException 
      * @throws ClientProtocolException 
+     * @throws SpikaForbiddenException 
      */
-    public static boolean sendMessageToGroup(Message m) throws ClientProtocolException, IllegalStateException, IOException, JSONException, SpikaException {
+    public static boolean sendMessageToGroup(Message m) throws ClientProtocolException, IllegalStateException, IOException, JSONException, SpikaException, SpikaForbiddenException {
 
         boolean isSuccess = true;
 
@@ -1908,7 +1956,7 @@ public class CouchDB {
 
 		@Override
 		public Boolean execute() throws JSONException, IOException,
-				SpikaException {
+				SpikaException, IllegalStateException, SpikaForbiddenException {
 			return sendMessageToGroup(m);
 		}
     }
@@ -1981,7 +2029,7 @@ public class CouchDB {
     	new SpikaAsyncTask<Void, Void, Void>(new DeleteMessage(messageId, deleteType), resultListener, context, showProgressBar).execute();
     }
     
-    private static void deleteMessage (String messageId, String deleteType) throws JSONException, ClientProtocolException, IllegalStateException, IOException, SpikaException {
+    private static void deleteMessage (String messageId, String deleteType) throws JSONException, ClientProtocolException, IllegalStateException, IOException, SpikaException, SpikaForbiddenException {
     	JSONObject jsonObj = new JSONObject();
         
         jsonObj.put(Const.MESSAGE_ID, messageId);
@@ -2001,7 +2049,7 @@ public class CouchDB {
     	}
     	
 		@Override
-		public Void execute() throws JSONException, IOException, SpikaException {
+		public Void execute() throws JSONException, IOException, SpikaException, IllegalStateException, SpikaForbiddenException {
 			deleteMessage(messageId, deleteType);
 			return null;
 		}
@@ -2021,8 +2069,9 @@ public class CouchDB {
      * @throws IOException 
      * @throws IllegalStateException 
      * @throws ClientProtocolException 
+     * @throws SpikaForbiddenException 
      */
-    public static String createComment(Comment comment) throws ClientProtocolException, IllegalStateException, IOException, JSONException, SpikaException {
+    public static String createComment(Comment comment) throws ClientProtocolException, IllegalStateException, IOException, JSONException, SpikaException, SpikaForbiddenException {
 
         JSONObject commentJson = new JSONObject();
 
@@ -2051,7 +2100,7 @@ public class CouchDB {
 
 		@Override
 		public String execute() throws JSONException, IOException,
-				SpikaException {
+				SpikaException, IllegalStateException, SpikaForbiddenException {
 			
 			String commentId = CouchDB.createComment(comment);
 
@@ -2076,8 +2125,10 @@ public class CouchDB {
      * @throws JSONException 
      * @throws IOException 
      * @throws ClientProtocolException 
+     * @throws SpikaForbiddenException 
+     * @throws IllegalStateException 
      */
-    public static List<Comment> findCommentsByMessageId(String messageId) throws ClientProtocolException, IOException, JSONException, SpikaException {
+    public static List<Comment> findCommentsByMessageId(String messageId) throws ClientProtocolException, IOException, JSONException, SpikaException, IllegalStateException, SpikaForbiddenException {
 
         try {
             messageId = URLEncoder.encode(messageId, "UTF-8");
@@ -2106,7 +2157,7 @@ public class CouchDB {
 
 		@Override
 		public List<Comment> execute() throws JSONException, IOException,
-				SpikaException {
+				SpikaException, IllegalStateException, SpikaForbiddenException {
 			return findCommentsByMessageId(messageId);
 		}
     }
@@ -2140,7 +2191,7 @@ public class CouchDB {
 		}	
     }
     
-    public static int getCommentCount(String messageId) throws ClientProtocolException, IOException, JSONException, SpikaException {
+    public static int getCommentCount(String messageId) throws ClientProtocolException, IOException, JSONException, SpikaException, IllegalStateException, SpikaForbiddenException {
 
         try {
             messageId = URLEncoder.encode(messageId, "UTF-8");
@@ -2164,7 +2215,7 @@ public class CouchDB {
     	
 		@Override
 		public Void execute() throws JSONException, IOException,
-				SpikaException {
+				SpikaException, IllegalStateException, SpikaForbiddenException {
 			
 			message.setCommentCount(getCommentCount(message.getId()));
 			return null;
@@ -2180,7 +2231,7 @@ public class CouchDB {
         CouchDB.sAuthUrl = authUrl;
     }
 
-    private static void sendPassword(String email) throws ClientProtocolException, IllegalStateException, IOException, SpikaException, JSONException {
+    private static void sendPassword(String email) throws ClientProtocolException, IllegalStateException, IOException, SpikaException, JSONException, SpikaForbiddenException {
 
     	final String URL = SpikaApp.getInstance().getBaseUrlWithSufix(Const.PASSWORDREMINDER_URL) + "email=" + email;
         ConnectionHandler.getString(URL, null);
@@ -2200,7 +2251,7 @@ public class CouchDB {
     	}
 
 		@Override
-		public Void execute() throws JSONException, IOException, SpikaException {
+		public Void execute() throws JSONException, IOException, SpikaException, IllegalStateException, SpikaForbiddenException {
 			
 			sendPassword(email);
 			return null;
@@ -2215,9 +2266,10 @@ public class CouchDB {
      * @throws IOException 
      * @throws IllegalStateException 
      * @throws ClientProtocolException 
+     * @throws SpikaForbiddenException 
      * 
      */
-    public static String createWatchingGroupLog(WatchingGroupLog watchingGroupLog) throws ClientProtocolException, IllegalStateException, IOException, JSONException, SpikaException {
+    public static String createWatchingGroupLog(WatchingGroupLog watchingGroupLog) throws ClientProtocolException, IllegalStateException, IOException, JSONException, SpikaException, SpikaForbiddenException {
 
         JSONObject jsonObj = new JSONObject();
 
@@ -2246,7 +2298,7 @@ public class CouchDB {
 
 		@Override
 		public String execute() throws JSONException, IOException,
-				SpikaException {
+				SpikaException, IllegalStateException, SpikaForbiddenException {
 			return createWatchingGroupLog(watchingGroupLog);
 		}
     }
@@ -2260,9 +2312,10 @@ public class CouchDB {
      * @throws IOException 
      * @throws IllegalStateException 
      * @throws ClientProtocolException 
+     * @throws SpikaForbiddenException 
      * 
      */
-    public static String deleteWatchingGroupLog(String id, String rev) throws JSONException, ClientProtocolException, IllegalStateException, IOException, SpikaException {
+    public static String deleteWatchingGroupLog(String id, String rev) throws JSONException, ClientProtocolException, IllegalStateException, IOException, SpikaException, SpikaForbiddenException {
 
     	JSONObject create = new JSONObject();
     	create.put(Const.GROUP_ID, id);
@@ -2288,7 +2341,7 @@ public class CouchDB {
 
 		@Override
 		public String execute() throws JSONException, IOException,
-				SpikaException {
+				SpikaException, IllegalStateException, SpikaForbiddenException {
 			return deleteWatchingGroupLog(id, rev);
 		}
     }
@@ -2338,8 +2391,10 @@ public class CouchDB {
      * @throws JSONException 
      * @throws IOException 
      * @throws ClientProtocolException 
+     * @throws SpikaForbiddenException 
+     * @throws IllegalStateException 
      */
-    public static List<Emoticon> findAllEmoticons() throws ClientProtocolException, IOException, JSONException, SpikaException {
+    public static List<Emoticon> findAllEmoticons() throws ClientProtocolException, IOException, JSONException, SpikaException, IllegalStateException, SpikaForbiddenException {
         JSONObject json = ConnectionHandler.getJsonObject(SpikaApp.getInstance().getBaseUrlWithSufix(Const.FIND_ALL_EMOTICONS), UsersManagement.getLoginUser().getId());
         return CouchDBHelper.parseMultiEmoticonObjects(json);
     }
@@ -2351,7 +2406,7 @@ public class CouchDB {
     public static class FindAllEmoticons implements Command<List<Emoticon>>
     {
 		@Override
-		public List<Emoticon> execute() throws JSONException, IOException, SpikaException {
+		public List<Emoticon> execute() throws JSONException, IOException, SpikaException, IllegalStateException, SpikaForbiddenException {
 			if (Emoticons.getInstance().getEmoticons() == null) {
 				return CouchDB.findAllEmoticons();
 			} else {
@@ -2369,9 +2424,10 @@ public class CouchDB {
      * @throws IOException
      * @throws IllegalStateException
      * @throws SpikaException
+     * @throws SpikaForbiddenException 
      */
     
-    public static List<Server> findAllServers() throws ClientProtocolException, IOException, JSONException, SpikaException {
+    public static List<Server> findAllServers() throws ClientProtocolException, IOException, JSONException, SpikaException, IllegalStateException, SpikaForbiddenException {
         JSONArray json = ConnectionHandler.getJsonArray(ConstServer.LIST_SERVERS_URL, null, null);
         return CouchDBHelper.parseServers(json);
     }
@@ -2383,7 +2439,7 @@ public class CouchDB {
     public static class FindAllServers implements Command<List<Server>>
     {
 		@Override
-		public List<Server> execute() throws JSONException, IOException, SpikaException {
+		public List<Server> execute() throws JSONException, IOException, SpikaException, IllegalStateException, SpikaForbiddenException {
 			return CouchDB.findAllServers();
 		}
     }

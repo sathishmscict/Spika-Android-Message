@@ -51,6 +51,7 @@ import com.cloverstudio.spika.WallActivity;
 import com.cloverstudio.spika.couchdb.CouchDB;
 import com.cloverstudio.spika.couchdb.ResultListener;
 import com.cloverstudio.spika.couchdb.SpikaException;
+import com.cloverstudio.spika.couchdb.SpikaForbiddenException;
 import com.cloverstudio.spika.couchdb.model.ActivitySummary;
 import com.cloverstudio.spika.couchdb.model.Group;
 import com.cloverstudio.spika.couchdb.model.User;
@@ -248,7 +249,7 @@ public class SpikaFragmentActivity extends FragmentActivity {
 		}
 
 		@Override
-		protected User backgroundWork(String... params) throws ClientProtocolException, JSONException, IOException, SpikaException {
+		protected User backgroundWork(String... params) throws ClientProtocolException, JSONException, IOException, SpikaException, IllegalStateException, SpikaForbiddenException {
 			String userId = params[0];
 			
 			return CouchDB.findUserById(userId);
@@ -272,7 +273,7 @@ public class SpikaFragmentActivity extends FragmentActivity {
 		}
 
 		@Override
-		protected Group backgroundWork(String... params) throws ClientProtocolException, IOException, JSONException, SpikaException {
+		protected Group backgroundWork(String... params) throws ClientProtocolException, IOException, JSONException, SpikaException, IllegalStateException, SpikaForbiddenException {
 			String id = params[0];
 			return CouchDB.findGroupById(id);
 		}

@@ -117,6 +117,7 @@
     <string name="NO_INTERNET_CONNECTION">لا يوجد إتصال بالإنترنتت</string>
     <string name="can_not_connect_to_server">لايمكن الاتصال بالخادم</string>
     <string name="an_internal_error_has_occurred">لقد حدث خطأ داخلي. (%1$s)</string>
+    <string name="token_expired_error">رمزية منتهية الصلاحية</string>
     <string name="exit_app_message">هل تريد الخروج من التطبيق؟</string>
     <string name="please_enter_server_url">الرجاء ادخال عنوان الخادم</string>
     <string name="please_enter_passcode">أدخل رمز الحماية الحالي</string>

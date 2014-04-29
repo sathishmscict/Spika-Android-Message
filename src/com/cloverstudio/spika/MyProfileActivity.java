@@ -66,6 +66,7 @@ import com.cloverstudio.spika.couchdb.CouchDB;
 import com.cloverstudio.spika.couchdb.ResultListener;
 import com.cloverstudio.spika.couchdb.SpikaAsyncTask;
 import com.cloverstudio.spika.couchdb.SpikaException;
+import com.cloverstudio.spika.couchdb.SpikaForbiddenException;
 import com.cloverstudio.spika.couchdb.model.User;
 import com.cloverstudio.spika.dialog.DatePickerDialogWithRange;
 import com.cloverstudio.spika.extendables.SideBarActivity;
@@ -777,7 +778,7 @@ public class MyProfileActivity extends SideBarActivity {
 
 		@Override
 		public Boolean execute() throws JSONException, IOException,
-				SpikaException {
+				SpikaException, IllegalStateException, SpikaForbiddenException {
 			if (gProfileImage != null) {
 
 				String tmppath = MyProfileActivity.this.getExternalCacheDir()

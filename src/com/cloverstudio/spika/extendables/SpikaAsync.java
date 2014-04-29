@@ -30,12 +30,17 @@ import org.json.JSONException;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.DialogInterface.OnDismissListener;
 import android.os.AsyncTask;
 import android.util.Log;
 
 import com.cloverstudio.spika.R;
+import com.cloverstudio.spika.SignInActivity;
 import com.cloverstudio.spika.SpikaApp;
 import com.cloverstudio.spika.couchdb.SpikaException;
+import com.cloverstudio.spika.couchdb.SpikaForbiddenException;
 import com.cloverstudio.spika.dialog.HookUpDialog;
 import com.cloverstudio.spika.utils.Const;
 
@@ -81,6 +86,9 @@ public abstract class SpikaAsync<Params, Progress, Result> extends
 		} catch (NullPointerException e) {
 			exception = e;
 			e.printStackTrace();
+		} catch (SpikaForbiddenException e) {
+			exception = e;
+			e.printStackTrace();
 		}
 		return result;
 	}
@@ -104,6 +112,8 @@ public abstract class SpikaAsync<Params, Progress, Result> extends
 			    errorMessage = mContext.getString(R.string.an_internal_error_has_occurred) + "\n" + exception.getClass().getName() + " " + error;
 			}else if(exception instanceof SpikaException){
 				errorMessage = mContext.getString(R.string.an_internal_error_has_occurred) + "\n" + error;
+			}else if(exception instanceof SpikaForbiddenException){
+				errorMessage = mContext.getString(R.string.an_internal_error_has_occurred) + "\n" + error;
 			}else{
 			    errorMessage = mContext.getString(R.string.an_internal_error_has_occurred) + "\n" + exception.getClass().getName() + " " + error;
 			}	
@@ -111,13 +121,26 @@ public abstract class SpikaAsync<Params, Progress, Result> extends
 			if (mContext instanceof Activity) {
 				if (!((Activity)mContext).isFinishing())
 				{
+					if(exception instanceof SpikaForbiddenException){
+						//token expired
+						errorMessage=mContext.getString(R.string.token_expired_error);
+						dialog.setOnDismissListener(new OnDismissListener() {
+							
+							@Override
+							public void onDismiss(DialogInterface dialog) {
+								mContext.startActivity(new Intent(mContext, SignInActivity.class)
+										.putExtra(mContext.getString(R.string.token_expired_error), true));
+								((Activity) mContext).finish();
+							}
+						});
+					}
 					dialog.showOnlyOK(errorMessage);
 				}
 			}
 		}
 	}
 
-	protected Result backgroundWork(Params... params) throws JSONException, IOException, SpikaException, NullPointerException {
+	protected Result backgroundWork(Params... params) throws JSONException, IOException, SpikaException, NullPointerException, SpikaForbiddenException {
 		return null;
 	}
 	

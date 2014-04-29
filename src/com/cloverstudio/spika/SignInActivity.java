@@ -252,6 +252,12 @@ public class SignInActivity extends Activity {
 		checkToken();
 
 		setActiveScreen(Screen.SIGN_IN);
+		
+		//check if token is expired to set edittexts from shared preferences
+		if(getIntent().getBooleanExtra(getString(R.string.token_expired_error), false) == true){
+			mEtSignInEmail.setText(SpikaApp.getPreferences().getUserEmail());
+			mEtSignInPassword.setText(SpikaApp.getPreferences().getUserPassword());
+		}
 	}
 
 	private void getEmailAndPasswordFromIntent() {

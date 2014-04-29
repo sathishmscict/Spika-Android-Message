@@ -1,5 +1,5 @@
 /*
- * The MIT License (MIT)
+ž * The MIT License (MIT)
  * 
  * Copyright � 2013 Clover Studio Ltd. All rights reserved.
  * 
@@ -402,7 +402,7 @@ public class WallActivity extends SideBarActivity {
 
 			@Override
 			public void onClick(View v) {
-
+				
 				String body = mEtMessageText.getText().toString();
 
 				if (!body.equals("") && !mSideBarOpened) {

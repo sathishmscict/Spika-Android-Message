@@ -44,6 +44,7 @@ import com.cloverstudio.spika.couchdb.CouchDB;
 import com.cloverstudio.spika.couchdb.ResultListener;
 import com.cloverstudio.spika.couchdb.SpikaAsyncTask;
 import com.cloverstudio.spika.couchdb.SpikaException;
+import com.cloverstudio.spika.couchdb.SpikaForbiddenException;
 import com.cloverstudio.spika.couchdb.model.User;
 import com.cloverstudio.spika.management.UsersManagement;
 import com.cloverstudio.spika.utils.Const;
@@ -185,7 +186,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 		
 		@Override
 		public Boolean execute() throws JSONException, IOException,
-				SpikaException {
+				SpikaException, IllegalStateException, SpikaForbiddenException {
 
 			/* set new androidToken and onlineStatus */
 			UsersManagement.getLoginUser().setOnlineStatus(onlineStatus);

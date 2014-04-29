@@ -117,6 +117,7 @@
     <string name="NO_INTERNET_CONNECTION">NO INTERNET CONNECTION</string>
     <string name="can_not_connect_to_server">Can\'t connect to server</string>
     <string name="an_internal_error_has_occurred">An internal error has occurred. (%1$s)</string>
+    <string name="token_expired_error">Token expired!</string>
     <string name="exit_app_message">Are you sure you want to exit Spika?</string>
     <string name="please_enter_server_url">PLEASE ENTER SERVER URL</string>
     <string name="please_enter_passcode">PLEASE ENTER CURRENT PASSCODE</string>

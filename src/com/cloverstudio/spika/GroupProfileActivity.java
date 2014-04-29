@@ -68,6 +68,7 @@ import com.cloverstudio.spika.couchdb.CouchDB;
 import com.cloverstudio.spika.couchdb.ResultListener;
 import com.cloverstudio.spika.couchdb.SpikaAsyncTask;
 import com.cloverstudio.spika.couchdb.SpikaException;
+import com.cloverstudio.spika.couchdb.SpikaForbiddenException;
 import com.cloverstudio.spika.couchdb.model.Group;
 import com.cloverstudio.spika.couchdb.model.GroupCategory;
 import com.cloverstudio.spika.couchdb.model.GroupSearch;
@@ -665,7 +666,7 @@ public class GroupProfileActivity extends SpikaActivity {
 		}
 		
 		@Override
-		protected Group backgroundWork(String... params) throws ClientProtocolException, IOException, JSONException, SpikaException {
+		protected Group backgroundWork(String... params) throws ClientProtocolException, IOException, JSONException, SpikaException, IllegalStateException, SpikaForbiddenException {
 			String id = params[0];
 			return CouchDB.findGroupById(id);
 		}
@@ -699,7 +700,7 @@ public class GroupProfileActivity extends SpikaActivity {
 		}
 
 		@Override
-		protected Group backgroundWork(Group... params) throws ClientProtocolException, IOException, JSONException, SpikaException {
+		protected Group backgroundWork(Group... params) throws ClientProtocolException, IOException, JSONException, SpikaException, IllegalStateException, SpikaForbiddenException {
 
 			mGroupFound = CouchDB.getGroupByName(mGroupName);
 
@@ -730,7 +731,7 @@ public class GroupProfileActivity extends SpikaActivity {
 
 		@Override
 		public Boolean execute() throws JSONException, IOException,
-				SpikaException {
+				SpikaException, IllegalStateException, SpikaForbiddenException {
 			if (gGroupImage != null) {
 
 				String tmppath = GroupProfileActivity.this
@@ -903,7 +904,7 @@ public class GroupProfileActivity extends SpikaActivity {
 		}
 
 		@Override
-		protected List<GroupCategory> backgroundWork(GroupSearch... params) throws ClientProtocolException, IOException, JSONException, SpikaException {
+		protected List<GroupCategory> backgroundWork(GroupSearch... params) throws ClientProtocolException, IOException, JSONException, SpikaException, IllegalStateException, SpikaForbiddenException {
 
 			return CouchDB.findGroupCategories();
 		}

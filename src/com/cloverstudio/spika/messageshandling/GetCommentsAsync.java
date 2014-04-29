@@ -25,6 +25,8 @@
 package com.cloverstudio.spika.messageshandling;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.apache.http.client.ClientProtocolException;
@@ -40,6 +42,7 @@ import com.cloverstudio.spika.VoiceActivity;
 import com.cloverstudio.spika.adapters.CommentsAdapter;
 import com.cloverstudio.spika.couchdb.CouchDB;
 import com.cloverstudio.spika.couchdb.SpikaException;
+import com.cloverstudio.spika.couchdb.SpikaForbiddenException;
 import com.cloverstudio.spika.couchdb.model.Comment;
 import com.cloverstudio.spika.couchdb.model.Message;
 import com.cloverstudio.spika.extendables.SpikaAsync;
@@ -89,7 +92,7 @@ public class GetCommentsAsync extends SpikaAsync<String, Void, List<Comment>> {
 	}
 
 	@Override
-	protected List<Comment> backgroundWork(String... params) throws ClientProtocolException, IOException, JSONException, SpikaException {
+	protected List<Comment> backgroundWork(String... params) throws ClientProtocolException, IOException, JSONException, SpikaException, IllegalStateException, SpikaForbiddenException {
 
 		return CouchDB.findCommentsByMessageId(params[0]);
 	}
@@ -100,6 +103,15 @@ public class GetCommentsAsync extends SpikaAsync<String, Void, List<Comment>> {
 
 		if (result.size() > mComments.size() || mFirstTime) {
 			mComments = result;
+			
+			Collections.sort(mComments, new Comparator<Comment>() {
+
+				@Override
+				public int compare(Comment lhs, Comment rhs) {
+					return Integer.parseInt(lhs.getId()) - Integer.parseInt(rhs.getId());
+				};
+			});
+			
 			if (mCommentsAdapter == null) {
 				mCommentsAdapter = new CommentsAdapter(mContext,
 						R.layout.comment_item, mComments);

@@ -40,6 +40,7 @@ import org.json.JSONException;
 import com.cloverstudio.spika.R;
 import com.cloverstudio.spika.couchdb.ConnectionHandler;
 import com.cloverstudio.spika.couchdb.SpikaException;
+import com.cloverstudio.spika.couchdb.SpikaForbiddenException;
 import com.cloverstudio.spika.management.UsersManagement;
 
 import android.graphics.Bitmap;
@@ -153,7 +154,7 @@ public enum BitmapManager {
 		}
 	}
 
-	private Bitmap downloadBitmap(String url) {
+	private Bitmap downloadBitmap(String url){
 		try {
 			Bitmap bitmap = BitmapFactory
 					.decodeStream((InputStream) ConnectionHandler
@@ -194,6 +195,9 @@ public enum BitmapManager {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SpikaForbiddenException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

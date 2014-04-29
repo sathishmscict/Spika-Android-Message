@@ -17,6 +17,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import com.cloverstudio.spika.adapters.MembersAdapter;
 import com.cloverstudio.spika.couchdb.CouchDB;
 import com.cloverstudio.spika.couchdb.SpikaException;
+import com.cloverstudio.spika.couchdb.SpikaForbiddenException;
 import com.cloverstudio.spika.couchdb.model.Member;
 import com.cloverstudio.spika.dialog.HookUpProgressDialog;
 import com.cloverstudio.spika.extendables.LoadMoreListView;
@@ -102,6 +103,12 @@ public class MembersActivity extends SpikaActivity {
 			} catch (JSONException e) {
 				e.printStackTrace();
 			} catch (SpikaException e) {
+				e.printStackTrace();
+			} catch (IllegalStateException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SpikaForbiddenException e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			return null;

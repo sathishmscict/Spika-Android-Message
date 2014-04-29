@@ -53,6 +53,7 @@ import com.cloverstudio.spika.adapters.GroupCategoriesAdapter;
 import com.cloverstudio.spika.adapters.GroupsAdapter;
 import com.cloverstudio.spika.couchdb.CouchDB;
 import com.cloverstudio.spika.couchdb.SpikaException;
+import com.cloverstudio.spika.couchdb.SpikaForbiddenException;
 import com.cloverstudio.spika.couchdb.model.Group;
 import com.cloverstudio.spika.couchdb.model.GroupCategory;
 import com.cloverstudio.spika.couchdb.model.GroupSearch;
@@ -325,7 +326,7 @@ public class GroupsActivity extends SubMenuActivity {
 		}
 
 		@Override
-		protected List<Group> backgroundWork(String... params) throws ClientProtocolException, JSONException, IOException, SpikaException {
+		protected List<Group> backgroundWork(String... params) throws ClientProtocolException, JSONException, IOException, SpikaException, IllegalStateException, SpikaForbiddenException {
 
 			searchType = params[0];
 
@@ -417,7 +418,7 @@ public class GroupsActivity extends SubMenuActivity {
 		}
 
 		@Override
-		protected List<Group> backgroundWork(GroupSearch... params) throws ClientProtocolException, IOException, JSONException, SpikaException {
+		protected List<Group> backgroundWork(GroupSearch... params) throws ClientProtocolException, IOException, JSONException, SpikaException, IllegalStateException, SpikaForbiddenException {
 			return CouchDB.searchGroups(params[0]);
 		}
 
@@ -478,7 +479,7 @@ public class GroupsActivity extends SubMenuActivity {
 		}
 
 		@Override
-		protected List<GroupCategory> backgroundWork(GroupSearch... params) throws ClientProtocolException, IOException, JSONException, SpikaException {
+		protected List<GroupCategory> backgroundWork(GroupSearch... params) throws ClientProtocolException, IOException, JSONException, SpikaException, IllegalStateException, SpikaForbiddenException {
 
 			return CouchDB.findGroupCategories();
 		}

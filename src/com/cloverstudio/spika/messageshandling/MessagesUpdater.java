@@ -36,6 +36,7 @@ import com.cloverstudio.spika.couchdb.CouchDB;
 import com.cloverstudio.spika.couchdb.ResultListener;
 import com.cloverstudio.spika.couchdb.SpikaAsyncTask;
 import com.cloverstudio.spika.couchdb.SpikaException;
+import com.cloverstudio.spika.couchdb.SpikaForbiddenException;
 import com.cloverstudio.spika.couchdb.model.Message;
 import com.cloverstudio.spika.management.SettingsManager;
 import com.cloverstudio.spika.management.TimeMeasurer;
@@ -74,7 +75,7 @@ public class MessagesUpdater {
 
 		@Override
 		public ArrayList<Message> execute() throws JSONException, IOException,
-				SpikaException {
+				SpikaException, IllegalStateException, SpikaForbiddenException {
 			ArrayList<Message> newMessages = new ArrayList<Message>();
 
             TimeMeasurer.dumpInterval("Before request");
@@ -111,7 +112,11 @@ public class MessagesUpdater {
 
 			if (WallActivity.getInstance() != null){
 				WallActivity.getInstance().checkMessagesCount();
-				if (WallActivity.gMessagesAdapter != null) WallActivity.gMessagesAdapter.notifyDataSetChanged();	
+				if (WallActivity.gMessagesAdapter != null) {
+					WallActivity.gMessagesAdapter.notifyDataSetChanged();	
+					if(WallActivity.gLvWallMessages != null)
+						WallActivity.gLvWallMessages.setSelection(WallActivity.gMessagesAdapter.getCount()-1);
+				}
 			}
 		}
 

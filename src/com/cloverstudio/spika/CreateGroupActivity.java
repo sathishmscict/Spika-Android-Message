@@ -64,6 +64,7 @@ import com.cloverstudio.spika.couchdb.CouchDB;
 import com.cloverstudio.spika.couchdb.ResultListener;
 import com.cloverstudio.spika.couchdb.SpikaAsyncTask;
 import com.cloverstudio.spika.couchdb.SpikaException;
+import com.cloverstudio.spika.couchdb.SpikaForbiddenException;
 import com.cloverstudio.spika.couchdb.model.Group;
 import com.cloverstudio.spika.couchdb.model.GroupCategory;
 import com.cloverstudio.spika.couchdb.model.GroupSearch;
@@ -308,7 +309,7 @@ public class CreateGroupActivity extends SpikaActivity {
     	
 		@Override
 		public String execute() throws JSONException, IOException,
-				SpikaException {
+				SpikaException, IllegalStateException, SpikaForbiddenException {
 			if (gGroupImagePath != null) {
 
                 String tmppath = CreateGroupActivity.this.getExternalCacheDir() + "/" + Const.TMP_BITMAP_FILENAME;              
@@ -470,7 +471,7 @@ public class CreateGroupActivity extends SpikaActivity {
 		}
 
 		@Override
-		protected List<GroupCategory> backgroundWork(GroupSearch... params) throws ClientProtocolException, IOException, JSONException, SpikaException {
+		protected List<GroupCategory> backgroundWork(GroupSearch... params) throws ClientProtocolException, IOException, JSONException, SpikaException, IllegalStateException, SpikaForbiddenException {
 
 			return CouchDB.findGroupCategories();
 		}

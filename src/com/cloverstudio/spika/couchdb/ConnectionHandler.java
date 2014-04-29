@@ -93,7 +93,7 @@ public class ConnectionHandler {
 	public ConnectionHandler() {
 	}
 	
-	public static JSONObject getJsonObject(String url, String userId) throws ClientProtocolException, IOException, JSONException, SpikaException {
+	public static JSONObject getJsonObject(String url, String userId) throws ClientProtocolException, IOException, JSONException, SpikaException, IllegalStateException, SpikaForbiddenException {
 
 		JSONObject retVal = null;
 
@@ -118,8 +118,9 @@ public class ConnectionHandler {
 	 * @throws IOException 
 	 * @throws IllegalStateException 
 	 * @throws ClientProtocolException 
+	 * @throws SpikaForbiddenException 
 	 */
-	public static String getString(String url, String userId) throws ClientProtocolException, IllegalStateException, IOException, SpikaException, JSONException {
+	public static String getString(String url, String userId) throws ClientProtocolException, IllegalStateException, IOException, SpikaException, JSONException, SpikaForbiddenException {
 
 		String result = null;
 
@@ -132,7 +133,7 @@ public class ConnectionHandler {
 	}
 	
 	public static JSONArray getJsonArray(String url, String userId,
-			String token) throws ClientProtocolException, IOException, JSONException, SpikaException {
+			String token) throws ClientProtocolException, IOException, JSONException, SpikaException, IllegalStateException, SpikaForbiddenException {
 
 		JSONArray retVal = null;
 
@@ -158,9 +159,10 @@ public class ConnectionHandler {
      * @throws JSONException 
      * @throws SpikaException 
      * @throws IllegalStateException 
+     * @throws SpikaForbiddenException 
      */
     public static JSONObject postJsonObject(String apiName,JSONObject create, String userId,
-            String token) throws ClientProtocolException, IOException, JSONException, IllegalStateException, SpikaException {
+            String token) throws ClientProtocolException, IOException, JSONException, IllegalStateException, SpikaException, SpikaForbiddenException {
 
         JSONObject retVal = null;
 
@@ -185,9 +187,10 @@ public class ConnectionHandler {
      * @throws JSONException 
      * @throws SpikaException 
      * @throws IllegalStateException 
+     * @throws SpikaForbiddenException 
      */
     public static String postJsonObjectForString(String apiName,JSONObject create, String userId,
-            String token) throws ClientProtocolException, IOException, JSONException, IllegalStateException, SpikaException {
+            String token) throws ClientProtocolException, IOException, JSONException, IllegalStateException, SpikaException, SpikaForbiddenException {
 
         InputStream is = httpPostRequest(CouchDB.getUrl() + apiName, create, userId);
         String result = getString(is);
@@ -207,9 +210,10 @@ public class ConnectionHandler {
 	 * @throws JSONException 
 	 * @throws SpikaException 
 	 * @throws IllegalStateException 
+	 * @throws SpikaForbiddenException 
 	 */
     public static JSONObject postJsonObject(JSONObject create, String userId,
-			String token) throws IOException, JSONException, IllegalStateException, SpikaException {
+			String token) throws IOException, JSONException, IllegalStateException, SpikaException, SpikaForbiddenException {
 
 		JSONObject retVal = null;
 
@@ -233,9 +237,10 @@ public class ConnectionHandler {
 	 * @throws JSONException
 	 * @throws SpikaException 
 	 * @throws IllegalStateException 
+	 * @throws SpikaForbiddenException 
 	 */
 	public static JSONObject postAuth(JSONObject jPost) throws IOException,
-			JSONException, IllegalStateException, SpikaException {
+			JSONException, IllegalStateException, SpikaException, SpikaForbiddenException {
 
 		JSONObject retVal = null;
 
@@ -365,9 +370,10 @@ public class ConnectionHandler {
 	 * @throws SpikaException 
 	 * @throws JSONException 
 	 * @throws IllegalStateException 
+	 * @throws SpikaForbiddenException 
 	 */
 	public static void getFile(String url, File file, String userId,
-			String token) throws ClientProtocolException, IOException, SpikaException, IllegalStateException, JSONException {
+			String token) throws ClientProtocolException, IOException, SpikaException, IllegalStateException, JSONException, SpikaForbiddenException {
 
 		File mFile = file;
 
@@ -449,8 +455,9 @@ public class ConnectionHandler {
 	 * @throws IOException
 	 * @throws JSONException 
 	 * @throws IllegalStateException 
+	 * @throws SpikaForbiddenException 
 	 */
-	public static InputStream httpGetRequest(String url, String userId) throws ClientProtocolException, IOException, SpikaException, IllegalStateException, JSONException {
+	public static InputStream httpGetRequest(String url, String userId) throws ClientProtocolException, IOException, SpikaException, IllegalStateException, JSONException, SpikaForbiddenException {
 
 		HttpGet httpget = new HttpGet(url);
 
@@ -484,7 +491,9 @@ public class ConnectionHandler {
 		Logger.debug("STATUS", "" + response.getStatusLine().getStatusCode());
 		if (response.getStatusLine().getStatusCode() > 400)
 		{
+			HttpSingleton.sInstance=null;
 			if (response.getStatusLine().getStatusCode() == 500) throw new SpikaException(getError(entity.getContent()));
+			if (response.getStatusLine().getStatusCode() == 403) throw new SpikaForbiddenException();
 			throw new IOException(response.getStatusLine().getReasonPhrase());
 		}
 
@@ -502,10 +511,11 @@ public class ConnectionHandler {
 	 * @throws SpikaException 
 	 * @throws IllegalStateException 
 	 * @throws JSONException 
+	 * @throws SpikaForbiddenException 
 	 */
 	private static InputStream httpPostRequest(String url, Object create,
 			String userId) throws ClientProtocolException,
-			IOException, IllegalStateException, SpikaException, JSONException {
+			IOException, IllegalStateException, SpikaException, JSONException, SpikaForbiddenException {
 
 		HttpPost httppost = new HttpPost(url);
 
@@ -551,7 +561,9 @@ public class ConnectionHandler {
 		Logger.debug("STATUS", "" + response.getStatusLine().getStatusCode());
 		if (response.getStatusLine().getStatusCode() > 400)
 		{
+			HttpSingleton.sInstance=null;
 			if (response.getStatusLine().getStatusCode() == 500) throw new SpikaException(getError(entity.getContent()));
+			if (response.getStatusLine().getStatusCode() == 403) throw new SpikaForbiddenException();
 			throw new IOException(response.getStatusLine().getReasonPhrase());
 		}
 		

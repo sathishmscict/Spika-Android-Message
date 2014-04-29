@@ -38,6 +38,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cloverstudio.spika.R;
+import com.cloverstudio.spika.couchdb.model.NotificationMessage;
 import com.cloverstudio.spika.couchdb.model.RecentActivity;
 
 /**
@@ -63,8 +64,79 @@ public class RecentActivityAdapter extends BaseAdapter {
 	}
 
 	public void setItems(List<RecentActivity> recentActivityList) {
-		mRecentActivityList = (ArrayList<RecentActivity>) recentActivityList;
-		notifyDataSetChanged();
+		
+		boolean result = checkIfListAreEquals(mRecentActivityList, recentActivityList);
+		if(!result){
+			mRecentActivityList = (ArrayList<RecentActivity>) recentActivityList;
+			notifyDataSetChanged();
+		}
+		
+//		mRecentActivityList = (ArrayList<RecentActivity>) recentActivityList;
+//		notifyDataSetChanged();
+	}
+	
+private boolean checkIfListAreEquals(List<RecentActivity> listFirst, List<RecentActivity> listSecond){
+		
+		if(listFirst.equals(listSecond)){
+			Log.w("LOG", "list are equals first");
+			return true;
+		}
+		
+		if(listFirst.containsAll(listSecond) && listSecond.containsAll(listFirst)){
+			Log.i("LOG", "list are equals contains first");
+			return true;
+		}
+		
+		if(listFirst.size() != listSecond.size()){
+			Log.w("LOG", "size is different");
+			return false;
+		}
+		
+		for(int i=0; i < listFirst.size(); i++){
+			if(listFirst.get(i).getNotifications().size() != listSecond.get(i).getNotifications().size()){
+				Log.w("LOG", "size is different in notification");
+				return false;
+			}
+			if(listFirst.get(i).getNotificationCount()!= listSecond.get(i).getNotificationCount()){
+				Log.w("LOG", "size is different in notification count");
+				return false;
+			}
+			
+			if(listFirst.get(i).getNotifications().equals(listSecond.get(i).getNotifications())){
+				Log.i("LOG", "list notification are equals");
+				return true;
+			}
+			
+			if(listFirst.get(i).getNotifications().containsAll(listSecond.get(i).getNotifications()) && listSecond.get(i).getNotifications().containsAll(listFirst.get(i).getNotifications())){
+				Log.i("LOG", "list notification are equals contains first");
+				return true;
+			}
+			
+			for(int j=0; j < listFirst.get(i).getNotifications().size();j++){
+				if(listFirst.get(i).getNotifications().get(j).getMessages().size() != listSecond.get(i).getNotifications().get(j).getMessages().size()){
+					Log.w("LOG", "size is different in message");
+					return false;
+				}
+				if(listFirst.get(i).getNotifications().get(j).getCount() != listSecond.get(i).getNotifications().get(j).getCount()){
+					Log.w("LOG", "size is different in message count");
+					return false;
+				}
+				
+				for(int z=0; z<listFirst.get(i).getNotifications().get(j).getMessages().size(); z++){
+					NotificationMessage first=listFirst.get(i).getNotifications().get(j).getMessages().get(z);
+					NotificationMessage second=listSecond.get(i).getNotifications().get(j).getMessages().get(z);
+					if(first.getFromUserId()==second.getFromUserId() 
+							&& first.getMessage() == second.getMessage()
+							&& first.getTargetId() == second.getTargetId()){
+						Log.w("LOG", "messages are not same");
+						return false;
+					}
+				}
+			}
+		}
+		
+		Log.i("LOG", "same list");
+		return true;
 	}
 
 	public void addViews() {

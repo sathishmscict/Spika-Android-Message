@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.json.JSONException;
 
 import com.cloverstudio.spika.R;
+import com.cloverstudio.spika.SignInActivity;
 import com.cloverstudio.spika.SpikaApp;
 import com.cloverstudio.spika.dialog.HookUpDialog;
 import com.cloverstudio.spika.dialog.HookUpProgressDialog;
@@ -12,6 +13,9 @@ import com.cloverstudio.spika.utils.Const;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnDismissListener;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -81,6 +85,9 @@ public class SpikaAsyncTask<Params, Progress, Result> extends AsyncTask<Params, 
 		} catch (NullPointerException e) {
 			exception = e;
 			e.printStackTrace();
+		} catch (SpikaForbiddenException e) {
+			exception = e;
+			e.printStackTrace();
 		}
 		return result;
 	}
@@ -116,6 +123,8 @@ public class SpikaAsyncTask<Params, Progress, Result> extends AsyncTask<Params, 
 			    errorMessage = context.getString(R.string.an_internal_error_has_occurred) + "\n" + exception.getClass().getName() + " " + error;
 			}else if(exception instanceof SpikaException){
 				errorMessage = error;
+			}else if(exception instanceof SpikaForbiddenException){
+				errorMessage = context.getString(R.string.an_internal_error_has_occurred) + "\n" + error;
 			}else{
 			    errorMessage = context.getString(R.string.an_internal_error_has_occurred) + "\n" + exception.getClass().getName() + " " + error;
 			}	
@@ -123,6 +132,19 @@ public class SpikaAsyncTask<Params, Progress, Result> extends AsyncTask<Params, 
 			if (context instanceof Activity) {
 				if (!((Activity)context).isFinishing())
 				{
+					if(exception instanceof SpikaForbiddenException){
+						//token expired
+						errorMessage=context.getString(R.string.token_expired_error);
+						dialog.setOnDismissListener(new OnDismissListener() {
+							
+							@Override
+							public void onDismiss(DialogInterface dialog) {
+								context.startActivity(new Intent(context, SignInActivity.class)
+										.putExtra(context.getString(R.string.token_expired_error), true));
+								((Activity) context).finish();
+							}
+						});
+					}
 					dialog.showOnlyOK(errorMessage);
 				}
 			}
