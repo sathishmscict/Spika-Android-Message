@@ -133,8 +133,12 @@ public class CouchDB {
 
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         if (filePath != null && !filePath.equals("")) {
+        	
+        	// get file upload url
+        	String url = ConnectionHandler.getString(SpikaApp.getInstance().getBaseUrlWithSufix(Const.GET_FILE_UPLOADER_URL),null).trim();
+        	
             params.add(new BasicNameValuePair(Const.FILE, filePath));
-            String fileId = ConnectionHandler.getIdFromFileUploader(SpikaApp.getInstance().getBaseUrlWithSufix(Const.FILE_UPLOADER_URL), params);
+            String fileId = ConnectionHandler.getIdFromFileUploader(url, params);
             return fileId;
         }
         return null;
