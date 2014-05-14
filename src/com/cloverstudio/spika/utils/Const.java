@@ -65,7 +65,8 @@ public class Const {
     public static final String FIND_GROUP_CATEGORIES	= "findAllGroupCategory";
     public static final String DEFAULT_SERVER_NAME		= "Spika Official";    
     public static final String FIND_MEMBERS             = "groupUsers/";
-    
+	public static final String GET_FILE_UPLOADER_URL    = "createuploadurl";
+
     
     public static final String PASSWORDREMINDER_URL    	= "resetPassword?";
     public static final String UNREGISTER_PUSH_URL     	= "unregistToken?";
